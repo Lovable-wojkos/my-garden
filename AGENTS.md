@@ -1,6 +1,6 @@
 # Repository Guidelines
 
-Astro 6 SSR app (React 19 islands, Tailwind 4, shadcn/ui, Supabase auth) deployed to Cloudflare Workers. Node.js v22.14.0 required (see `@.nvmrc`).
+Astro 6 SSR app (React 19 islands, Tailwind 4, shadcn/ui, Supabase auth) deployed to Vercel. Node.js v22.14.0 required (see `@.nvmrc`).
 
 ## Hard Rules
 
@@ -25,7 +25,7 @@ See `@CLAUDE.md` for architecture detail and auth flow.
 
 ## Commands
 
-- `npm run dev` — dev server (Cloudflare workerd runtime)
+- `npm run dev` — dev server
 - `npm run build` — production build; requires `SUPABASE_URL` and `SUPABASE_KEY` in env
 - `npm run lint` — ESLint with type-checked rules (CI gate — must pass before merging)
 - `npm run lint:fix` — auto-fix ESLint issues
@@ -45,9 +45,8 @@ Pre-commit: husky + lint-staged runs `eslint --fix` on `*.{ts,tsx,astro}` and `p
 
 ## Environment & Secrets
 
-- Local Node dev: copy `@.env.example` to `.env`.
-- Local Cloudflare dev: copy `@.env.example` to `.dev.vars` (gitignored); Cloudflare runtime reads `.dev.vars`, not `.env`.
-- Deploy: `npx wrangler deploy`. Set secrets via `npx wrangler secret put SUPABASE_URL`.
+- Local dev: copy `@.env.example` to `.env`.
+- Deploy: `npx vercel deploy`. Set secrets via Vercel dashboard or `npx vercel env add SUPABASE_URL`.
 
 ## CI
 

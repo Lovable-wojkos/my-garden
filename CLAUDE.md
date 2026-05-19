@@ -4,8 +4,8 @@ This file provides guidance to AI Agent when working with code in this repositor
 
 ## Commands
 
-- `npm run dev` — start dev server (Cloudflare workerd runtime)
-- `npm run build` — production build (SSR via `@astrojs/cloudflare`)
+- `npm run dev` — start dev server
+- `npm run build` — production build (SSR via `@astrojs/vercel`)
 - `npm run preview` — preview production build
 - `npm run lint` — ESLint with type-checked rules
 - `npm run lint:fix` — auto-fix lint issues
@@ -15,7 +15,7 @@ Pre-commit hooks: husky + lint-staged runs `eslint --fix` on `*.{ts,tsx,astro}` 
 
 ## Architecture
 
-**Astro 6 SSR app** with React 19 islands, Tailwind 4, Supabase auth, and shadcn/ui components. Deployed to Cloudflare Workers.
+**Astro 6 SSR app** with React 19 islands, Tailwind 4, Supabase auth, and shadcn/ui components. Deployed to Vercel.
 
 ### Rendering mode
 
@@ -44,10 +44,9 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 ### Environment
 
 - Node.js v22.14.0 (see `.nvmrc`)
-- Env vars: `SUPABASE_URL`, `SUPABASE_KEY` (copy `.env.example` to `.env` for Node, or `.dev.vars` for Cloudflare local dev)
+- Env vars: `SUPABASE_URL`, `SUPABASE_KEY` (copy `.env.example` to `.env`)
 - Local Supabase: `npx supabase start` (requires Docker)
-- Cloudflare local dev: secrets go in `.dev.vars` (gitignored)
-- Deploy: `npx wrangler deploy` (requires Cloudflare account + `wrangler` auth)
+- Deploy: `npx vercel deploy` (requires Vercel account + `vercel` CLI auth)
 
 ## CI
 
