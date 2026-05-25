@@ -5,7 +5,7 @@ Astro 6 SSR app (React 19 islands, Tailwind 4, shadcn/ui, Supabase auth) deploye
 ## Hard Rules
 
 - All pages are SSR (`output: "server"` in `astro.config.mjs`). API routes must export `const prerender = false`.
-- `SUPABASE_URL` and `SUPABASE_KEY` are server-only secrets declared via `astro:env` — never expose them to the client.
+- `SUPABASE_URL` and `SUPABASE_ANON_KEY` are server-only secrets declared via `astro:env` — never expose them to the client.
 - Use `cn()` from `@/lib/utils` for Tailwind class merging; never concatenate Tailwind class strings manually.
 - Use Astro components for static content and layout; use React only when interactivity is needed.
 - `astro/no-set-html-directive` is an ESLint error — do not use `set:html`.
@@ -26,7 +26,7 @@ See `@CLAUDE.md` for architecture detail and auth flow.
 ## Commands
 
 - `npm run dev` — dev server
-- `npm run build` — production build; requires `SUPABASE_URL` and `SUPABASE_KEY` in env
+- `npm run build` — production build; requires `SUPABASE_URL` and `SUPABASE_ANON_KEY` in env
 - `npm run lint` — ESLint with type-checked rules (CI gate — must pass before merging)
 - `npm run lint:fix` — auto-fix ESLint issues
 - `npm run format` — Prettier with Astro and Tailwind plugins
@@ -50,4 +50,4 @@ Pre-commit: husky + lint-staged runs `eslint --fix` on `*.{ts,tsx,astro}` and `p
 
 ## CI
 
-`@.github/workflows/ci.yml` runs `npm run lint` then `npm run build` on every push and PR to `master`. Both `SUPABASE_URL` and `SUPABASE_KEY` must be configured as GitHub repository secrets for the build step to pass.
+`@.github/workflows/ci.yml` runs `npm run lint` then `npm run build` on every push and PR to `master`. Both `SUPABASE_URL` and `SUPABASE_ANON_KEY` must be configured as GitHub repository secrets for the build step to pass.
