@@ -19,7 +19,7 @@ This decision is based on the tech stack selection (`context/foundation/tech-sta
 ## Why Vercel
 
 - **Native Astro support**: Vercel has first-class support for Astro SSR with automatic framework detection
-- **Supabase integration**: Server-side secrets (SUPABASE_URL, SUPABASE_KEY) can be configured via Vercel environment variables
+- **Supabase integration**: Server-side secrets (SUPABASE_URL, SUPABASE_ANON_KEY) can be configured via Vercel environment variables
 - **Edge functions**: Background weather data pulls can run via Vercel Edge Functions or cron jobs
 - **Preview deployments**: Automatic preview URLs for every pull request
 - **Global CDN**: Built-in edge network for fast content delivery globally
@@ -36,7 +36,7 @@ This decision is based on the tech stack selection (`context/foundation/tech-sta
 ### Secrets
 Server-only environment variables (never exposed to client):
 - `SUPABASE_URL` — Supabase project URL
-- `SUPABASE_KEY` — Supabase service role key (server-side)
+- `SUPABASE_ANON_KEY` — Supabase service role key (server-side)
 
 Configure via:
 1. Vercel dashboard: Project Settings → Environment Variables
@@ -78,7 +78,7 @@ Vercel automatically detects Astro configuration and applies appropriate build s
 ## Deployment Checklist
 
 - [ ] Create Vercel project (import from GitHub)
-- [ ] Configure `SUPABASE_URL` and `SUPABASE_KEY` environment variables
+- [ ] Configure `SUPABASE_URL` and `SUPABASE_ANON_KEY` environment variables
 - [ ] Set Node.js version to 22.14.0 in project settings
 - [ ] Enable automatic deployments on merge to master
 - [ ] Test preview deployment on a pull request

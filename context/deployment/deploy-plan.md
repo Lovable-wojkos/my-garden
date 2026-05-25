@@ -60,7 +60,7 @@ vercel env add SUPABASE_URL
 # Enter your Supabase project URL
 # Select: Production, Preview, Development (add to all)
 
-vercel env add SUPABASE_KEY
+vercel env add SUPABASE_ANON_KEY
 # Enter your Supabase service role key (anon key is insufficient for server-side)
 # Select: Production, Preview, Development (add to all)
 ```
@@ -69,7 +69,7 @@ vercel env add SUPABASE_KEY
 
 1. Go to Project Settings → Environment Variables
 2. Add `SUPABASE_URL` (production value)
-3. Add `SUPABASE_KEY` (production value)
+3. Add `SUPABASE_ANON_KEY` (production value)
 4. Add same variables for Preview and Development environments
 
 ### Step 4: Configure Node.js Version
@@ -125,7 +125,7 @@ Test the deployed application:
 
 Ensure secrets are not exposed to client:
 - Open browser DevTools → Network tab
-- Check that SUPABASE_KEY is not in any client-side bundle
+- Check that SUPABASE_ANON_KEY is not in any client-side bundle
 - Verify server-side requests use the service role key
 
 ### 4. Preview Deployment Verification

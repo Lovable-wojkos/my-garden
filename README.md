@@ -100,7 +100,7 @@ npx supabase start
 
 ```
 SUPABASE_URL=http://127.0.0.1:54321
-SUPABASE_KEY=<anon key from CLI output>
+SUPABASE_ANON_KEYN_KEYN_KEYN_KEYN_KEY=<anon key from CLI output>
 ```
 
 5. To stop the stack when done:
@@ -120,11 +120,11 @@ If you prefer to use a hosted Supabase project, add these variables to your `.en
 | Variable       | Description                                                |
 | -------------- | ---------------------------------------------------------- |
 | `SUPABASE_URL` | Project URL from Supabase dashboard → Settings → API       |
-| `SUPABASE_KEY` | `anon` public key from Supabase dashboard → Settings → API |
+| `SUPABASE_ANON_KEYN_KEYN_KEYN_KEYN_KEYN_KEY` | `anon` public key from Supabase dashboard → Settings → API |
 
 ```
 SUPABASE_URL=https://<project-ref>.supabase.co
-SUPABASE_KEY=<anon-key>
+SUPABASE_ANON_KEY=<anon-key>
 ```
 
 ### Email confirmation in local development
@@ -164,11 +164,11 @@ npm run build
 npx wrangler deploy
 ```
 
-Set `SUPABASE_URL` and `SUPABASE_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
+Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
 
 ## CI
 
-GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL` and `SUPABASE_KEY` as repository secrets in GitHub for the build step.
+GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL` and `SUPABASE_ANON_KEY` as repository secrets in GitHub for the build step.
 
 ## License
 
