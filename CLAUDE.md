@@ -23,7 +23,7 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 
 ### Auth flow
 
-- `src/lib/supabase.ts` — creates a Supabase SSR client using `@supabase/ssr` with cookie-based sessions. Uses `astro:env/server` for `SUPABASE_URL` and `SUPABASE_KEY` (server-only secrets declared in astro.config.mjs `env.schema`).
+- `src/lib/supabase.ts` — creates a Supabase SSR client using `@supabase/ssr` with cookie-based sessions. Uses `astro:env/server` for `SUPABASE_URL` and `SUPABASE_ANON_KEY` (server-only secrets declared in astro.config.mjs `env.schema`).
 - `src/middleware.ts` — runs on every request, resolves the current user, attaches to `context.locals.user`. Redirects unauthenticated users away from routes listed in `PROTECTED_ROUTES`.
 - API endpoints: `src/pages/api/auth/{signin,signup,signout}.ts`
 - Auth pages: `src/pages/auth/{signin,signup,confirm-email}.astro`
@@ -44,10 +44,10 @@ Full server-side rendering (`output: "server"` in astro.config.mjs). All pages a
 ### Environment
 
 - Node.js v22.14.0 (see `.nvmrc`)
-- Env vars: `SUPABASE_URL`, `SUPABASE_KEY` (copy `.env.example` to `.env`)
+- Env vars: `SUPABASE_URL`, `SUPABASE_ANON_KEY` (copy `.env.example` to `.env`)
 - Local Supabase: `npx supabase start` (requires Docker)
 - Deploy: `npx vercel deploy` (requires Vercel account + `vercel` CLI auth)
 
 ## CI
 
-GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint + build on every push and PR to master. Requires `SUPABASE_URL` and `SUPABASE_KEY` repository secrets for the build step.
+GitHub Actions workflow (`.github/workflows/ci.yml`) runs lint + build on every push and PR to master. Requires `SUPABASE_URL` and `SUPABASE_ANON_KEY` repository secrets for the build step.
