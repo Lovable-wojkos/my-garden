@@ -285,7 +285,7 @@ Create typed service functions in `src/lib/services/` â€” one file per domain â€
 
 #### Automated
 
-- [ ] 1.1 Migration file exists at `supabase/migrations/20260525000000_initial_schema.sql`
+- [x] 1.1 Migration file exists at `supabase/migrations/20260525000000_initial_schema.sql`
 - [ ] 1.2 `npx supabase db push` applies cleanly with no errors
 - [ ] 1.3 All six tables appear in `supabase db diff` with no unexpected drift
 
@@ -301,8 +301,8 @@ Create typed service functions in `src/lib/services/` â€” one file per domain â€
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes with no type errors on `src/types.ts`
-- [ ] 2.2 `tsc --noEmit` passes
+- [x] 2.1 `npm run lint` passes with no type errors on `src/types.ts`
+- [x] 2.2 `tsc --noEmit` passes
 
 #### Manual
 
@@ -313,9 +313,9 @@ Create typed service functions in `src/lib/services/` â€” one file per domain â€
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes across all new service files
-- [ ] 3.2 `tsc --noEmit` passes â€” no type errors in service functions
-- [ ] 3.3 All service functions use types from `src/types.ts` (no inline `any`)
+- [x] 3.1 `npm run lint` passes across all new service files
+- [x] 3.2 `tsc --noEmit` passes â€” no type errors in service functions
+- [x] 3.3 All service functions use types from `src/types.ts` (no inline `any`)
 
 #### Manual
 
