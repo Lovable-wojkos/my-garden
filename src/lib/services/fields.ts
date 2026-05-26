@@ -19,7 +19,9 @@ export async function createField(client: SupabaseClient, insert: FieldInsert) {
 }
 
 export async function updateField(client: SupabaseClient, id: string, update: FieldUpdate) {
-  return client.from("fields").update(update).eq("id", id).select().single<FieldRow>();
+  // Strip ownership field — user_id must not be changed via update
+  const { user_id: _user_id, ...safeUpdate } = update;
+  return client.from("fields").update(safeUpdate).eq("id", id).select().single<FieldRow>();
 }
 
 export async function deleteField(client: SupabaseClient, id: string) {

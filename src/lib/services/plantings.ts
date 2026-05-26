@@ -10,7 +10,9 @@ export async function createPlanting(client: SupabaseClient, insert: PlantingIns
 }
 
 export async function updatePlanting(client: SupabaseClient, id: string, update: PlantingUpdate) {
-  return client.from("plantings").update(update).eq("id", id).select().single<PlantingRow>();
+  // Strip ownership/structural fields — these must not be changed via update
+  const { user_id: _user_id, field_id: _field_id, ...safeUpdate } = update;
+  return client.from("plantings").update(safeUpdate).eq("id", id).select().single<PlantingRow>();
 }
 
 export async function deletePlanting(client: SupabaseClient, id: string) {
