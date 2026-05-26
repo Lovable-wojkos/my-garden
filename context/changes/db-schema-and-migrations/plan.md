@@ -286,16 +286,16 @@ Create typed service functions in `src/lib/services/` — one file per domain �
 #### Automated
 
 - [x] 1.1 Migration file exists at `supabase/migrations/20260525000000_initial_schema.sql`
-- [ ] 1.2 `npx supabase db push` applies cleanly with no errors
-- [ ] 1.3 All six tables appear in `supabase db diff` with no unexpected drift
+- [x] 1.2 `npx supabase db push` applies cleanly with no errors
+- [x] 1.3 All six tables appear in `supabase db diff` with no unexpected drift
 
 #### Manual
 
-- [ ] 1.4 All six tables visible in Supabase dashboard with correct columns and FKs
-- [ ] 1.5 RLS enabled (ON) for every table
-- [ ] 1.6 Authenticated user INSERT blocked for mismatched `user_id`
-- [ ] 1.7 Authenticated user INSERT into `weather_records` blocked
-- [ ] 1.8 `regions` seed data present (16 rows minimum)
+- [x] 1.4 All six tables visible in Supabase dashboard with correct columns and FKs
+- [x] 1.5 RLS enabled (ON) for every table
+- [x] 1.6 Authenticated user INSERT blocked for mismatched `user_id`
+- [x] 1.7 Authenticated user INSERT into `weather_records` blocked
+- [x] 1.8 `regions` seed data present (16 rows minimum)
 
 ### Phase 2: TypeScript Types
 
@@ -306,8 +306,8 @@ Create typed service functions in `src/lib/services/` — one file per domain �
 
 #### Manual
 
-- [ ] 2.3 Every table has Row/Insert type in `src/types.ts`
-- [ ] 2.4 `PlantRequestStatus` union covers all migration values
+- [x] 2.3 Every table has Row/Insert type in `src/types.ts`
+- [x] 2.4 `PlantRequestStatus` union covers all migration values
 
 ### Phase 3: Service Layer Scaffold
 
@@ -319,6 +319,6 @@ Create typed service functions in `src/lib/services/` — one file per domain �
 
 #### Manual
 
-- [ ] 3.4 `getRegions` returns seeded regions
-- [ ] 3.5 `createField` with valid data — row inserted and returned
-- [ ] 3.6 `createField` with mismatched `user_id` — RLS blocks insert
+- [x] 3.4 `getRegions` returns seeded regions
+- [x] 3.5 `createField` with valid data — row inserted and returned
+- [x] 3.6 `createField` with mismatched `user_id` — RLS blocks insert
