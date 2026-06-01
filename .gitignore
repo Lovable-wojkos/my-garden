@@ -32,4 +32,6 @@ pnpm-debug.log*
 */skills/hallmark
 opencode.json
 skills-lock.json
-skills-lock.json
+
+# git worktrees
+worktrees/
