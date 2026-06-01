@@ -127,19 +127,23 @@ export type PlantingUpdate = Partial<PlantingInsert>;
 // ── weather_records ──────────────────────────────────────────
 export interface WeatherRecordRow {
   id: string;
-  region_id: string;
+  region_id: string | null;
   recorded_at: string;
   temperature_c: number | null;
   rainfall_mm: number | null;
+  latitude: number | null;
+  longitude: number | null;
   created_at: string;
 }
 
 export interface WeatherRecordInsert {
   id?: string;
-  region_id: string;
+  region_id?: string | null;
   recorded_at: string;
   temperature_c?: number | null;
   rainfall_mm?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
   created_at?: string;
 }
 
