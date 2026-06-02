@@ -178,8 +178,8 @@ Create the Astro pages that host the form and act as the redirect destination.
 ### Phase 1: Dependencies & UI Components
 
 #### Automated
-- [ ] 1.1 `zod` is in `package.json`
-- [ ] 1.2 `src/components/ui/input.tsx`, `label.tsx`, `popover.tsx`, and `command.tsx` exist and pass type checks
+- [x] 1.1 `zod` is in `package.json`
+- [x] 1.2 `src/components/ui/input.tsx`, `label.tsx`, `popover.tsx`, and `command.tsx` exist and pass type checks
 
 ### Phase 2: API Route
 
