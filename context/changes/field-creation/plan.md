@@ -184,10 +184,10 @@ Create the Astro pages that host the form and act as the redirect destination.
 ### Phase 2: API Route
 
 #### Automated
-- [ ] 2.1 Type checking passes
+- [x] 2.1 Type checking passes
 
 #### Manual
-- [ ] 2.2 Valid POST request creates a row in the `fields` table
+- [x] 2.2 Valid POST request creates a row in the `fields` table
 
 ### Phase 3: Create Field Form Component
 
