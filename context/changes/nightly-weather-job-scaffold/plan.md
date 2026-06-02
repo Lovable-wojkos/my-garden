@@ -384,38 +384,38 @@ Not applicable — no unit test runner configured in the project.
 
 #### Automated
 
-- [x] 1.1 Migration file at `supabase/migrations/20260601000000_add_coords_to_weather_records.sql`
-- [x] 1.2 `npx supabase db push` applies cleanly
-- [x] 1.3 `npm run lint` passes on `src/types.ts` and `src/lib/services/weather.ts`
-- [x] 1.4 `tsc --noEmit` passes
+- [x] 1.1 Migration file at `supabase/migrations/20260601000000_add_coords_to_weather_records.sql` — 99e365e
+- [x] 1.2 `npx supabase db push` applies cleanly — 99e365e
+- [x] 1.3 `npm run lint` passes on `src/types.ts` and `src/lib/services/weather.ts` — 99e365e
+- [x] 1.4 `tsc --noEmit` passes — 99e365e
 
 #### Manual
 
-- [ ] 1.5 Dashboard: `weather_records` has lat/lng columns, region_id nullable
-- [ ] 1.6 Insert with lat/lng succeeds; duplicate blocked by unique index
-- [ ] 1.7 Existing region-based rows unaffected
+- [x] 1.5 Dashboard: `weather_records` has lat/lng columns, region_id nullable
+- [x] 1.6 Insert with lat/lng succeeds; duplicate blocked by unique index
+- [x] 1.7 Existing region-based rows unaffected
 
 ### Phase 2: Open-Meteo HTTP Client Service
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes on `src/lib/services/open-meteo.ts`
-- [ ] 2.2 `tsc --noEmit` passes
+- [x] 2.1 `npm run lint` passes on `src/lib/services/open-meteo.ts`
+- [x] 2.2 `tsc --noEmit` passes
 
 #### Manual
 
-- [ ] 2.3 `getDailyWeather(50.06, 19.94)` returns 7 records, all dates before today
-- [ ] 2.4 `getWeather(50.06, 19.94)` aggregate matches sum of daily records
-- [ ] 2.5 `geocodeCity("Kraków")` returns results; nonsense returns `[]`
+- [x] 2.3 `getDailyWeather(50.06, 19.94)` returns 7 records, all dates before today
+- [x] 2.4 `getWeather(50.06, 19.94)` aggregate matches sum of daily records
+- [x] 2.5 `geocodeCity("Kraków")` returns results; nonsense returns `[]`
 
 ### Phase 3: Cron Job
 
 #### Automated
 
-- [ ] 3.1 `vercel.json` exists with valid cron schedule
-- [ ] 3.2 `astro.config.mjs` declares `SUPABASE_SERVICE_ROLE_KEY`
-- [ ] 3.3 `npm run lint` passes on all new/modified files
-- [ ] 3.4 `npm run build` succeeds
+- [x] 3.1 `vercel.json` exists with valid cron schedule
+- [x] 3.2 `astro.config.mjs` declares `SUPABASE_SERVICE_ROLE_KEY`
+- [x] 3.3 `npm run lint` passes on all new/modified files
+- [x] 3.4 `npm run build` succeeds
 
 #### Manual
 

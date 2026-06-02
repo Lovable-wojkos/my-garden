@@ -1,9 +1,9 @@
 ---
 change_id: nightly-weather-job-scaffold
 title: Nightly weather job scaffold
-status: implementing
+status: impl_reviewed
 created: 2026-06-01
-updated: 2026-06-01
+updated: 2026-06-02
 planned_at: 2026-06-01
 archived_at: null
 ---
