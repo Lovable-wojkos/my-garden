@@ -31,7 +31,7 @@ A garden management app that replaces paper notebooks with digital tracking for 
 |---|---|---|---|---|---|
 | F-01 | db-schema-and-migrations | (foundation) schema for fields, plants catalog, plantings, and weather_records in place | — | FR-001, FR-002, FR-003, FR-005, FR-006, FR-007, FR-011, FR-014, FR-015 | done |
 | S-01 | imgw-weather-probe | type a city name, pick from geocoded suggestions, and see current temperature, 7-day rainfall, and last-rain date | — | FR-006, FR-008, FR-009, FR-010 | plan_reviewed |
-| F-02 | nightly-weather-job-scaffold | (foundation) Vercel Cron job fetches Open-Meteo data nightly and stores records in weather_records | F-01 | FR-007 | proposed |
+| F-02 | nightly-weather-job-scaffold | (foundation) Vercel Cron job fetches Open-Meteo data nightly and stores records in weather_records | F-01 | FR-007 | done |
 | S-02 | field-creation | add a field with columns-and-rows layout | F-01 | FR-001, FR-002 | proposed |
 | S-05 | plant-catalog-requests | request a new plant type; admin approves and it appears in the catalog | F-01 | FR-014, FR-015 | proposed |
 | S-03 | planting-record | assign plants to field cells, set seeding date, and see auto-calculated harvest date | F-01, S-02 | FR-003, FR-005, FR-011 | proposed |
@@ -86,9 +86,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Which runtime for the cron job — Vercel Cron (hobby plan has limits) vs Supabase Edge Function scheduled trigger? Owner: dev. Block: no (decision can be made at /10x-plan time).
 - **Risk:** Vercel Cron on hobby tier is limited to 1 invocation/day — sufficient for nightly pull; if frequency needs to increase, runner must change.
-- **Status:** proposed
-
-## Slices
+- **Status:** done
 
 ### S-01: Open-Meteo weather probe
 
@@ -186,3 +184,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 ## Done
 
 - **F-01: (foundation) Supabase migrations in place for `fields`, `plants` (catalog), `plantings`, and `weather_records` tables with RLS policies; all data-dependent slices can be planned and implemented.** — Archived 2026-06-02 → `context/archive/2026-05-25-db-schema-and-migrations/`. Lesson: —.
+- **F-02: (foundation) Vercel Cron function fetches Open-Meteo data for all active user coordinates nightly and writes records to `weather_records`; historical rainfall queries are now possible.** — Archived 2026-06-02 → `context/archive/2026-06-01-nightly-weather-job-scaffold/`. Lesson: —.
