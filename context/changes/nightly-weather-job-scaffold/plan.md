@@ -399,14 +399,14 @@ Not applicable — no unit test runner configured in the project.
 
 #### Automated
 
-- [x] 2.1 `npm run lint` passes on `src/lib/services/open-meteo.ts`
-- [x] 2.2 `tsc --noEmit` passes
+- [x] 2.1 `npm run lint` passes on `src/lib/services/open-meteo.ts` — 5b8f760
+- [x] 2.2 `tsc --noEmit` passes — 5b8f760
 
 #### Manual
 
-- [x] 2.3 `getDailyWeather(50.06, 19.94)` returns 7 records, all dates before today
-- [x] 2.4 `getWeather(50.06, 19.94)` aggregate matches sum of daily records
-- [x] 2.5 `geocodeCity("Kraków")` returns results; nonsense returns `[]`
+- [x] 2.3 `getDailyWeather(50.06, 19.94)` returns 7 records, all dates before today — 5b8f760
+- [x] 2.4 `getWeather(50.06, 19.94)` aggregate matches sum of daily records — 5b8f760
+- [x] 2.5 `geocodeCity("Kraków")` returns results; nonsense returns `[]` — 5b8f760
 
 ### Phase 3: Cron Job
 
