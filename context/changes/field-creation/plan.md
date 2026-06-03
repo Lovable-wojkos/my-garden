@@ -184,7 +184,7 @@ Create the Astro pages that host the form and act as the redirect destination.
 ### Phase 2: API Route
 
 #### Automated
-- [ ] 2.1 Type checking passes
+- [x] 2.1 Type checking passes
 
 #### Manual
 - [ ] 2.2 Valid POST request creates a row in the `fields` table
@@ -192,7 +192,7 @@ Create the Astro pages that host the form and act as the redirect destination.
 ### Phase 3: Create Field Form Component
 
 #### Automated
-- [ ] 3.1 Linter passes on the new component
+- [x] 3.1 Linter passes on the new component
 
 #### Manual
 - [ ] 3.2 Form renders correctly
@@ -201,7 +201,7 @@ Create the Astro pages that host the form and act as the redirect destination.
 ### Phase 4: Pages & Routing
 
 #### Automated
-- [ ] 4.1 Pages compile successfully
+- [x] 4.1 Pages compile successfully
 
 #### Manual
 - [ ] 4.2 Navigating to `/dashboard/fields/new` shows the form
