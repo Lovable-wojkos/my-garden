@@ -148,3 +148,22 @@ export interface WeatherRecordInsert {
 }
 
 export type WeatherRecordUpdate = Partial<WeatherRecordInsert>;
+
+// ── user_preferences ─────────────────────────────────────────
+export interface UserPreferencesRow {
+  user_id: string;
+  city_name: string;
+  latitude: number;
+  longitude: number;
+  updated_at: string;
+}
+
+export interface UserPreferencesInsert {
+  user_id: string;
+  city_name: string;
+  latitude: number;
+  longitude: number;
+  updated_at?: string;
+}
+
+export type UserPreferencesUpdate = Partial<UserPreferencesInsert>;

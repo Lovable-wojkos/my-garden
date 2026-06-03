@@ -392,13 +392,13 @@ Open-Meteo geocoding and weather endpoints typically respond in < 300ms from Pol
 
 #### Automated
 
-- [ ] 1.1 Migration file exists at `supabase/migrations/20260526000000_user_preferences.sql`
-- [ ] 1.2 `npx supabase db push` applies cleanly with no errors
-- [ ] 1.3 `npm run lint` passes on `src/types.ts` and `src/lib/services/user-preferences.ts`
+- [x] 1.1 Migration file exists at `supabase/migrations/20260526000000_user_preferences.sql`
+- [x] 1.2 `npx supabase db push` applies cleanly with no errors
+- [x] 1.3 `npm run lint` passes on `src/types.ts` and `src/lib/services/user-preferences.ts`
 
 #### Manual
 
-- [ ] 1.4 `user_preferences` table visible in Supabase dashboard with correct columns
+- [x] 1.4 `user_preferences` table visible in Supabase dashboard with correct columns
 - [ ] 1.5 RLS enabled; reading another user's row returns empty
 - [ ] 1.6 `upsertUserPreferences` called twice with same `user_id` — updates, not duplicates
 
