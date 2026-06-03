@@ -1,7 +1,7 @@
 ---
 change_id: testing-critical-path-coverage
-title: Bootstrap Vitest and add critical-path tests for auth, catalog, and harvest date
-status: new
+title: Testing - Critical Path Coverage
+status: in-progress
 created: 2026-06-02
 updated: 2026-06-02
 archived_at: null
@@ -15,4 +15,4 @@ Risk response intent:
 - Risk #1: Prove authenticated user's request to own resource returns 200; unauthenticated request returns 401/redirect; another user's resource returns 403/404.
 - Risk #2: Prove plant catalog endpoint returns all expected entries; harvest date calc uses correct growth category.
 - Risk #6: Prove harvest date = seeding date + growth period produces correct estimated date.
-After creating the folder, follow the downstream continuation rule.
+Establish Vitest test coverage for the auth critical path (middleware, API route error branches) and React form validation logic. Zero tests exist today; this change installs the test framework and writes the first suite.
