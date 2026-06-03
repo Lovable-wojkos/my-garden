@@ -1,10 +1,10 @@
 ---
 change_id: testing-critical-path-coverage
 title: Testing - Critical Path Coverage
-status: in-progress
+status: archived
 created: 2026-06-02
-updated: 2026-06-02
-archived_at: null
+updated: 2026-06-03
+archived_at: 2026-06-03T11:28:05Z
 ---
 
 ## Notes
