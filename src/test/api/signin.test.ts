@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { APIContext } from "astro";
 import { createClient } from "@/lib/supabase";
 import { POST } from "@/pages/api/auth/signin";
 
 vi.mock("@/lib/supabase");
 
-function makeContext(email = "user@example.com", password = "password") {
+function makeContext(email = "user@example.com", password = "password"): Pick<APIContext, 'request' | 'cookies' | 'redirect'> {
   const formData = new FormData();
   formData.set("email", email);
   formData.set("password", password);
@@ -26,7 +27,7 @@ describe("POST /api/auth/signin", () => {
     vi.mocked(createClient).mockReturnValue(null);
 
     const context = makeContext();
-    await POST(context as any);
+    await POST(context);
 
     expect(context.redirect).toHaveBeenCalledWith(expect.stringContaining("/auth/signin?error="));
   });
@@ -39,7 +40,7 @@ describe("POST /api/auth/signin", () => {
     } as any);
 
     const context = makeContext();
-    await POST(context as any);
+    await POST(context);
 
     expect(context.redirect).toHaveBeenCalledWith(
       expect.stringContaining(encodeURIComponent("Invalid login credentials")),

@@ -7,6 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // Both Astro virtual modules resolve to the same mock file since they're only used together
+      // in tests and share minimal exports. Split if tests need different behaviors per module.
       "astro:env/server": fileURLToPath(new URL("./src/test/mocks/astro-virtual.ts", import.meta.url)),
       "astro:middleware": fileURLToPath(new URL("./src/test/mocks/astro-virtual.ts", import.meta.url)),
     },

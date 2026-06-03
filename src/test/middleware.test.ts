@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { MiddlewareHandler } from "astro";
 import { createClient } from "@/lib/supabase";
 import { onRequest } from "@/middleware";
 
@@ -24,7 +25,8 @@ describe("middleware onRequest", () => {
     };
     const next = vi.fn().mockResolvedValue(new Response("next"));
 
-    await (onRequest as (ctx: typeof context, next: typeof next) => Promise<Response>)(context, next);
+    const handler: MiddlewareHandler = onRequest;
+    await handler(context, next);
 
     expect(redirect).toHaveBeenCalledWith("/auth/signin");
     expect(next).not.toHaveBeenCalled();
