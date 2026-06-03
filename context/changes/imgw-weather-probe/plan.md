@@ -406,8 +406,8 @@ Open-Meteo geocoding and weather endpoints typically respond in < 300ms from Pol
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes on `src/lib/services/open-meteo.ts`
-- [ ] 2.2 `tsc --noEmit` passes (no type errors)
+- [x] 2.1 `npm run lint` passes on `src/lib/services/open-meteo.ts`
+- [x] 2.2 `tsc --noEmit` passes (no type errors)
 
 #### Manual
 
