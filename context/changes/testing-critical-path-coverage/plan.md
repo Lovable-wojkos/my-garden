@@ -322,8 +322,8 @@ happy-dom is ~3–5× faster than jsdom for small suites. Full test run should c
 
 #### Automated
 
-- [ ] 2.1 `npm run test:run` — all 6 server-side test cases pass, 0 failures
-- [ ] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run test:run` — all 6 server-side test cases pass, 0 failures
+- [x] 2.2 `npm run lint` passes (test files + eslint.config.js clean; pre-existing errors in supabase.ts, middleware.ts, confirm-email.astro are out of scope)
 
 #### Manual
 
