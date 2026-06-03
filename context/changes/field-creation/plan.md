@@ -184,26 +184,26 @@ Create the Astro pages that host the form and act as the redirect destination.
 ### Phase 2: API Route
 
 #### Automated
-- [x] 2.1 Type checking passes
+- [x] 2.1 Type checking passes — 7b03efb
 
 #### Manual
-- [ ] 2.2 Valid POST request creates a row in the `fields` table
+- [x] 2.2 Valid POST request creates a row in the `fields` table — 7b03efb
 
 ### Phase 3: Create Field Form Component
 
 #### Automated
-- [x] 3.1 Linter passes on the new component
+- [x] 3.1 Linter passes on the new component — 74c7b88
 
 #### Manual
-- [ ] 3.2 Form renders correctly
-- [ ] 3.3 Combobox filters the region list when typing
+- [x] 3.2 Form renders correctly — 74c7b88
+- [x] 3.3 Combobox filters the region list when typing — 74c7b88
 
 ### Phase 4: Pages & Routing
 
 #### Automated
-- [x] 4.1 Pages compile successfully
+- [x] 4.1 Pages compile successfully — 366c921
 
 #### Manual
-- [ ] 4.2 Navigating to `/dashboard/fields/new` shows the form
-- [ ] 4.3 Successful submission redirects to `/dashboard/fields/[id]`
-- [ ] 4.4 The placeholder page displays the correct field name
+- [x] 4.2 Navigating to `/dashboard/fields/new` shows the form — 366c921
+- [x] 4.3 Successful submission redirects to `/dashboard/fields/[id]` — 366c921
+- [x] 4.4 The placeholder page displays the correct field name — 366c921
