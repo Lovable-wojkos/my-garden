@@ -406,8 +406,8 @@ Open-Meteo geocoding and weather endpoints typically respond in < 300ms from Pol
 
 #### Automated
 
-- [x] 2.1 `npm run lint` passes on `src/lib/services/open-meteo.ts`
-- [x] 2.2 `tsc --noEmit` passes (no type errors)
+- [x] 2.1 `npm run lint` passes on `src/lib/services/open-meteo.ts` — 46fd80f
+- [x] 2.2 `tsc --noEmit` passes (no type errors) — 46fd80f
 
 #### Manual
 
@@ -419,8 +419,8 @@ Open-Meteo geocoding and weather endpoints typically respond in < 300ms from Pol
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes on new route files and updated middleware
-- [ ] 3.2 `npm run build` succeeds
+- [x] 3.1 `npm run lint` passes on new route files and updated middleware
+- [x] 3.2 `npm run build` succeeds
 
 #### Manual
 

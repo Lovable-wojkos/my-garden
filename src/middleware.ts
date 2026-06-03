@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase";
 
 // PROTECTED_ROUTES: user-facing paths that require auth.
 // /api/cron/* routes authenticate via x-vercel-cron header, NOT middleware — do not add them here.
-const PROTECTED_ROUTES = ["/dashboard"];
+const PROTECTED_ROUTES = ["/dashboard", "/api/weather", "/api/user-preferences"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createClient(context.request.headers, context.cookies);
