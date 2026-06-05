@@ -435,16 +435,16 @@ Open-Meteo geocoding and weather endpoints typically respond in < 300ms from Pol
 
 #### Automated
 
-- [x] 4.1 `npx shadcn@latest add card input badge` creates `src/components/ui/{card,input,badge}.tsx`
-- [x] 4.2 `npm run lint` passes on all new/modified files
-- [x] 4.3 `npm run build` succeeds with no type errors
+- [x] 4.1 `npx shadcn@latest add card input badge` creates `src/components/ui/{card,input,badge}.tsx` — c58880c
+- [x] 4.2 `npm run lint` passes on all new/modified files — c58880c
+- [x] 4.3 `npm run build` succeeds with no type errors — c58880c
 
 #### Manual
 
-- [x] 4.4 `/dashboard` shows weather widget for logged-in user
-- [x] 4.5 Type "Wrocław" → suggestion list appears
-- [x] 4.6 Select suggestion → weather card shows temperature, 7-day rainfall, last rain date
-- [x] 4.7 Refresh page → widget loads with saved city (no re-entry)
-- [x] 4.8 API failure → stale badge with timestamp
-- [x] 4.9 Nonsense city → empty suggestions, no crash
-- [x] 4.10 Mobile (375px) → widget is readable
+- [x] 4.4 `/dashboard` shows weather widget for logged-in user — c58880c
+- [x] 4.5 Type "Wrocław" → suggestion list appears — c58880c
+- [x] 4.6 Select suggestion → weather card shows temperature, 7-day rainfall, last rain date — c58880c
+- [x] 4.7 Refresh page → widget loads with saved city (no re-entry) — c58880c
+- [x] 4.8 API failure → stale badge with timestamp — c58880c
+- [x] 4.9 Nonsense city → empty suggestions, no crash — c58880c
+- [x] 4.10 Mobile (375px) → widget is readable — c58880c
