@@ -419,32 +419,32 @@ Open-Meteo geocoding and weather endpoints typically respond in < 300ms from Pol
 
 #### Automated
 
-- [x] 3.1 `npm run lint` passes on new route files and updated middleware
-- [x] 3.2 `npm run build` succeeds
+- [x] 3.1 `npm run lint` passes on new route files and updated middleware — 346bfb7
+- [x] 3.2 `npm run build` succeeds — 346bfb7
 
 #### Manual
 
-- [ ] 3.3 `GET /api/weather?lat=50.06&lng=19.94` (authenticated) returns JSON with three weather fields
-- [ ] 3.4 `GET /api/weather` (no params) returns 400
-- [ ] 3.5 `GET /api/weather` (unauthenticated) redirects to sign-in
-- [ ] 3.6 `POST /api/user-preferences` with valid body returns 200 and row is upserted
-- [ ] 3.7 `GET /api/user-preferences` returns saved city data
-- [ ] 3.8 `GET /api/user-preferences` (unauthenticated) redirects to sign-in
+- [x] 3.3 `GET /api/weather?lat=50.06&lng=19.94` (authenticated) returns JSON with three weather fields
+- [x] 3.4 `GET /api/weather` (no params) returns 400
+- [x] 3.5 `GET /api/weather` (unauthenticated) redirects to sign-in
+- [x] 3.6 `POST /api/user-preferences` with valid body returns 200 and row is upserted
+- [x] 3.7 `GET /api/user-preferences` returns saved city data
+- [x] 3.8 `GET /api/user-preferences` (unauthenticated) redirects to sign-in
 
 ### Phase 4: Weather Widget UI + Dashboard Integration
 
 #### Automated
 
-- [ ] 4.1 `npx shadcn@latest add card input badge` creates `src/components/ui/{card,input,badge}.tsx`
-- [ ] 4.2 `npm run lint` passes on all new/modified files
-- [ ] 4.3 `npm run build` succeeds with no type errors
+- [x] 4.1 `npx shadcn@latest add card input badge` creates `src/components/ui/{card,input,badge}.tsx`
+- [x] 4.2 `npm run lint` passes on all new/modified files
+- [x] 4.3 `npm run build` succeeds with no type errors
 
 #### Manual
 
-- [ ] 4.4 `/dashboard` shows weather widget for logged-in user
-- [ ] 4.5 Type "Wrocław" → suggestion list appears
-- [ ] 4.6 Select suggestion → weather card shows temperature, 7-day rainfall, last rain date
-- [ ] 4.7 Refresh page → widget loads with saved city (no re-entry)
-- [ ] 4.8 API failure → stale badge with timestamp
-- [ ] 4.9 Nonsense city → empty suggestions, no crash
-- [ ] 4.10 Mobile (375px) → widget is readable
+- [x] 4.4 `/dashboard` shows weather widget for logged-in user
+- [x] 4.5 Type "Wrocław" → suggestion list appears
+- [x] 4.6 Select suggestion → weather card shows temperature, 7-day rainfall, last rain date
+- [x] 4.7 Refresh page → widget loads with saved city (no re-entry)
+- [x] 4.8 API failure → stale badge with timestamp
+- [x] 4.9 Nonsense city → empty suggestions, no crash
+- [x] 4.10 Mobile (375px) → widget is readable
