@@ -3,7 +3,7 @@ project: Garden Management App
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-06-02
+updated: 2026-06-08
 prd_version: 1
 main_goal: market-feedback
 top_blocker: external
@@ -30,7 +30,7 @@ A garden management app that replaces paper notebooks with digital tracking for 
 | ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
 |---|---|---|---|---|---|
 | F-01 | db-schema-and-migrations | (foundation) schema for fields, plants catalog, plantings, and weather_records in place | — | FR-001, FR-002, FR-003, FR-005, FR-006, FR-007, FR-011, FR-014, FR-015 | done |
-| S-01 | imgw-weather-probe | type a city name, pick from geocoded suggestions, and see current temperature, 7-day rainfall, and last-rain date | — | FR-006, FR-008, FR-009, FR-010 | plan_reviewed |
+| S-01 | imgw-weather-probe | type a city name, pick from geocoded suggestions, and see current temperature, 7-day rainfall, and last-rain date | — | FR-006, FR-008, FR-009, FR-010 | done |
 | F-02 | nightly-weather-job-scaffold | (foundation) Vercel Cron job fetches Open-Meteo data nightly and stores records in weather_records | F-01 | FR-007 | done |
 | S-02 | field-creation | add a field with columns-and-rows layout | F-01 | FR-001, FR-002 | proposed |
 | S-05 | plant-catalog-requests | request a new plant type; admin approves and it appears in the catalog | F-01 | FR-014, FR-015 | proposed |
@@ -98,7 +98,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** none — IMGW API assessed and replaced with Open-Meteo (free, no API key, full historical REST, IMGW-sourced data for Poland)
 - **Risk:** none remaining on the weather layer; Open-Meteo endpoints are stable and confirmed to cover FR-006–FR-010.
-- **Status:** plan_reviewed
+- **Status:** done
 
 ### S-02: Field creation
 
@@ -185,3 +185,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 - **F-01: (foundation) Supabase migrations in place for `fields`, `plants` (catalog), `plantings`, and `weather_records` tables with RLS policies; all data-dependent slices can be planned and implemented.** — Archived 2026-06-02 → `context/archive/2026-05-25-db-schema-and-migrations/`. Lesson: —.
 - **F-02: (foundation) Vercel Cron function fetches Open-Meteo data for all active user coordinates nightly and writes records to `weather_records`; historical rainfall queries are now possible.** — Archived 2026-06-02 → `context/archive/2026-06-01-nightly-weather-job-scaffold/`. Lesson: —.
+- **S-01: user can type a Polish city name, pick from geocoded suggestions, and immediately see current temperature (°C), cumulative rainfall in mm for the last 7 days, and the date of last rain; chosen city persists between sessions** — Archived 2026-06-08 → `context/archive/2026-05-26-imgw-weather-probe/`. Lesson: —.

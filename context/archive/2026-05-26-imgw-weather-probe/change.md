@@ -1,10 +1,10 @@
 ---
 change_id: imgw-weather-probe
 title: "S-01: IMGW weather probe — region selection + weather display"
-status: implemented
+status: archived
 created: 2026-05-26
-updated: 2026-06-05
-archived_at: null
+updated: 2026-06-08
+archived_at: 2026-06-08T10:58:11Z
 ---
 
 ## Notes
