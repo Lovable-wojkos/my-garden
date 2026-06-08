@@ -4,6 +4,9 @@ export const prerender = false;
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { getFieldById } from "@/lib/services/fields";
+import { getPlantingsByField } from "@/lib/services/plantings";
+import { getPlants } from "@/lib/services/plants";
+import FieldGrid from "@/components/fields/FieldGrid";
 
 const { id } = Astro.params;
 
@@ -17,7 +20,11 @@ if (!id) {
   return Astro.redirect("/dashboard");
 }
 
-const { data: field, error: fieldError } = await getFieldById(supabase, id);
+const [{ data: field, error: fieldError }, { data: plantings }, { data: plants }] = await Promise.all([
+  getFieldById(supabase, id),
+  getPlantingsByField(supabase, id),
+  getPlants(supabase),
+]);
 
 if (fieldError) {
   throw new Error("Failed to load field");
@@ -25,27 +32,28 @@ if (fieldError) {
 ---
 
 <Layout title={field.name}>
-  <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
-    <div class="w-full max-w-lg rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
-      <h1 class="mb-4 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-        {field.name}
-      </h1>
-      <div class="space-y-2 text-blue-100/80">
-        <p>
-          <span class="font-semibold text-white">Size:</span>
-          {field.cols} columns × {field.rows} rows
-        </p>
+  <div class="bg-cosmic min-h-screen p-4">
+    <div class="mx-auto max-w-5xl">
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+            {field.name}
+          </h1>
+          <p class="mt-1 text-sm text-blue-100/60">
+            {field.rows} rows × {field.cols} columns
+          </p>
+        </div>
+        <a
+          href="/dashboard"
+          class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
+        >
+          ← Back to Dashboard
+        </a>
       </div>
-      <div class="mt-8 rounded-xl border border-white/10 bg-white/5 p-6 text-center">
-        <p class="text-lg font-semibold text-white">Field layout coming soon</p>
-        <p class="mt-1 text-sm text-blue-100/60">The interactive grid view will be available in a future update.</p>
+
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+        <FieldGrid client:load field={field} plantings={plantings ?? []} plants={plants ?? []} />
       </div>
-      <a
-        href="/dashboard"
-        class="mt-6 inline-block rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20"
-      >
-        ← Back to Dashboard
-      </a>
     </div>
   </div>
 </Layout>

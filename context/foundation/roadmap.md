@@ -33,7 +33,7 @@ A garden management app that replaces paper notebooks with digital tracking for 
 | F-02 | nightly-weather-job-scaffold | (foundation) Vercel Cron job fetches Open-Meteo data nightly and stores records in weather_records                | F-01             | FR-007                                                                 | done     |
 | S-02 | field-creation               | add a field with columns-and-rows layout                                                                          | F-01             | FR-001, FR-002                                                         | done     |
 | S-05 | plant-catalog-requests       | request a new plant type; admin approves and it appears in the catalog                                            | F-01             | FR-014, FR-015                                                         | proposed |
-| S-03 | planting-record              | assign plants to field cells, set seeding date, and see auto-calculated harvest date                              | F-01, S-02       | FR-003, FR-005, FR-011                                                 | proposed |
+| S-03 | planting-record              | assign plants to field cells, set seeding date, and see auto-calculated harvest date                              | F-01, S-02       | FR-003, FR-005, FR-011                                                 | done     |
 | S-04 | field-weather-view           | view full field with planting details and live weather panel (current weather + 7-day rain + last rain)           | S-01, S-03, F-02 | FR-006, FR-008, FR-009, FR-010, US-01                                  | proposed |
 
 ## Streams
@@ -134,7 +134,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Hybrid plant entry (FR-003): when a user types a free-text plant name not in the catalog, how is growth category inferred for harvest date calculation? Owner: dev. Block: no.
 - **Risk:** If the plant catalog (seeded in F-01 or added via S-05) has incomplete growth-category data, harvest date calculation (FR-011) will silently produce wrong estimates.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Field weather view (US-01 complete)
 
@@ -158,7 +158,6 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | F-02       | nightly-weather-job-scaffold | Scaffold Vercel Cron nightly Open-Meteo fetch → weather_records                                  | no                    | Depends on F-01; plan after S-01 complete                    |
 | S-02       | field-creation               | Field creation: grid layout editor (columns × rows)                                              | no                    | Depends on F-01                                              |
 | S-05       | plant-catalog-requests       | Plant catalog: user request + admin approval workflow                                            | no                    | Depends on F-01; parallel with S-02                          |
-| S-03       | planting-record              | Planting record: assign plants to cells + seeding/harvest date                                   | no                    | Depends on F-01, S-02                                        |
 | S-04       | field-weather-view           | Field view: planting details + live weather panel (US-01 complete)                               | no                    | Depends on S-01, S-03, F-02                                  |
 
 ## Open Roadmap Questions
@@ -184,3 +183,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-02: (foundation) Vercel Cron function fetches Open-Meteo data for all active user coordinates nightly and writes records to `weather_records`; historical rainfall queries are now possible.** — Archived 2026-06-02 → `context/archive/2026-06-01-nightly-weather-job-scaffold/`. Lesson: —.
 - **S-01: user can type a Polish city name, pick from geocoded suggestions, and immediately see current temperature (°C), cumulative rainfall in mm for the last 7 days, and the date of last rain; chosen city persists between sessions** — Archived 2026-06-08 → `context/archive/2026-05-26-imgw-weather-probe/`. Lesson: —.
 - **S-02: user can add a named field to their garden and define its layout using a columns-and-rows grid** — Archived 2026-06-08 → `context/archive/2026-06-01-field-creation/`. Lesson: —.
+- **S-03: user can assign plants from the catalog to field cells, set a seeding date, and see the automatically calculated expected harvest date** — Archived 2026-06-08 → `context/archive/2026-06-01-planting-record/`. Lesson: —.

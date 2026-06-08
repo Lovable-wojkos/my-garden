@@ -15,6 +15,10 @@ export async function updatePlanting(client: SupabaseClient, id: string, update:
   return client.from("plantings").update(safeUpdate).eq("id", id).select().single<PlantingRow>();
 }
 
+export async function getPlantingById(client: SupabaseClient, id: string) {
+  return client.from("plantings").select("*").eq("id", id).single<PlantingRow>();
+}
+
 export async function deletePlanting(client: SupabaseClient, id: string) {
   return client.from("plantings").delete().eq("id", id);
 }
