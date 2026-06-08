@@ -31,6 +31,7 @@ Primary persona: Home gardeners and small-scale farmers who manage their own plo
 ### Primary
 
 End-to-end flow works:
+
 1. User opens app
 2. User creates their field (draws columns and rows for MVP)
 3. User selects plants from a list
@@ -132,6 +133,7 @@ The output is watering suggestions via in-app notifications when rainfall sum is
 Authentication: Email + magic link (passwordless). No password storage.
 
 User roles:
+
 - Regular users: Gardeners/farmers who manage their own gardens and planting data
 - Administrators: Can add new plant species and manage system-wide data
 

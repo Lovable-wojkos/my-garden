@@ -68,6 +68,7 @@ Install all test dependencies, configure Vitest with virtual-module aliases and 
 **Intent**: Add Vitest and the React testing stack as devDependencies so the test runner and DOM environment are available.
 
 **Contract**: The following packages are added to `devDependencies`:
+
 - `vitest` — test runner
 - `@vitejs/plugin-react` — React JSX transform for Vitest (not `@astrojs/react`, which conflicts)
 - `@testing-library/react` — component rendering and querying API
@@ -84,6 +85,7 @@ Run `npm install` after editing to lock versions in `package-lock.json`.
 **Intent**: Expose `npm test` (watch mode) and `npm run test:run` (single-pass CI-friendly run) as standard entry points.
 
 **Contract**: Add to `scripts`:
+
 ```json
 "test": "vitest",
 "test:run": "vitest run"
@@ -96,6 +98,7 @@ Run `npm install` after editing to lock versions in `package-lock.json`.
 **Intent**: Configure Vitest with happy-dom environment, global APIs, path alias, and module aliases for Astro virtual modules. Must be separate from `astro.config.mjs` to avoid Astro integration conflicts.
 
 **Contract**: Key configuration fields:
+
 - `plugins: [react()]` from `@vitejs/plugin-react`
 - `test.environment: 'happy-dom'`
 - `test.globals: true`
@@ -114,6 +117,7 @@ Use `fileURLToPath` + `new URL(path, import.meta.url)` for all alias values (ESM
 **Intent**: Provide named exports that satisfy every import from `astro:env/server` and `astro:middleware` so that the files under test can be imported without errors.
 
 **Contract**: Must export:
+
 - `SUPABASE_URL: string` — a placeholder URL (e.g. `'http://localhost:54321'`)
 - `SUPABASE_ANON_KEY: string` — a placeholder JWT string
 - `defineMiddleware: (fn: unknown) => unknown` — identity/passthrough function (Astro's real implementation does the same; it is purely a type helper)
@@ -127,6 +131,7 @@ Individual test files that need different env values (e.g. to simulate missing c
 **Intent**: Run once before the test suite starts: import jest-dom custom matchers and register `@testing-library/react` cleanup after each test.
 
 **Contract**: Two side-effect imports:
+
 - `import '@testing-library/jest-dom'` — augments Vitest's `expect` with DOM matchers
 - `afterEach` calling `cleanup()` from `@testing-library/react` — prevents DOM leaks between tests
 
@@ -169,6 +174,7 @@ Write pure TypeScript unit tests for the auth middleware and three API route han
 **Intent**: Verify that an unauthenticated request to `/dashboard` is redirected to `/auth/signin`. This is the only middleware branch in scope.
 
 **Contract**: Mock setup:
+
 - `vi.mock('@/lib/supabase')` — then `vi.mocked(createClient).mockReturnValue(mockSupabaseClient)` where `mockSupabaseClient.auth.getUser` resolves to `{ data: { user: null } }`
 - Construct a fake Astro middleware context with `url: new URL('http://localhost/dashboard')`, `request`, `cookies: {}`, `locals: {}`, and `redirect: vi.fn()`
 - Import and call `onRequest` from `@/middleware` directly (it is the raw handler — `defineMiddleware` is mocked as a passthrough in `astro-virtual.ts`)
@@ -183,6 +189,7 @@ Write pure TypeScript unit tests for the auth middleware and three API route han
 **Contract**: Helper: build a minimal Astro-like `APIContext` with `request` (a `POST Request` with a `FormData` body containing `email` and `password`), `cookies` (object with `set` spy), and `redirect` (a `vi.fn()` returning a `Response`).
 
 Two test cases:
+
 1. `createClient` returns `null` → assert `context.redirect` called with a URL matching `/auth/signin?error=`
 2. `createClient` returns a mock client whose `auth.signInWithPassword` resolves to `{ error: { message: 'Invalid login credentials' } }` → assert `context.redirect` called with URL containing the encoded message
 
@@ -195,6 +202,7 @@ Use `vi.mock('@/lib/supabase')` + `vi.mocked(createClient).mockReturnValue(...)`
 **Intent**: Mirror the signin test structure for the signup handler's two error branches.
 
 **Contract**: Same helper pattern. Two test cases:
+
 1. `createClient` returns `null` → redirect to `/auth/signup?error=`
 2. `createClient` returns mock client whose `auth.signUp` resolves with error → redirect to `/auth/signup?error=<encoded message>`
 
@@ -238,6 +246,7 @@ Write `@testing-library/react` tests for the two auth form components, covering 
 **Contract**: Each test uses `render(<SignInForm />)`, then submits the form via `fireEvent.submit` on the `<form>` element (or click the submit button), and queries for the error `<p>` text using `screen.getByText`.
 
 Three test cases:
+
 1. Submit with both fields empty → `'Email is required'` and `'Password is required'` visible
 2. Type an invalid email (e.g. `'notavalid'`), leave password empty, submit → `'Enter a valid email address'` visible
 3. Type a valid email, leave password empty, submit → `'Password is required'` visible; no email error
@@ -251,6 +260,7 @@ No mocking needed — the form never reaches the network in these tests (invalid
 **Intent**: Cover the boundary and mismatch cases in `SignUpForm.validate()`: invalid email format, password shorter than 6 characters, and mismatched confirm password.
 
 **Contract**: Same render-and-submit pattern. Four test cases:
+
 1. Type invalid email, leave other fields empty, submit → `'Enter a valid email address'` visible
 2. Type valid email + 5-character password, submit → `'Password must be at least 6 characters'` visible
 3. Type valid email + 6-character password + different confirm, submit → `'Passwords do not match'` visible

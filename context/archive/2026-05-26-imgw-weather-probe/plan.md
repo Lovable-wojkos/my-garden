@@ -70,6 +70,7 @@ Add a `user_preferences` table so the user's chosen city and its geocoded coordi
 **Intent**: Create `user_preferences` table keyed on `user_id` (one row per user) storing the preferred city display name, latitude, and longitude. Enable RLS with per-user SELECT/INSERT/UPDATE/DELETE policies.
 
 **Contract**:
+
 ```
 user_preferences
   user_id       uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE
@@ -78,6 +79,7 @@ user_preferences
   longitude     numeric(9,6) NOT NULL
   updated_at    timestamptz DEFAULT now()
 ```
+
 RLS: SELECT/INSERT/UPDATE/DELETE all scoped to `user_id = auth.uid()`. No admin override needed.
 
 #### 2. TypeScript types
@@ -133,24 +135,24 @@ Build a server-side service module that wraps Open-Meteo's geocoding and forecas
 ```ts
 // Geocoding
 export interface GeocodingResult {
-  name: string;           // city name
-  displayName: string;    // "Kraków, Małopolskie, Polska"
+  name: string; // city name
+  displayName: string; // "Kraków, Małopolskie, Polska"
   latitude: number;
   longitude: number;
   country_code: string;
 }
-export async function geocodeCity(city: string): Promise<GeocodingResult[]>
+export async function geocodeCity(city: string): Promise<GeocodingResult[]>;
 // Calls: https://geocoding-api.open-meteo.com/v1/search?name={city}&count=5&language=pl&format=json
 // Returns up to 5 results; throws on network error; returns [] on no match.
 
 // Weather
 export interface WeatherData {
-  temperatureC: number;        // current temperature
-  rainfall7dMm: number;        // sum of daily precipitation over last 7 days
+  temperatureC: number; // current temperature
+  rainfall7dMm: number; // sum of daily precipitation over last 7 days
   lastRainDate: string | null; // ISO date of most recent day with precipitation > 0, or null
-  fetchedAt: string;           // ISO timestamp of this fetch
+  fetchedAt: string; // ISO timestamp of this fetch
 }
-export async function getWeather(lat: number, lng: number): Promise<WeatherData>
+export async function getWeather(lat: number, lng: number): Promise<WeatherData>;
 // Calls: https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lng}
 //        &current=temperature_2m,precipitation&daily=precipitation_sum
 //        &past_days=7&timezone=auto&format=json
@@ -259,6 +261,7 @@ This creates `src/components/ui/card.tsx`, `src/components/ui/input.tsx`, and `s
 **Intent**: React island component that manages city search, suggestion display, weather fetch, 30-min refresh interval, and stale data display. Receives `initialCity` (from server-side preferences load) as a prop so the first render can immediately fetch weather without a loading state.
 
 **Contract**:
+
 ```ts
 interface WeatherWidgetProps {
   initialCity?: {
@@ -267,8 +270,9 @@ interface WeatherWidgetProps {
     longitude: number;
   } | null;
 }
-export default function WeatherWidget({ initialCity }: WeatherWidgetProps)
+export default function WeatherWidget({ initialCity }: WeatherWidgetProps);
 ```
+
 Internal state: `{ city, suggestions, weather: WeatherData | null, stale: boolean, loading, error }`. On mount, if `initialCity` is present, immediately call `GET /api/weather?lat=&lng=` and set weather state. Search input calls `GET /api/geocoding-suggestions?q=` (see item 2) on debounce (300ms). On suggestion select: save preference via `POST /api/user-preferences`, then fetch weather. Refresh interval: `setInterval` every 30 minutes — on failure, keep previous `weather` and set `stale: true`. Display: card with city name, temperature (°C), 7-day rainfall (mm), last rain date; stale badge shows "dane z HH:MM" when `stale`.
 
 **Interval & visibility hygiene** (mandatory):
@@ -303,13 +307,9 @@ import { getUserPreferences } from "@/lib/services/user-preferences";
 
 const { user } = Astro.locals;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
-const { data: prefs } = user && supabase
-  ? await getUserPreferences(supabase, user.id)
-  : { data: null };
+const { data: prefs } = user && supabase ? await getUserPreferences(supabase, user.id) : { data: null };
 
-const initialCity = prefs
-  ? { cityName: prefs.city_name, latitude: prefs.latitude, longitude: prefs.longitude }
-  : null;
+const initialCity = prefs ? { cityName: prefs.city_name, latitude: prefs.latitude, longitude: prefs.longitude } : null;
 ```
 
 Then render `<WeatherWidget initialCity={initialCity} client:load />`. The `client:load` directive makes it a React island that hydrates immediately on page load.

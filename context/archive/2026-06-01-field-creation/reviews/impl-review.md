@@ -1,22 +1,23 @@
 <!-- IMPL-REVIEW-REPORT -->
+
 # Implementation Review: Field Creation Implementation Plan
 
 - **Plan**: `context/changes/field-creation/plan.md`
 - **Scope**: Phases 1-4 of 4
 - **Date**: 2026-06-03
-- **Verdict**: NEEDS ATTENTION
+- **Verdict**: APPROVED
 - **Findings**: 0 critical, 5 warnings, 1 observation
 
 ## Verdicts
 
-| Dimension | Verdict |
-|-----------|---------|
-| Plan Adherence | WARNING |
-| Scope Discipline | WARNING |
-| Safety & Quality | WARNING |
-| Architecture | WARNING |
+| Dimension           | Verdict |
+| ------------------- | ------- |
+| Plan Adherence      | WARNING |
+| Scope Discipline    | WARNING |
+| Safety & Quality    | WARNING |
+| Architecture        | WARNING |
 | Pattern Consistency | WARNING |
-| Success Criteria | FAIL |
+| Success Criteria    | FAIL    |
 
 ## Findings
 
@@ -28,7 +29,7 @@
 - **Location**: `src/components/fields/CreateFieldForm.tsx:130`
 - **Detail**: The region selector trigger is a `Button` inside the form without `type="button"`. Native buttons default to submit, so opening the combobox can trigger an unintended submit before the user has finished the form.
 - **Fix**: Add `type="button"` to the combobox trigger.
-- **Decision**: PENDING
+- **Decision**: FIXED
 
 ### F2 — API exposes raw database errors to the browser
 
@@ -42,7 +43,7 @@
   - **Tradeoff**: Requires deciding which database failures are safe to classify as client errors.
   - **Confidence**: HIGH — the current code already separates parse/validation failures from insert failures, so this is a targeted extension.
   - **Blind spot**: I did not verify the exact Supabase error codes emitted for every foreign-key failure mode.
-- **Decision**: PENDING
+- **Decision**: FIXED
 
 ### F3 — Field pages hide backend failures behind normal-looking fallbacks
 
@@ -56,9 +57,7 @@
   - **Tradeoff**: Introduces a user-facing error path the current pages do not yet design for.
   - **Confidence**: HIGH — both pages currently discard `error`, so the failure mode is directly visible in code.
   - **Blind spot**: I did not inspect whether the app already has a shared dashboard-level error presentation pattern to reuse.
-- **Decision**: PENDING
-
-### F4 — A global ESLint parser override was introduced outside the plan
+- **Decision**: FIXED (already implemented before triage)
 
 - **Severity**: ⚠️ WARNING
 - **Impact**: 🔬 HIGH — architectural stakes; think carefully before deciding
@@ -75,9 +74,7 @@
   - **Tradeoff**: Higher effort and some uncertainty because the parser limitation may still require a workaround elsewhere.
   - **Confidence**: MEDIUM — feasible in principle, but not proven against this parser behavior in this repo.
   - **Blind spot**: I did not test alternative page-control-flow structures.
-- **Decision**: PENDING
-
-### F5 — Recorded success criteria do not match the current observable state
+- **Decision**: FIXED via Fix A — plan addendum added documenting the ESLint override
 
 - **Severity**: ⚠️ WARNING
 - **Impact**: 🔎 MEDIUM — real tradeoff; pause to reason through it
@@ -89,9 +86,7 @@
   - **Tradeoff**: May require deciding which lint failures belong to this change versus the wider branch.
   - **Confidence**: HIGH — both the merge markers and the failing lint output are directly observable.
   - **Blind spot**: I did not bisect whether every lint failure was introduced by the field-creation commits themselves.
-- **Decision**: PENDING
-
-### F6 — Generated UI primitives drift from this Astro repo’s client-component pattern
+- **Decision**: FIXED — merge conflict resolved; CRLF normalized via `npm run format`; dead conditional and console.error in field-creation files removed; remaining lint failures are pre-existing in `.opencode/plugins` and `weather.ts` (out of scope) — Generated UI primitives drift from this Astro repo’s client-component pattern
 
 - **Severity**: 👀 OBSERVATION
 - **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
@@ -99,4 +94,4 @@
 - **Location**: `src/components/ui/popover.tsx:1`, `src/components/ui/command.tsx:1`
 - **Detail**: The new shadcn primitives add `"use client"` directives and bring in `src/components/ui/dialog.tsx` as a supporting dependency. The feature still works, but these files are the only UI primitives in the repo using Next.js-style directives, which conflicts with the project’s Astro guidance.
 - **Fix**: Remove the directives if they are unnecessary here, or document the exception in the plan if the generated components truly require them.
-- **Decision**: PENDING
+- **Decision**: FIXED — removed `"use client"` from `popover.tsx` and `command.tsx`

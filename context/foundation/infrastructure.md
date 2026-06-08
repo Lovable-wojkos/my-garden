@@ -29,30 +29,37 @@ This decision is based on the tech stack selection (`context/foundation/tech-sta
 ## Operational Story
 
 ### Preview
+
 - Automatic preview deployments on every pull request
 - Preview URLs shareable for testing before production
 - Branch-specific deployments for feature testing
 
 ### Secrets
+
 Server-only environment variables (never exposed to client):
+
 - `SUPABASE_URL` — Supabase project URL
 - `SUPABASE_ANON_KEY` — Supabase service role key (server-side)
 
 Configure via:
+
 1. Vercel dashboard: Project Settings → Environment Variables
 2. CLI: `npx vercel env add SUPABASE_URL`
 
 ### Rollback
+
 - One-click rollback via Vercel dashboard (Deployments tab)
 - Instant reversion to previous production deployments
 - Deployment history retained for 90 days on free tier
 
 ### Approval
+
 - GitHub branch protection rules require PR review before merge
 - Manual deployment approval can be enabled if needed
 - Preview deployments require no approval
 
 ### Logs
+
 - Real-time build logs in Vercel dashboard
 - Function execution logs via Vercel Analytics (free tier limited)
 - Serverless function logs available in dashboard
@@ -68,12 +75,12 @@ Vercel automatically detects Astro configuration and applies appropriate build s
 
 ## Risk Register
 
-| Risk | Severity | Mitigation |
-|------|----------|------------|
-| Supabase secrets exposed via client code | High | Use `astro:env` for server-only secrets; never import in client components |
-| Build fails due to missing env vars | Medium | Configure all required env vars in Vercel before first deployment |
-| Background jobs timeout (weather pulls) | Low | Use Vercel Cron Jobs or external worker service for long-running tasks |
-| Free tier limits exceeded | Low | Monitor usage; upgrade to Pro tier if limits approached |
+| Risk                                     | Severity | Mitigation                                                                 |
+| ---------------------------------------- | -------- | -------------------------------------------------------------------------- |
+| Supabase secrets exposed via client code | High     | Use `astro:env` for server-only secrets; never import in client components |
+| Build fails due to missing env vars      | Medium   | Configure all required env vars in Vercel before first deployment          |
+| Background jobs timeout (weather pulls)  | Low      | Use Vercel Cron Jobs or external worker service for long-running tasks     |
+| Free tier limits exceeded                | Low      | Monitor usage; upgrade to Pro tier if limits approached                    |
 
 ## Deployment Checklist
 

@@ -16,22 +16,23 @@ A cron job runs nightly (midnight UTC), queries `user_preferences` for all uniqu
 
 ## Key Decisions Made
 
-| Decision | Choice | Why | Source |
-|---|---|---|---|
-| Open-Meteo service ownership | F-02 creates the shared service | S-01 is plan-reviewed but unimplemented; F-02 creates `open-meteo.ts` with `getWeather` (for S-01 widget) + `getDailyWeather` (for cron) + `geocodeCity` (for S-01), unblocking both | Plan |
-| Weather storage granularity | Extend `weather_records` with lat/lng columns | Aligns with S-01 coordinate precision; single table for both region and coordinate data | Plan |
-| Runtime | Vercel Cron Jobs | Native to stack, uses existing `@astrojs/vercel` adapter, no new infra | Plan |
-| Auth for cron endpoint | `x-vercel-cron` header check only | No extra secrets; Vercel adds the header automatically on cron-triggered requests | Plan |
-| Fetch targets | Only `user_preferences` coordinates | No region centroid fallback; fetches only what real users need | Plan |
-| Middleware | Exclude `/api/cron` from `PROTECTED_ROUTES` | Cron route authenticates itself via the Vercel cron header | Plan |
-| Error handling | Log per-location, continue | Simplest approach; no alerting in MVP scope | Plan |
-| Backfill | Fetch 7 `past_days` on every run | Open-Meteo returns past 7 days naturally; upsert handles dedup — no separate first-run logic | Plan |
-| Phase structure | 3 phases: schema, service, cron | Each phase independently testable; clean separation of concerns | Plan |
-| Route path | `POST /api/cron/weather` | Dedicated cron directory; extensible for future cron jobs | Plan |
+| Decision                     | Choice                                        | Why                                                                                                                                                                                  | Source |
+| ---------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| Open-Meteo service ownership | F-02 creates the shared service               | S-01 is plan-reviewed but unimplemented; F-02 creates `open-meteo.ts` with `getWeather` (for S-01 widget) + `getDailyWeather` (for cron) + `geocodeCity` (for S-01), unblocking both | Plan   |
+| Weather storage granularity  | Extend `weather_records` with lat/lng columns | Aligns with S-01 coordinate precision; single table for both region and coordinate data                                                                                              | Plan   |
+| Runtime                      | Vercel Cron Jobs                              | Native to stack, uses existing `@astrojs/vercel` adapter, no new infra                                                                                                               | Plan   |
+| Auth for cron endpoint       | `x-vercel-cron` header check only             | No extra secrets; Vercel adds the header automatically on cron-triggered requests                                                                                                    | Plan   |
+| Fetch targets                | Only `user_preferences` coordinates           | No region centroid fallback; fetches only what real users need                                                                                                                       | Plan   |
+| Middleware                   | Exclude `/api/cron` from `PROTECTED_ROUTES`   | Cron route authenticates itself via the Vercel cron header                                                                                                                           | Plan   |
+| Error handling               | Log per-location, continue                    | Simplest approach; no alerting in MVP scope                                                                                                                                          | Plan   |
+| Backfill                     | Fetch 7 `past_days` on every run              | Open-Meteo returns past 7 days naturally; upsert handles dedup — no separate first-run logic                                                                                         | Plan   |
+| Phase structure              | 3 phases: schema, service, cron               | Each phase independently testable; clean separation of concerns                                                                                                                      | Plan   |
+| Route path                   | `POST /api/cron/weather`                      | Dedicated cron directory; extensible for future cron jobs                                                                                                                            | Plan   |
 
 ## Scope
 
 **In scope:**
+
 - Migration: add lat/lng to `weather_records`, make `region_id` nullable, coordinate dedup index
 - Update TypeScript types and `weather.ts` helpers for coordinate queries
 - Create `src/lib/services/open-meteo.ts` (shared service: `getWeather`, `getDailyWeather`, `geocodeCity`)
@@ -42,6 +43,7 @@ A cron job runs nightly (midnight UTC), queries `user_preferences` for all uniqu
 - Add middleware comment excluding `/api/cron`
 
 **Out of scope:**
+
 - S-01 implementation (weather widget UI, API routes, user_preferences table — those are separate)
 - Region-based fallback fetching
 - Alerting or monitoring on cron failure
@@ -54,11 +56,11 @@ Three-tier: (1) **Schema** — extend `weather_records` with coordinate columns 
 
 ## Phases at a Glance
 
-| Phase | What it delivers | Key risk |
-|---|---|---|
-| 1. Schema Migration | lat/lng columns, nullable region_id, coordinate dedup index, updated types + helpers | Existing region-based rows unaffected; no data migration needed |
-| 2. Open-Meteo Service | Shared `open-meteo.ts` with `getWeather`, `getDailyWeather`, `geocodeCity` | Open-Meteo response shape changes (unlikely but unversioned) |
-| 3. Cron Job | `vercel.json` + cron route + service-role client + env vars | `SUPABASE_SERVICE_ROLE_KEY` must be configured in Vercel before deploy; cron testable only on deployment |
+| Phase                 | What it delivers                                                                     | Key risk                                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| 1. Schema Migration   | lat/lng columns, nullable region_id, coordinate dedup index, updated types + helpers | Existing region-based rows unaffected; no data migration needed                                          |
+| 2. Open-Meteo Service | Shared `open-meteo.ts` with `getWeather`, `getDailyWeather`, `geocodeCity`           | Open-Meteo response shape changes (unlikely but unversioned)                                             |
+| 3. Cron Job           | `vercel.json` + cron route + service-role client + env vars                          | `SUPABASE_SERVICE_ROLE_KEY` must be configured in Vercel before deploy; cron testable only on deployment |
 
 **Prerequisites:** F-01 deployed (done); S-01 plan reviewed (service contract settled)
 **Estimated effort:** ~2 sessions across 3 phases

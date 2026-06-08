@@ -16,19 +16,20 @@ Three auth API route handlers (`signin`, `signup`, `signout`), an auth middlewar
 
 ## Key Decisions Made
 
-| Decision | Choice | Why (1 sentence) |
-|---|---|---|
-| Test framework | Vitest | Astro 6 uses Vite internally — Vitest reuses Vite's transform pipeline with zero extra config. |
-| DOM environment | happy-dom | 3–5× faster than jsdom; sufficient for form validation and DOM querying. |
-| React testing layer | @testing-library/react + userEvent | Standard ecosystem choice; tests behaviour through the DOM, not implementation details. |
-| Virtual module mocking | `resolve.alias` in `vitest.config.ts` | `vi.mock()` cannot intercept Astro virtual modules reliably; a shared alias mock file is more stable. |
-| Separate vitest.config.ts | Yes (not extending astro.config.mjs) | `@astrojs/react` and `@vitejs/plugin-react` conflict when the same Vite config is shared. |
-| API route test scope | Error branches only (no happy path) | Auth success paths require real Supabase sessions; error branches are fully unit-testable. |
-| CI integration | Out of scope | Left as a follow-up change to keep this change focused on the test suite itself. |
+| Decision                  | Choice                                | Why (1 sentence)                                                                                      |
+| ------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Test framework            | Vitest                                | Astro 6 uses Vite internally — Vitest reuses Vite's transform pipeline with zero extra config.        |
+| DOM environment           | happy-dom                             | 3–5× faster than jsdom; sufficient for form validation and DOM querying.                              |
+| React testing layer       | @testing-library/react + userEvent    | Standard ecosystem choice; tests behaviour through the DOM, not implementation details.               |
+| Virtual module mocking    | `resolve.alias` in `vitest.config.ts` | `vi.mock()` cannot intercept Astro virtual modules reliably; a shared alias mock file is more stable. |
+| Separate vitest.config.ts | Yes (not extending astro.config.mjs)  | `@astrojs/react` and `@vitejs/plugin-react` conflict when the same Vite config is shared.             |
+| API route test scope      | Error branches only (no happy path)   | Auth success paths require real Supabase sessions; error branches are fully unit-testable.            |
+| CI integration            | Out of scope                          | Left as a follow-up change to keep this change focused on the test suite itself.                      |
 
 ## Scope
 
 **In scope:**
+
 - Vitest + @testing-library/react installation and configuration
 - Virtual module mock (`astro:env/server`, `astro:middleware`)
 - Middleware: unauthenticated redirect to `/dashboard`
@@ -36,6 +37,7 @@ Three auth API route handlers (`signin`, `signup`, `signout`), an auth middlewar
 - React forms: validation error cases for `SignInForm` and `SignUpForm`
 
 **Out of scope:**
+
 - Happy-path API route tests (Supabase success flows)
 - Authenticated-user middleware branch
 - `cn()` utility, `configStatuses`, Astro page components
@@ -48,11 +50,11 @@ A separate `vitest.config.ts` (root) uses `@vitejs/plugin-react`, `happy-dom`, a
 
 ## Phases at a Glance
 
-| Phase | What it delivers | Key risk |
-|---|---|---|
-| 1. Test Infrastructure | Vitest configured, `npm test` works, virtual module aliases resolve | `@vitejs/plugin-react` version mismatch with React 19 |
-| 2. Server-side Unit Tests | 6 test cases covering middleware + API route error branches | Astro `APIContext` mock shape may diverge from real type |
-| 3. React Component Tests | 7 test cases covering form validation edge cases | `useFormStatus` (React 19) behaves differently in happy-dom |
+| Phase                     | What it delivers                                                    | Key risk                                                    |
+| ------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------- |
+| 1. Test Infrastructure    | Vitest configured, `npm test` works, virtual module aliases resolve | `@vitejs/plugin-react` version mismatch with React 19       |
+| 2. Server-side Unit Tests | 6 test cases covering middleware + API route error branches         | Astro `APIContext` mock shape may diverge from real type    |
+| 3. React Component Tests  | 7 test cases covering form validation edge cases                    | `useFormStatus` (React 19) behaves differently in happy-dom |
 
 **Prerequisites:** Node.js v22.14.0 (see `.nvmrc`); no Supabase credentials required (all mocked)
 **Estimated effort:** ~1 session across 3 phases

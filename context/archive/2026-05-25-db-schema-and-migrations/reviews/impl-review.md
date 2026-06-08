@@ -1,22 +1,23 @@
 <!-- IMPL-REVIEW-REPORT -->
+
 # Implementation Review: Database Schema and Migrations
 
 - **Plan**: context/changes/db-schema-and-migrations/plan.md
 - **Scope**: All Phases (1–3 of 3)
 - **Date**: 2026-05-26
 - **Verdict**: REJECTED → APPROVED after triage fixes
-- **Findings**: 2 critical  5 warnings  3 observations
+- **Findings**: 2 critical 5 warnings 3 observations
 
 ## Verdicts
 
-| Dimension | Verdict |
-|-----------|---------|
-| Plan Adherence | WARNING |
-| Scope Discipline | WARNING |
-| Safety & Quality | FAIL |
-| Architecture | PASS |
-| Pattern Consistency | FAIL |
-| Success Criteria | FAIL |
+| Dimension           | Verdict |
+| ------------------- | ------- |
+| Plan Adherence      | WARNING |
+| Scope Discipline    | WARNING |
+| Safety & Quality    | FAIL    |
+| Architecture        | PASS    |
+| Pattern Consistency | FAIL    |
+| Success Criteria    | FAIL    |
 
 ## Findings
 
@@ -25,7 +26,7 @@
 - **Severity**: ❌ CRITICAL
 - **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
 - **Dimension**: Success Criteria / Pattern Consistency
-- **Location**: src/types.ts, src/lib/services/*.ts, src/lib/supabase.ts, src/lib/config-status.ts, astro.config.mjs
+- **Location**: src/types.ts, src/lib/services/\*.ts, src/lib/supabase.ts, src/lib/config-status.ts, astro.config.mjs
 - **Detail**: 332 lint errors. 331 CRLF line endings on all new files (Windows \\r\\n). One TS error: supabase.ts:9 `@typescript-eslint/no-unsafe-argument` — astro:env types not yet generated via `astro sync`.
 - **Fix**: Run `npm run lint:fix` to clear 330 CRLF errors; run `npx astro sync` to generate astro:env types; use local variables to enable TS narrowing past the null guard.
 - **Decision**: FIXED via Fix A — lint:fix run, astro sync run, supabase.ts refactored to use local vars for TS narrowing.

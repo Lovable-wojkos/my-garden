@@ -55,6 +55,7 @@ Extend `weather_records` with latitude/longitude columns, make `region_id` nulla
 **Intent**: Add `latitude numeric(9,6)` and `longitude numeric(9,6)` columns to `weather_records`. Alter `region_id` to be nullable (coordinate-based rows don't reference a region). Add a unique partial index on `(latitude, longitude, recorded_at)` for coordinate-based dedup. The existing `region_id`-based unique index stays for rows that still use region references.
 
 **Contract**:
+
 ```sql
 ALTER TABLE weather_records ALTER COLUMN region_id DROP NOT NULL;
 ALTER TABLE weather_records ADD COLUMN latitude numeric(9,6);
@@ -72,6 +73,7 @@ CREATE UNIQUE INDEX idx_weather_records_coord_recorded
 **Intent**: Update `WeatherRecordRow`, `WeatherRecordInsert`, `WeatherRecordUpdate` to include optional `latitude: number | null` and `longitude: number | null`. Make `region_id` optional across all three types to reflect the nullable schema.
 
 **Contract**:
+
 ```ts
 export interface WeatherRecordRow {
   id: string;
@@ -93,19 +95,16 @@ export interface WeatherRecordRow {
 **Intent**: Add two read helpers that query by coordinates instead of region: `getRainfallLast7DaysByCoords(client, lat, lng)` and `getLastRainDateByCoords(client, lat, lng)`. Keep the existing region-based helpers. Both new helpers filter by `latitude` and `longitude` columns with fuzzy matching (cast to `numeric(9,6)` equality since user_preferences stores at same precision).
 
 **Contract**:
+
 ```ts
 export async function getRainfallLast7DaysByCoords(
   client: SupabaseClient,
   latitude: number,
   longitude: number,
-): Promise<{ data: number | null; error: unknown }>
+): Promise<{ data: number | null; error: unknown }>;
 // Same logic as getRainfallLast7Days but filters by lat/lng instead of region_id
 
-export async function getLastRainDateByCoords(
-  client: SupabaseClient,
-  latitude: number,
-  longitude: number,
-)
+export async function getLastRainDateByCoords(client: SupabaseClient, latitude: number, longitude: number);
 // Same logic as getLastRainDate but filters by lat/lng instead of region_id
 ```
 
@@ -149,12 +148,12 @@ Create the shared `src/lib/services/open-meteo.ts` with two exported functions: 
 // Geocoding (for S-01 — included here to unblock the dependency)
 export interface GeocodingResult {
   name: string;
-  displayName: string;   // "Kraków, Małopolskie, Polska"
+  displayName: string; // "Kraków, Małopolskie, Polska"
   latitude: number;
   longitude: number;
   country_code: string;
 }
-export async function geocodeCity(city: string): Promise<GeocodingResult[]>
+export async function geocodeCity(city: string): Promise<GeocodingResult[]>;
 // Calls Open-Meteo geocoding API; returns []; throws on network error.
 
 // Aggregate weather (for S-01 widget)
@@ -164,18 +163,18 @@ export interface WeatherData {
   lastRainDate: string | null;
   fetchedAt: string;
 }
-export async function getWeather(lat: number, lng: number): Promise<WeatherData>
+export async function getWeather(lat: number, lng: number): Promise<WeatherData>;
 // Calls Open-Meteo forecast API with past_days=7.
 // rainfall7dMm and lastRainDate computed only from indices where
 // daily.time[i] < today in the response timezone — never includes forecast.
 
 // Daily records (for F-02 cron job)
 export interface DailyWeatherRecord {
-  date: string;           // ISO date string (YYYY-MM-DD)
+  date: string; // ISO date string (YYYY-MM-DD)
   temperatureC: number | null;
   rainfallMm: number | null;
 }
-export async function getDailyWeather(lat: number, lng: number): Promise<DailyWeatherRecord[]>
+export async function getDailyWeather(lat: number, lng: number): Promise<DailyWeatherRecord[]>;
 // Calls same Open-Meteo endpoint as getWeather but returns the raw daily
 // breakdown instead of aggregates. Returns exactly past_days=7 records
 // (indices where daily.time[i] < today). One record per day.
@@ -220,6 +219,7 @@ Wire the full cron pipeline: service-role Supabase client, the cron API route, V
 **Intent**: Add a second export `createServiceRoleClient()` that creates a Supabase client using `SUPABASE_SERVICE_ROLE_KEY` instead of `SUPABASE_ANON_KEY`. This client bypasses RLS and is used only by the cron route. It is never imported in page components or user-facing API routes.
 
 **Contract**:
+
 ```ts
 import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from "astro:env/server";
 // Extend the existing createClient factory or add a sibling.
@@ -234,12 +234,13 @@ import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from "astro:env/server";
 **Intent**: Add `SUPABASE_SERVICE_ROLE_KEY` to the `env.schema` as a server-only secret. Follows the existing pattern for `SUPABASE_URL`/`SUPABASE_ANON_KEY`.
 
 **Contract**:
+
 ```js
 SUPABASE_SERVICE_ROLE_KEY: envField.string({
   context: "server",
   access: "secret",
   optional: true,
-})
+});
 ```
 
 #### 3. Cron API route
@@ -247,10 +248,11 @@ SUPABASE_SERVICE_ROLE_KEY: envField.string({
 **File**: `src/pages/api/cron/weather.ts`
 
 **Intent**: `GET /api/cron/weather` is called by Vercel Cron nightly. It:
+
 1. Validates the `x-vercel-cron` header (rejects with 401 if absent)
 2. Creates a service-role Supabase client (rejects with 500 if missing env var)
 3. Queries `user_preferences` for all distinct `(latitude, longitude)` pairs
-4. For each coordinate, calls `getDailyWeather(lat, lng)` 
+4. For each coordinate, calls `getDailyWeather(lat, lng)`
 5. For each `DailyWeatherRecord` in the result, upserts into `weather_records`:
    - Sets `latitude`, `longitude`, `recorded_at` to the date at midnight UTC
    - Sets `temperature_c` and `rainfall_mm` from the daily record
@@ -262,6 +264,7 @@ SUPABASE_SERVICE_ROLE_KEY: envField.string({
 **Backfill logic**: The Open-Meteo `past_days=7` parameter returns the last 7 days on every call. The cron always fetches all 7 days and upserts them into `weather_records`. The upsert naturally handles backfill (if no rows exist for this coordinate, all 7 are inserted) and subsequent runs (duplicates are silently merged). No separate "is first run" check needed.
 
 **Contract**:
+
 ```ts
 export const prerender = false;
 export async function GET(context: APIContext): Promise<Response> {
@@ -283,6 +286,7 @@ export async function GET(context: APIContext): Promise<Response> {
 **Intent**: Configure a nightly cron job that calls `GET /api/cron/weather` at midnight UTC.
 
 **Contract**:
+
 ```json
 {
   "crons": [
@@ -303,6 +307,7 @@ export async function GET(context: APIContext): Promise<Response> {
 **Intent**: Do NOT add `/api/cron` to `PROTECTED_ROUTES` — the cron endpoint handles its own auth via `x-vercel-cron` header. No code change needed; the exclusion is implicit. Document this in a comment above `PROTECTED_ROUTES` for clarity.
 
 **Contract**:
+
 ```ts
 // PROTECTED_ROUTES: user-facing paths that require auth.
 // /api/cron/* routes authenticate via x-vercel-cron header, NOT middleware — do not add them here.

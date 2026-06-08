@@ -1,4 +1,5 @@
 <!-- PLAN-REVIEW-REPORT -->
+
 # Plan Review: Nightly Weather Job Scaffold Implementation Plan
 
 - **Plan**: context/changes/nightly-weather-job-scaffold/plan.md
@@ -9,15 +10,16 @@
 
 ## Verdicts
 
-| Dimension | Verdict |
-|-----------|---------|
-| End-State Alignment | PASS |
-| Lean Execution | PASS |
-| Architectural Fitness | PASS |
-| Blind Spots | FAIL |
-| Plan Completeness | FAIL |
+| Dimension             | Verdict |
+| --------------------- | ------- |
+| End-State Alignment   | PASS    |
+| Lean Execution        | PASS    |
+| Architectural Fitness | PASS    |
+| Blind Spots           | FAIL    |
+| Plan Completeness     | FAIL    |
 
 ## Grounding
+
 Grounding: 4/4 paths ✓, brief↔plan ✓
 
 ## Findings

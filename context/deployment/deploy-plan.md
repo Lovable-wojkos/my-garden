@@ -40,12 +40,14 @@ vercel
 ```
 
 Follow prompts:
+
 - Link to existing project? No
 - Project name: garden-management-app (or custom)
 - Directory: ./ (current directory)
 - Override settings? No
 
 Vercel will auto-detect:
+
 - Framework: Astro
 - Build command: `npm run build`
 - Output directory: `dist/`
@@ -77,6 +79,7 @@ vercel env add SUPABASE_ANON_KEY
 Vercel should auto-detect from `.nvmrc`, but verify:
 
 **Via CLI:**
+
 ```bash
 vercel env add NODE_VERSION
 # Enter: 22.14.0
@@ -84,6 +87,7 @@ vercel env add NODE_VERSION
 ```
 
 **Or via Vercel Dashboard:**
+
 - Project Settings → General → Node.js Version: 22.14.0
 
 ### Step 5: Deploy to Production
@@ -93,6 +97,7 @@ vercel --prod
 ```
 
 This will:
+
 - Build the project with `npm run build`
 - Deploy to Vercel edge network
 - Provide production URL (e.g., https://garden-management-app.vercel.app)
@@ -109,6 +114,7 @@ This will:
 ### 1. Build Verification
 
 After deployment, verify the build succeeded:
+
 - Check Vercel dashboard for green checkmark
 - Review build logs for any errors
 - Ensure no missing environment variables
@@ -116,6 +122,7 @@ After deployment, verify the build succeeded:
 ### 2. Runtime Verification
 
 Test the deployed application:
+
 - Visit production URL
 - Test authentication flow (magic link login)
 - Verify Supabase connection works
@@ -124,6 +131,7 @@ Test the deployed application:
 ### 3. Environment Variable Verification
 
 Ensure secrets are not exposed to client:
+
 - Open browser DevTools → Network tab
 - Check that SUPABASE_ANON_KEY is not in any client-side bundle
 - Verify server-side requests use the service role key
@@ -131,6 +139,7 @@ Ensure secrets are not exposed to client:
 ### 4. Preview Deployment Verification
 
 If GitHub integration enabled:
+
 - Create a test branch
 - Push a small change
 - Verify preview deployment URL is generated
@@ -141,11 +150,13 @@ If GitHub integration enabled:
 If deployment fails or issues are discovered:
 
 **Via Vercel Dashboard:**
+
 1. Go to Deployments tab
 2. Find previous successful deployment
 3. Click "..." → "Promote to Production"
 
 **Via CLI:**
+
 ```bash
 vercel rollback
 ```
@@ -173,6 +184,7 @@ vercel rollback
 ## Success Criteria
 
 Deployment is successful when:
+
 - [ ] Production build completes without errors
 - [ ] Application loads at production URL
 - [ ] Authentication flow works (magic link)

@@ -117,6 +117,7 @@ weather_records
 ```
 
 RLS policies:
+
 - `regions`: SELECT open to `authenticated`; no INSERT/UPDATE/DELETE for authenticated (service role only).
 - `plants`: SELECT open to `authenticated`; INSERT/UPDATE/DELETE restricted to admin claim check.
 - `plant_requests`: SELECT/INSERT/UPDATE scoped to `user_id = auth.uid()`; DELETE for owner.
@@ -161,12 +162,23 @@ Create `src/types.ts` with Row, Insert, and Update TypeScript interfaces for all
 **Intent**: Define TypeScript interfaces that mirror the DB schema. Three variants per table: `Row` (what SELECT returns), `Insert` (what INSERT accepts — `id`/`created_at`/`updated_at` optional), `Update` (partial Insert). Export a `PlantRequestStatus` string union. These types are consumed by service functions and API route handlers.
 
 **Contract**:
+
 ```ts
 // Example shape — implement for all six tables
-export interface RegionRow { id: string; code: string; name: string; created_at: string }
-export interface RegionInsert { id?: string; code: string; name: string; created_at?: string }
+export interface RegionRow {
+  id: string;
+  code: string;
+  name: string;
+  created_at: string;
+}
+export interface RegionInsert {
+  id?: string;
+  code: string;
+  name: string;
+  created_at?: string;
+}
 
-export type PlantRequestStatus = 'pending' | 'approved' | 'rejected'
+export type PlantRequestStatus = "pending" | "approved" | "rejected";
 // ... repeat for plants, plant_requests, fields, plantings, weather_records
 ```
 

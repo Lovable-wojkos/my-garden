@@ -16,20 +16,21 @@ A logged-in user on `/dashboard` types a Polish city/gmina name, picks from geoc
 
 ## Key Decisions Made
 
-| Decision | Choice | Why (1 sentence) |
-|---|---|---|
-| Weather API | Open-Meteo only | IMGW REST is current-snapshot; Open-Meteo covers all three requirements with a single integration |
-| Region granularity | Gmina-level coordinates | Poland has ~2500 gminas; voivodeship dropdown is too coarse for real weather correlation |
-| Region selection UX | Free-text city + geocoding | Matches gmina-level need; Open-Meteo has a free geocoding API (no extra dependency) |
-| Widget placement | Dashboard widget | Aligns with S-04 goal; weather visible alongside field data |
-| API failure UX | In-memory stale badge | User always sees something; persistent caching belongs to F-02 |
-| Region persistence | DB (user_preferences table) | City preference must survive page refresh and device switches |
-| F-01 dependency | Wait for F-01 | F-01 is done; no workarounds needed |
-| Weather refresh | Auto every 30 min + on mount | Open-Meteo updates hourly; 30-min polling is a reasonable freshness/cost balance |
+| Decision            | Choice                       | Why (1 sentence)                                                                                  |
+| ------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| Weather API         | Open-Meteo only              | IMGW REST is current-snapshot; Open-Meteo covers all three requirements with a single integration |
+| Region granularity  | Gmina-level coordinates      | Poland has ~2500 gminas; voivodeship dropdown is too coarse for real weather correlation          |
+| Region selection UX | Free-text city + geocoding   | Matches gmina-level need; Open-Meteo has a free geocoding API (no extra dependency)               |
+| Widget placement    | Dashboard widget             | Aligns with S-04 goal; weather visible alongside field data                                       |
+| API failure UX      | In-memory stale badge        | User always sees something; persistent caching belongs to F-02                                    |
+| Region persistence  | DB (user_preferences table)  | City preference must survive page refresh and device switches                                     |
+| F-01 dependency     | Wait for F-01                | F-01 is done; no workarounds needed                                                               |
+| Weather refresh     | Auto every 30 min + on mount | Open-Meteo updates hourly; 30-min polling is a reasonable freshness/cost balance                  |
 
 ## Scope
 
 **In scope:**
+
 - `user_preferences` DB table (city_name, latitude, longitude per user)
 - Open-Meteo HTTP client service (geocoding + weather fetch)
 - `/api/weather`, `/api/user-preferences`, `/api/geocoding-suggestions` API routes
@@ -37,6 +38,7 @@ A logged-in user on `/dashboard` types a Polish city/gmina name, picks from geoc
 - Dashboard page integration with server-side preferences load
 
 **Out of scope:**
+
 - IMGW direct integration
 - Server-side weather caching (F-02)
 - Nightly cron job (F-02)
@@ -50,12 +52,12 @@ Three-tier: (1) Open-Meteo HTTP client in `src/lib/services/open-meteo.ts` — a
 
 ## Phases at a Glance
 
-| Phase | What it delivers | Key risk |
-|---|---|---|
-| 1. User Preferences Migration | `user_preferences` table + TypeScript types + service wrappers | None — straightforward schema addition |
-| 2. Open-Meteo HTTP Client | `geocodeCity` + `getWeather` service functions | Open-Meteo API response shape changes (unlikely but unversioned) |
-| 3. API Routes | `/api/weather`, `/api/user-preferences`, `/api/geocoding-suggestions` | Auth guard misconfiguration leaks unauthenticated access |
-| 4. Weather Widget + Dashboard | Full end-to-end UI, 30-min refresh, stale badge | Geocoding suggestion UX on mobile — small targets, debounce timing |
+| Phase                         | What it delivers                                                      | Key risk                                                           |
+| ----------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 1. User Preferences Migration | `user_preferences` table + TypeScript types + service wrappers        | None — straightforward schema addition                             |
+| 2. Open-Meteo HTTP Client     | `geocodeCity` + `getWeather` service functions                        | Open-Meteo API response shape changes (unlikely but unversioned)   |
+| 3. API Routes                 | `/api/weather`, `/api/user-preferences`, `/api/geocoding-suggestions` | Auth guard misconfiguration leaks unauthenticated access           |
+| 4. Weather Widget + Dashboard | Full end-to-end UI, 30-min refresh, stale badge                       | Geocoding suggestion UX on mobile — small targets, debounce timing |
 
 **Prerequisites:** F-01 deployed (done); Supabase project accessible for `db push`
 **Estimated effort:** ~1-2 sessions across 4 phases

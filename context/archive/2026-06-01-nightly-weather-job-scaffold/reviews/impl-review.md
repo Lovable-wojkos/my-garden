@@ -1,4 +1,5 @@
 <!-- IMPL-REVIEW-REPORT -->
+
 # Implementation Review: Nightly weather job scaffold
 
 - **Plan**: context/changes/nightly-weather-job-scaffold/plan.md
@@ -9,14 +10,14 @@
 
 ## Verdicts
 
-| Dimension | Verdict |
-|-----------|---------|
-| Plan Adherence | FAIL |
-| Scope Discipline | PASS |
-| Safety & Quality | PASS |
-| Architecture | PASS |
-| Pattern Consistency | PASS |
-| Success Criteria | FAIL |
+| Dimension           | Verdict |
+| ------------------- | ------- |
+| Plan Adherence      | FAIL    |
+| Scope Discipline    | PASS    |
+| Safety & Quality    | PASS    |
+| Architecture        | PASS    |
+| Pattern Consistency | PASS    |
+| Success Criteria    | FAIL    |
 
 ## Findings
 

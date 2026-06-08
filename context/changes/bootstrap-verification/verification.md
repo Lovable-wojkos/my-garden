@@ -31,6 +31,7 @@ Consumed from `context/foundation/tech-stack.md`:
 **Strategy**: git-clone (clone the starter repo without keeping its git history)
 
 **Command executed**:
+
 ```bash
 git clone https://github.com/przeprogramowani/10x-astro-starter .bootstrap-scaffold && cd .bootstrap-scaffold && npm install
 ```
@@ -38,6 +39,7 @@ git clone https://github.com/przeprogramowani/10x-astro-starter .bootstrap-scaff
 **Exit code**: 0 (success)
 
 **Files moved from `.bootstrap-scaffold/` to cwd**:
+
 - Moved: .github/
 - Moved: .husky/
 - Moved: .vscode/
@@ -71,6 +73,7 @@ git clone https://github.com/przeprogramowani/10x-astro-starter .bootstrap-scaff
 **Exit code**: 1 (vulnerabilities found)
 
 **Findings**:
+
 - **CRITICAL**: 0
 - **HIGH**: 1
   - `devalue` (5.6.3 - 5.8.0): DoS via sparse array deserialization (GHSA-77vg-94rm-hx3p)
@@ -83,6 +86,7 @@ git clone https://github.com/przeprogramowani/10x-astro-starter .bootstrap-scaff
 - **LOW**: 0
 
 **Direct vs transitive**:
+
 - Direct: 1 (@astrojs/check)
 - Transitive: 5
 
@@ -104,7 +108,7 @@ The following hints from the hand-off were surfaced but not acted on in v1:
 
 1. **Review audit findings**: 1 HIGH and 5 MODERATE vulnerabilities detected. Run `npm audit fix` to address fixable issues.
 
-2. **Configure Supabase**: 
+2. **Configure Supabase**:
    - Copy `.env.example` to `.env`
    - Add your Supabase project URL and anon key
    - Configure RLS policies for auth and data access

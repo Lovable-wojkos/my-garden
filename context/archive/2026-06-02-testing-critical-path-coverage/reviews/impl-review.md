@@ -1,4 +1,5 @@
 <!-- IMPL-REVIEW-REPORT -->
+
 # Implementation Review: Testing — Critical Path Coverage
 
 - **Plan**: context/changes/testing-critical-path-coverage/plan.md
@@ -9,14 +10,14 @@
 
 ## Verdicts
 
-| Dimension | Verdict |
-|-----------|---------|
-| Plan Adherence | PASS ✅ |
-| Scope Discipline | PASS ✅ |
-| Safety & Quality | FAIL ❌ |
-| Architecture | PASS ✅ |
+| Dimension           | Verdict    |
+| ------------------- | ---------- |
+| Plan Adherence      | PASS ✅    |
+| Scope Discipline    | PASS ✅    |
+| Safety & Quality    | FAIL ❌    |
+| Architecture        | PASS ✅    |
 | Pattern Consistency | WARNING ⚠️ |
-| Success Criteria | WARNING ⚠️ |
+| Success Criteria    | WARNING ⚠️ |
 
 ## Findings
 
@@ -84,10 +85,12 @@
 ## Additional Context
 
 ### Plan Drift Summary
+
 - **Phase 1**: 5/6 MATCH, 1 minor DRIFT — `test:run` script includes `--passWithNoTests` flag (not in plan but defensive enhancement)
 - **Phase 2**: 4/4 MATCH — all server-side tests implemented as specified
 
 ### Success Criteria Status
+
 - ✅ **Phase 1 Automated 1.1**: `npm install` completed without errors
 - ✅ **Phase 1 Automated 1.2**: `npm run test:run` exits 0 (all 6 tests pass, not just "no test files")
 - ⚠️ **Phase 1 Automated 1.3**: `npm run lint` exits with errors — BUT all errors are pre-existing (line ending issues in astro.config.mjs, eslint.config.js) and NOT in test files
@@ -97,6 +100,7 @@
 - ❓ **Phase 2 Manual 2.3**: Not verified — `npm test` watch mode check
 
 ### Pattern Compliance Summary
+
 - ✅ All test files use `.test.ts` suffix consistently
 - ✅ All tests use `describe` → `it` nesting
 - ✅ All tests use `beforeEach` with `vi.clearAllMocks()`
