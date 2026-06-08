@@ -7,7 +7,16 @@ import { createClient } from "@/lib/supabase";
 import { getRegions } from "@/lib/services/regions";
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
-const regions = supabase ? ((await getRegions(supabase)).data ?? []) : [];
+
+if (!supabase) {
+  throw new Error("Database not configured");
+}
+
+const { data: regions, error: regionsError } = await getRegions(supabase);
+
+if (regionsError) {
+  throw new Error("Failed to load regions");
+}
 ---
 
 <Layout title="New Field">

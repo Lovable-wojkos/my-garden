@@ -47,11 +47,7 @@ function writeConfig(cfg: Record<string, unknown>): void {
  * Rules are last-match-wins, so specific patterns are inserted before any
  * existing catch-all "*" so the catch-all keeps applying to everything else.
  */
-function mergePermission(
-  existing: Record<string, unknown>,
-  tool: string,
-  patterns: string[],
-): boolean {
+function mergePermission(existing: Record<string, unknown>, tool: string, patterns: string[]): boolean {
   if (!patterns.length) return false;
 
   const permission = (existing.permission ?? {}) as Record<string, unknown>;

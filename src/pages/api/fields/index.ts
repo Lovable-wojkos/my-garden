@@ -58,7 +58,21 @@ export const POST: APIRoute = async (context) => {
   });
 
   if (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    if (error.code === "23503") {
+      return new Response(
+        JSON.stringify({
+          errors: {
+            region_id: ["Selected region is invalid."],
+          },
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    return new Response(JSON.stringify({ error: "Failed to create field" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

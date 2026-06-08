@@ -127,7 +127,13 @@ export default function CreateFieldForm({ regions }: Props) {
         <Label>Region</Label>
         <Popover open={regionOpen} onOpenChange={setRegionOpen}>
           <PopoverTrigger asChild>
-            <Button variant="outline" role="combobox" aria-expanded={regionOpen} className="w-full justify-between">
+            <Button
+              type="button"
+              variant="outline"
+              role="combobox"
+              aria-expanded={regionOpen}
+              className="w-full justify-between"
+            >
               {selectedRegion ? selectedRegion.name : "Select a region…"}
               <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
             </Button>

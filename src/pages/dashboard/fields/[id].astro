@@ -8,10 +8,19 @@ import { getFieldById } from "@/lib/services/fields";
 const { id } = Astro.params;
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
-const field = supabase && id ? (await getFieldById(supabase, id)).data : null;
 
-if (!field) {
+if (!supabase) {
+  throw new Error("Database not configured");
+}
+
+if (!id) {
   return Astro.redirect("/dashboard");
+}
+
+const { data: field, error: fieldError } = await getFieldById(supabase, id);
+
+if (fieldError) {
+  throw new Error("Failed to load field");
 }
 ---
 

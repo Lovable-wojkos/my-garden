@@ -5,7 +5,10 @@ import { POST } from "@/pages/api/auth/signup";
 
 vi.mock("@/lib/supabase");
 
-function makeContext(email = "user@example.com", password = "password"): Pick<APIContext, 'request' | 'cookies' | 'redirect'> {
+function makeContext(
+  email = "user@example.com",
+  password = "password",
+): Pick<APIContext, "request" | "cookies" | "redirect"> {
   const formData = new FormData();
   formData.set("email", email);
   formData.set("password", password);

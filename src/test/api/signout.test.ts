@@ -13,7 +13,7 @@ describe("POST /api/auth/signout", () => {
   it("redirects to / without throwing when Supabase is not configured", async () => {
     vi.mocked(createClient).mockReturnValue(null);
 
-    const context: Pick<APIContext, 'request' | 'cookies' | 'redirect'> = {
+    const context: Pick<APIContext, "request" | "cookies" | "redirect"> = {
       request: new Request("http://localhost/api/auth/signout", { method: "POST" }),
       cookies: { set: vi.fn() },
       redirect: vi
