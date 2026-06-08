@@ -105,10 +105,10 @@ parallel-implementation-check --plan @context/changes/db-schema-and-migrations/p
 
 ## Exit codes
 
-| Code | Meaning |
-|------|---------|
+| Code | Meaning                            |
+| ---- | ---------------------------------- |
 | 0    | All parallel tracks are consistent |
-| 1    | Conflicts or drift detected |
+| 1    | Conflicts or drift detected        |
 | 2    | Invalid arguments or missing files |
 
 Check the roadmap and plans for S-05 and S-06. Assess whether they can be implemented in parallel. Pay attention to shared files, contracts, layers and other elements that may cause conflicts.
