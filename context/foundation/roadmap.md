@@ -5,7 +5,6 @@ status: draft
 created: 2026-05-25
 updated: 2026-06-08
 prd_version: 1
-main_goal: market-feedback
 top_blocker: external
 ---
 
@@ -27,25 +26,25 @@ A garden management app that replaces paper notebooks with digital tracking for 
 
 ## At a glance
 
-| ID | Change ID | Outcome (user can …) | Prerequisites | PRD refs | Status |
-|---|---|---|---|---|---|
-| F-01 | db-schema-and-migrations | (foundation) schema for fields, plants catalog, plantings, and weather_records in place | — | FR-001, FR-002, FR-003, FR-005, FR-006, FR-007, FR-011, FR-014, FR-015 | done |
-| S-01 | imgw-weather-probe | type a city name, pick from geocoded suggestions, and see current temperature, 7-day rainfall, and last-rain date | — | FR-006, FR-008, FR-009, FR-010 | done |
-| F-02 | nightly-weather-job-scaffold | (foundation) Vercel Cron job fetches Open-Meteo data nightly and stores records in weather_records | F-01 | FR-007 | done |
-| S-02 | field-creation | add a field with columns-and-rows layout | F-01 | FR-001, FR-002 | proposed |
-| S-05 | plant-catalog-requests | request a new plant type; admin approves and it appears in the catalog | F-01 | FR-014, FR-015 | proposed |
-| S-03 | planting-record | assign plants to field cells, set seeding date, and see auto-calculated harvest date | F-01, S-02 | FR-003, FR-005, FR-011 | proposed |
-| S-04 | field-weather-view | view full field with planting details and live weather panel (current weather + 7-day rain + last rain) | S-01, S-03, F-02 | FR-006, FR-008, FR-009, FR-010, US-01 | proposed |
+| ID   | Change ID                    | Outcome (user can …)                                                                                              | Prerequisites    | PRD refs                                                               | Status   |
+| ---- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------- | -------- |
+| F-01 | db-schema-and-migrations     | (foundation) schema for fields, plants catalog, plantings, and weather_records in place                           | —                | FR-001, FR-002, FR-003, FR-005, FR-006, FR-007, FR-011, FR-014, FR-015 | done     |
+| S-01 | imgw-weather-probe           | type a city name, pick from geocoded suggestions, and see current temperature, 7-day rainfall, and last-rain date | —                | FR-006, FR-008, FR-009, FR-010                                         | done     |
+| F-02 | nightly-weather-job-scaffold | (foundation) Vercel Cron job fetches Open-Meteo data nightly and stores records in weather_records                | F-01             | FR-007                                                                 | done     |
+| S-02 | field-creation               | add a field with columns-and-rows layout                                                                          | F-01             | FR-001, FR-002                                                         | done     |
+| S-05 | plant-catalog-requests       | request a new plant type; admin approves and it appears in the catalog                                            | F-01             | FR-014, FR-015                                                         | proposed |
+| S-03 | planting-record              | assign plants to field cells, set seeding date, and see auto-calculated harvest date                              | F-01, S-02       | FR-003, FR-005, FR-011                                                 | proposed |
+| S-04 | field-weather-view           | view full field with planting details and live weather panel (current weather + 7-day rain + last rain)           | S-01, S-03, F-02 | FR-006, FR-008, FR-009, FR-010, US-01                                  | proposed |
 
 ## Streams
 
 Navigation aid — groups items that share a Prerequisites chain. Canonical ordering still lives in the dependency graph below; this table is the proposed reading order across parallel tracks.
 
-| Stream | Theme | Chain | Note |
-|---|---|---|---|
-| A | Data foundation + field lifecycle | `F-01` → `F-02` → `S-02` → `S-03` → `S-04` | Core must-have path; S-04 is where main_goal (market-feedback) gets its first real user. |
-| B | Open-Meteo weather probe (north star) | `S-01` → `S-04` | Validates the weather data layer first; joins Stream A at `S-04`. |
-| C | Plant catalog admin | `F-01` → `S-05` | Standalone admin flow; parallel with S-02 once F-01 lands. |
+| Stream | Theme                                 | Chain                                      | Note                                                                                     |
+| ------ | ------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| A      | Data foundation + field lifecycle     | `F-01` → `F-02` → `S-02` → `S-03` → `S-04` | Core must-have path; S-04 is where main_goal (market-feedback) gets its first real user. |
+| B      | Open-Meteo weather probe (north star) | `S-01` → `S-04`                            | Validates the weather data layer first; joins Stream A at `S-04`.                        |
+| C      | Plant catalog admin                   | `F-01` → `S-05`                            | Standalone admin flow; parallel with S-02 once F-01 lands.                               |
 
 ## Baseline
 
@@ -111,9 +110,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - What is the exact UI interaction for "drawing columns and rows"? Grid drag-to-define, or a numeric dimensions form? Owner: dev. Block: no (UI decision at /10x-plan time).
 - **Risk:** FR-002 ("draw columns and rows") is the most UI-complex requirement in the PRD. If the visual grid editor is underestimated, S-02 blocks S-03 and S-04. A numeric dimensions form is a simpler fallback if timeline is tight.
-- **Status:** proposed
-
-### S-05: Plant catalog requests
+- **Status:** done
 
 - **Outcome:** user can submit a request for a new plant type; admin can review and approve it so it appears in the catalog
 - **Change ID:** plant-catalog-requests
@@ -154,15 +151,15 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Backlog Handoff
 
-| Roadmap ID | Change ID | Suggested issue title | Ready for `/10x-plan` | Notes |
-|---|---|---|---|---|
-| F-01 | db-schema-and-migrations | Design and migrate: fields, plants, plantings, weather_records tables with RLS | yes | Run `/10x-plan db-schema-and-migrations` |
-| S-01 | imgw-weather-probe | Weather widget: city search + current temperature + 7-day rainfall + last-rain date (Open-Meteo) | yes | Plan reviewed; ready for `/10x-implement imgw-weather-probe` |
-| F-02 | nightly-weather-job-scaffold | Scaffold Vercel Cron nightly Open-Meteo fetch → weather_records | no | Depends on F-01; plan after S-01 complete |
-| S-02 | field-creation | Field creation: grid layout editor (columns × rows) | no | Depends on F-01 |
-| S-05 | plant-catalog-requests | Plant catalog: user request + admin approval workflow | no | Depends on F-01; parallel with S-02 |
-| S-03 | planting-record | Planting record: assign plants to cells + seeding/harvest date | no | Depends on F-01, S-02 |
-| S-04 | field-weather-view | Field view: planting details + live weather panel (US-01 complete) | no | Depends on S-01, S-03, F-02 |
+| Roadmap ID | Change ID                    | Suggested issue title                                                                            | Ready for `/10x-plan` | Notes                                                        |
+| ---------- | ---------------------------- | ------------------------------------------------------------------------------------------------ | --------------------- | ------------------------------------------------------------ |
+| F-01       | db-schema-and-migrations     | Design and migrate: fields, plants, plantings, weather_records tables with RLS                   | yes                   | Run `/10x-plan db-schema-and-migrations`                     |
+| S-01       | imgw-weather-probe           | Weather widget: city search + current temperature + 7-day rainfall + last-rain date (Open-Meteo) | yes                   | Plan reviewed; ready for `/10x-implement imgw-weather-probe` |
+| F-02       | nightly-weather-job-scaffold | Scaffold Vercel Cron nightly Open-Meteo fetch → weather_records                                  | no                    | Depends on F-01; plan after S-01 complete                    |
+| S-02       | field-creation               | Field creation: grid layout editor (columns × rows)                                              | no                    | Depends on F-01                                              |
+| S-05       | plant-catalog-requests       | Plant catalog: user request + admin approval workflow                                            | no                    | Depends on F-01; parallel with S-02                          |
+| S-03       | planting-record              | Planting record: assign plants to cells + seeding/harvest date                                   | no                    | Depends on F-01, S-02                                        |
+| S-04       | field-weather-view           | Field view: planting details + live weather panel (US-01 complete)                               | no                    | Depends on S-01, S-03, F-02                                  |
 
 ## Open Roadmap Questions
 
@@ -186,3 +183,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-01: (foundation) Supabase migrations in place for `fields`, `plants` (catalog), `plantings`, and `weather_records` tables with RLS policies; all data-dependent slices can be planned and implemented.** — Archived 2026-06-02 → `context/archive/2026-05-25-db-schema-and-migrations/`. Lesson: —.
 - **F-02: (foundation) Vercel Cron function fetches Open-Meteo data for all active user coordinates nightly and writes records to `weather_records`; historical rainfall queries are now possible.** — Archived 2026-06-02 → `context/archive/2026-06-01-nightly-weather-job-scaffold/`. Lesson: —.
 - **S-01: user can type a Polish city name, pick from geocoded suggestions, and immediately see current temperature (°C), cumulative rainfall in mm for the last 7 days, and the date of last rain; chosen city persists between sessions** — Archived 2026-06-08 → `context/archive/2026-05-26-imgw-weather-probe/`. Lesson: —.
+- **S-02: user can add a named field to their garden and define its layout using a columns-and-rows grid** — Archived 2026-06-08 → `context/archive/2026-06-01-field-creation/`. Lesson: —.

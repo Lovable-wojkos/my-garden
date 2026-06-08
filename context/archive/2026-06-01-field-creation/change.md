@@ -1,10 +1,10 @@
 ---
 change_id: field-creation
 title: Field creation
-status: impl_reviewed
+status: archived
 created: 2026-06-01
-updated: 2026-06-03
-archived_at: null
+updated: 2026-06-08
+archived_at: 2026-06-08T12:19:00Z
 ---
 
 ## Notes
