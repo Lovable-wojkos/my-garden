@@ -17,9 +17,8 @@ pnpm-debug.log*
 .env
 .env.production
 
-# cloudflare
-.dev.vars
-.wrangler/
+# Vercel output
+.vercel
 
 # macOS-specific files
 .DS_Store
@@ -29,3 +28,9 @@ pnpm-debug.log*
 .vscode/
 */skills/10x-*
 .windsurf/.10x-cli-manifest.json
+*/skills/hallmark
+opencode.json
+skills-lock.json
+
+# git worktrees
+worktrees/

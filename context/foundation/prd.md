@@ -81,7 +81,7 @@ End-to-end flow works:
 - FR-005: User can set seeding date with automatic final date calculation. Priority: must-have
   > Socrates: Counter-argument considered: "Growth time varies too much by conditions to calculate accurately." Resolution: kept; plant database will be part of MVP with category-based mapping (e.g., tomatoes 6 weeks, potatoes 8 weeks). Exact species not needed, category-level precision is sufficient.
 - FR-006: User can choose a region for weather data. Priority: must-have
-  > Socrates: Counter-argument considered: "GPS-based automatic location is better than manual region selection." Resolution: kept; MVP will use IMGW API (Polish meteorological service) which is region-based. Region selection maps to what's accessible from the API structure.
+  > Socrates: Counter-argument considered: "GPS-based automatic location is better than manual region selection." Resolution: kept; MVP uses Open-Meteo (free REST API, no key required) with city-level geocoding. Manual city search was kept over GPS automation — GPS is a v2 enhancement.
 
 ### Weather
 
