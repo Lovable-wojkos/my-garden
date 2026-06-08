@@ -1,0 +1,12 @@
+{
+	"hooks": {
+		"PostToolUse": [
+			{
+				"type": "command",
+				"command": "npx eslint --fix . --quiet",
+                "timeout": 10000,
+				"toolName": "read|write"
+			}
+		]
+	}
+}

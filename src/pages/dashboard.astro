@@ -3,34 +3,84 @@ import Layout from "@/layouts/Layout.astro";
 import WeatherWidget from "@/components/WeatherWidget";
 import { createClient } from "@/lib/supabase";
 import { getUserPreferences } from "@/lib/services/user-preferences";
+import { getFieldsByUser } from "@/lib/services/fields";
 
 const { user } = Astro.locals;
 const supabase = createClient(Astro.request.headers, Astro.cookies);
-const { data: prefs } = user && supabase ? await getUserPreferences(supabase, user.id) : { data: null };
+
+const [{ data: prefs }, { data: fields }] =
+  user && supabase
+    ? await Promise.all([getUserPreferences(supabase, user.id), getFieldsByUser(supabase, user.id)])
+    : [{ data: null }, { data: [] }];
 
 const initialCity = prefs ? { cityName: prefs.city_name, latitude: prefs.latitude, longitude: prefs.longitude } : null;
 ---
 
 <Layout title="Dashboard">
-  <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
-    <div class="flex flex-col items-center gap-6">
-      <WeatherWidget initialCity={initialCity} client:load />
-      <div class="rounded-2xl border border-white/10 bg-white/10 p-8 text-center text-white backdrop-blur-xl">
-        <h1 class="mb-4 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+  <div class="bg-cosmic min-h-screen p-4">
+    <div class="mx-auto max-w-6xl">
+      <div class="mb-8 flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
           Dashboard
         </h1>
-        <p class="text-blue-100/80">
-          Welcome, <span class="font-semibold text-white">{user?.email}</span>
-        </p>
-        <p class="mt-2 text-sm text-blue-100/50">This page is only for authenticated users.</p>
-        <form method="POST" action="/api/auth/signout" class="mt-6">
+        <form method="POST" action="/api/auth/signout">
           <button
             type="submit"
-            class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20"
+            class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
           >
             Sign out
           </button>
         </form>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto]">
+        <!-- left: fields list -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-white">My Fields</h2>
+            <a
+              href="/dashboard/fields/new"
+              class="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/20"
+            >
+              + New field
+            </a>
+          </div>
+
+          {
+            fields && fields.length > 0 ? (
+              <ul class="space-y-2">
+                {fields.map((field) => (
+                  <li>
+                    <a
+                      href={`/dashboard/fields/${field.id}`}
+                      class="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 text-white backdrop-blur-xl transition-colors hover:bg-white/10"
+                    >
+                      <div>
+                        <p class="font-semibold">{field.name}</p>
+                        <p class="text-sm text-blue-100/60">
+                          {field.rows} rows × {field.cols} columns
+                        </p>
+                      </div>
+                      <span class="text-white/40">→</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div class="rounded-xl border border-white/10 bg-white/5 p-8 text-center text-white/50 backdrop-blur-xl">
+                <p>No fields yet.</p>
+                <a href="/dashboard/fields/new" class="mt-2 inline-block text-sm text-blue-300 hover:underline">
+                  Create your first field →
+                </a>
+              </div>
+            )
+          }
+        </div>
+
+        <!-- right: weather -->
+        <div class="flex items-start justify-center lg:justify-start">
+          <WeatherWidget initialCity={initialCity} client:load />
+        </div>
       </div>
     </div>
   </div>
