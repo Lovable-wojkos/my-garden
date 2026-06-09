@@ -339,9 +339,9 @@ Build the React island and its Astro wrapper. The island receives the pending pl
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly: `npx supabase db reset`
-- [x] 1.2 TypeScript compiles without errors: `npm run lint`
-- [x] 1.3 No remaining PlantRequest type references: `grep -r "PlantRequest" src/` returns nothing
+- [x] 1.1 Migration applies cleanly: `npx supabase db reset` — d28cd03
+- [x] 1.2 TypeScript compiles without errors: `npm run lint` — d28cd03
+- [x] 1.3 No remaining PlantRequest type references: `grep -r "PlantRequest" src/` returns nothing — d28cd03
 
 #### Manual
 
@@ -353,8 +353,8 @@ Build the React island and its Astro wrapper. The island receives the pending pl
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes — no type errors, no references to removed types
-- [ ] 2.2 `grep "PlantRequest" src/lib/services/plants.ts` returns nothing
+- [x] 2.1 `npm run lint` passes — no type errors, no references to removed types
+- [x] 2.2 `grep "PlantRequest" src/lib/services/plants.ts` returns nothing
 
 #### Manual
 
