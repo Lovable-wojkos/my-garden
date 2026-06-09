@@ -26,8 +26,10 @@ export type RegionUpdate = Partial<RegionInsert>;
 export interface PlantRow {
   id: string;
   name: string;
-  growth_days: number;
+  growth_days: number | null;
   watering_needs: string | null;
+  user_id: string | null;
+  status: "pending" | "global";
   created_at: string;
   updated_at: string;
 }
@@ -35,38 +37,15 @@ export interface PlantRow {
 export interface PlantInsert {
   id?: string;
   name: string;
-  growth_days: number;
+  growth_days?: number | null;
   watering_needs?: string | null;
+  user_id?: string | null;
+  status?: "pending" | "global";
   created_at?: string;
   updated_at?: string;
 }
 
 export type PlantUpdate = Partial<PlantInsert>;
-
-// ── plant_requests ───────────────────────────────────────────
-export type PlantRequestStatus = "pending" | "approved" | "rejected";
-
-export interface PlantRequestRow {
-  id: string;
-  user_id: string;
-  name: string;
-  notes: string | null;
-  status: PlantRequestStatus;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface PlantRequestInsert {
-  id?: string;
-  user_id: string;
-  name: string;
-  notes?: string | null;
-  status?: PlantRequestStatus;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export type PlantRequestUpdate = Partial<PlantRequestInsert>;
 
 // ── fields ───────────────────────────────────────────────────
 export interface FieldRow {
