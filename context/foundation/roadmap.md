@@ -3,7 +3,7 @@ project: Garden Management App
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-06-08
+updated: 2026-06-09
 prd_version: 1
 top_blocker: external
 ---
@@ -34,7 +34,7 @@ A garden management app that replaces paper notebooks with digital tracking for 
 | S-02 | field-creation               | add a field with columns-and-rows layout                                                                          | F-01             | FR-001, FR-002                                                         | done     |
 | S-05 | plant-catalog-requests       | request a new plant type; admin approves and it appears in the catalog                                            | F-01             | FR-014, FR-015                                                         | proposed |
 | S-03 | planting-record              | assign plants to field cells, set seeding date, and see auto-calculated harvest date                              | F-01, S-02       | FR-003, FR-005, FR-011                                                 | done     |
-| S-04 | field-weather-view           | view full field with planting details and live weather panel (current weather + 7-day rain + last rain)           | S-01, S-03, F-02 | FR-006, FR-008, FR-009, FR-010, US-01                                  | proposed |
+| S-04 | field-weather-view           | view full field with planting details and live weather panel (current weather + 7-day rain + last rain)           | S-01, S-03, F-02 | FR-006, FR-008, FR-009, FR-010, US-01                                  | done     |
 
 ## Streams
 
@@ -147,7 +147,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Offline capability (NFR): should the weather panel show cached data when offline, or simply show a "no connection" state? Owner: user. Block: no (MVP can show "no connection"; caching is a v2 enhancement).
 - **Risk:** S-04 depends on three upstream items (S-01, S-03, F-02); any slip in those three blocks this slice. S-01 IMGW risk is resolved (Open-Meteo adopted) — no external unknowns remain on the critical path.
-- **Status:** proposed
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -184,3 +184,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-01: user can type a Polish city name, pick from geocoded suggestions, and immediately see current temperature (°C), cumulative rainfall in mm for the last 7 days, and the date of last rain; chosen city persists between sessions** — Archived 2026-06-08 → `context/archive/2026-05-26-imgw-weather-probe/`. Lesson: —.
 - **S-02: user can add a named field to their garden and define its layout using a columns-and-rows grid** — Archived 2026-06-08 → `context/archive/2026-06-01-field-creation/`. Lesson: —.
 - **S-03: user can assign plants from the catalog to field cells, set a seeding date, and see the automatically calculated expected harvest date** — Archived 2026-06-08 → `context/archive/2026-06-01-planting-record/`. Lesson: —.
+- **S-04: user can view their planted field with crop details and a live weather panel showing current weather, rainfall in mm for the last 7 days, and the date of last rain — completing the end-to-end flow of US-01** — Archived 2026-06-09 → `context/archive/2026-06-01-field-weather-view/`. Lesson: —.

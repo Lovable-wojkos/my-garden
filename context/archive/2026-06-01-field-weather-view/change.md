@@ -1,10 +1,10 @@
 ---
 change_id: field-weather-view
 title: Field weather view
-status: implemented
+status: archived
 created: 2026-06-01
 updated: 2026-06-09
-archived_at: null
+archived_at: 2026-06-09T00:00:00Z
 ---
 
 ## Notes
