@@ -1,47 +1,41 @@
-# 10x Astro Starter
+# My Garden
 
-![](./public/template.png)
-
-A modern, opinionated starter template for building fast, accessible web applications.
+A gardening companion app for tracking fields, plantings, and weather.
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v6 - Modern web framework with server-first rendering
-- [React](https://react.dev/) v19 - UI library for interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4 - Utility-first CSS framework
-- [Supabase](https://supabase.com/) - Authentication and backend-as-a-service
-- [Cloudflare Workers](https://workers.cloudflare.com/) - Edge deployment runtime
+- [Astro](https://astro.build/) v6 - Server-side rendering
+- [React](https://react.dev/) v19 - Interactive UI components
+- [TypeScript](https://www.typescriptlang.org/) v5 - Type safety
+- [Tailwind CSS](https://tailwindcss.com/) v4 - Utility-first CSS
+- [Supabase](https://supabase.com/) - Auth, database, and storage
+- [Vercel](https://vercel.com/) - Deployment and cron jobs
 
 ## Prerequisites
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
+- Node.js v22.14.0 (see `.nvmrc`)
 - npm (comes with Node.js)
+- [Docker](https://www.docker.com/) for local Supabase (optional)
 
 ## Getting Started
 
-1. Clone the repository:
+1. Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
-
-2. Install dependencies:
-
-```bash
+git clone <repo-url>
+cd my-garden
 npm install
 ```
 
-3. Set up Supabase and configure environment variables — see [Supabase Configuration](#supabase-configuration) below.
-
-4. Create a `.dev.vars` file for local Cloudflare dev secrets:
+2. Set up environment variables:
 
 ```bash
-cp .env.example .dev.vars
+cp .env.example .env
 ```
 
-5. Run the development server:
+3. Configure Supabase — see [Supabase Configuration](#supabase-configuration) below.
+
+4. Run the development server:
 
 ```bash
 npm run dev
@@ -49,126 +43,139 @@ npm run dev
 
 ## Available Scripts
 
-- `npm run dev` - Start development server (Cloudflare workerd runtime)
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint with type-checked rules
-- `npm run lint:fix` - Auto-fix ESLint issues
-- `npm run format` - Run Prettier
+- `npm run dev` — Start development server
+- `npm run build` — Production build (SSR via `@astrojs/vercel`)
+- `npm run preview` — Preview production build
+- `npm run lint` — ESLint with type-checked rules
+- `npm run lint:fix` — Auto-fix ESLint issues
+- `npm run format` — Prettier
 
 ## Project Structure
 
-```md
-.
-├── src/
-│ ├── layouts/ # Astro layouts
-│ ├── pages/ # Astro pages
-│ │ └── api/ # API endpoints
-│ ├── components/ # UI components (Astro & React)
-│ └── assets/ # Static assets
-├── public/ # Public assets
-├── wrangler.jsonc # Cloudflare Workers config
+```
+src/
+├── components/       # Astro & React components
+│   └── ui/           # shadcn/ui components
+├── lib/
+│   ├── services/     # Business logic
+│   └── supabase.ts   # Supabase client
+├── pages/
+│   ├── api/          # API endpoints
+│   │   └── cron/     # Vercel cron handlers
+│   ├── auth/         # Auth pages
+│   └── dashboard/    # Protected pages
+├── middleware.ts      # Auth middleware
+└── types.ts          # Shared types
+supabase/
+└── migrations/       # SQL migrations
 ```
 
 ## Supabase Configuration
 
-This project uses [Supabase](https://supabase.com/) for authentication. Environment variables are declared via Astro's `astro:env` schema and are treated as **server-only secrets** — they are never exposed to the client.
+Environment variables are declared via Astro's `astro:env` schema and treated as **server-only secrets**.
 
-### First-time setup (local, no cloud project needed)
+### Local development (Docker)
 
-Requires [Docker](https://www.docker.com/) and ~7 GB RAM.
-
-1. Create your `.env` file:
-
-```bash
-cp .env.example .env
-```
-
-2. Initialize the local Supabase project (creates a `supabase/` config folder):
-
-```bash
-npx supabase init
-```
-
-3. Start the local stack (downloads Docker images on first run):
+1. Start the local Supabase stack:
 
 ```bash
 npx supabase start
 ```
 
-4. Copy the credentials printed by the CLI into your `.env` and `.dev.vars`:
+2. Copy the credentials printed by the CLI into `.env`:
 
 ```
 SUPABASE_URL=http://127.0.0.1:54321
-SUPABASE_ANON_KEYN_KEYN_KEYN_KEYN_KEY=<anon key from CLI output>
+SUPABASE_ANON_KEY=<anon key>
+SUPABASE_SERVICE_ROLE_KEY=<service_role key>
 ```
 
-5. To stop the stack when done:
+3. Apply migrations:
 
 ```bash
-npx supabase stop
+npx supabase db reset
 ```
 
-The local Studio UI is available at `http://localhost:54323`.
+Studio UI is available at `http://localhost:54323`.
 
-No database tables or migrations are required — this project uses Supabase Auth's built-in `auth.users` table only.
+### Cloud Supabase project
 
-### Using a cloud Supabase project instead
+Add these to your `.env`:
 
-If you prefer to use a hosted Supabase project, add these variables to your `.env` and `.dev.vars` files:
-
-| Variable       | Description                                                |
-| -------------- | ---------------------------------------------------------- |
-| `SUPABASE_URL` | Project URL from Supabase dashboard → Settings → API       |
-| `SUPABASE_ANON_KEYN_KEYN_KEYN_KEYN_KEYN_KEY` | `anon` public key from Supabase dashboard → Settings → API |
-
-```
-SUPABASE_URL=https://<project-ref>.supabase.co
-SUPABASE_ANON_KEY=<anon-key>
-```
-
-### Email confirmation in local development
-
-By default Supabase requires email confirmation before a user can sign in. To skip this during local development:
-
-1. Open the Supabase dashboard for your project
-2. Go to **Authentication → Email → Confirm email**
-3. Toggle it **off**
-
-Users can then sign in immediately after sign-up without clicking a confirmation link.
+| Variable | Description |
+|----------|-------------|
+| `SUPABASE_URL` | Project URL from Supabase dashboard → Settings → API |
+| `SUPABASE_ANON_KEY` | `anon` public key from Supabase dashboard → Settings → API |
+| `SUPABASE_SERVICE_ROLE_KEY` | `service_role` key — **keep secret**, used by cron jobs only |
 
 ### Auth routes
 
-| Route                 | Description                                                             |
-| --------------------- | ----------------------------------------------------------------------- |
-| `/auth/signin`        | Email/password sign-in form                                             |
-| `/auth/signup`        | Email/password sign-up form                                             |
-| `/auth/confirm-email` | Post-signup "check your inbox" page                                     |
-| `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated) |
+| Route | Description |
+|-------|-------------|
+| `/auth/signin` | Email/password sign-in |
+| `/auth/signup` | Email/password sign-up |
+| `/auth/confirm-email` | Post-signup confirmation page |
+| `/dashboard` | Protected page (redirects to `/auth/signin` if unauthenticated) |
 
-Route protection is handled in `src/middleware.ts`. Add paths to the `PROTECTED_ROUTES` array there to require authentication.
+Route protection is handled in `src/middleware.ts`. Add paths to `PROTECTED_ROUTES` to require authentication.
 
-## Deployment
+## Deployment (Vercel)
 
-This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/).
-
-1. Build the project:
+1. Install the Vercel CLI and log in:
 
 ```bash
-npm run build
+npm i -g vercel
+vercel login
 ```
 
-2. Deploy with Wrangler:
+2. Deploy:
 
 ```bash
-npx wrangler deploy
+vercel deploy --prod
 ```
 
-Set `SUPABASE_URL` and `SUPABASE_ANON_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
+3. Set environment variables in Vercel dashboard → Settings → Environment Variables:
+
+| Variable | Description |
+|----------|-------------|
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_ANON_KEY` | Supabase anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (for cron jobs) |
+| `CRON_SECRET` | Random secret for securing cron endpoints (see below) |
+
+## Cron Jobs
+
+A daily weather sync runs at midnight UTC via Vercel Cron. The schedule is defined in [`vercel.json`](vercel.json).
+
+### Setup
+
+1. Generate a secret:
+
+```bash
+openssl rand -hex 32
+```
+
+2. Add `CRON_SECRET` to Vercel environment variables (and locally to `.env`).
+
+3. Vercel automatically passes `Authorization: Bearer <CRON_SECRET>` when invoking crons.
+
+### Monitoring
+
+- Vercel dashboard → your project → **Settings → Cron Jobs** — view schedule and trigger manually with "Run Now"
+- Vercel dashboard → **Logs** — filter by `/api/cron/weather` to see invocation history
+
+### Manual trigger (for testing)
+
+```bash
+curl -H "Authorization: Bearer <CRON_SECRET>" https://<your-app>.vercel.app/api/cron/weather
+```
 
 ## CI
 
-GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL` and `SUPABASE_ANON_KEY` as repository secrets in GitHub for the build step.
+GitHub Actions (`.github/workflows/ci.yml`) runs lint + build on every push and PR to `master`. Configure these as repository secrets:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
 
 ## License
 

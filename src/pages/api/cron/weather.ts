@@ -1,12 +1,13 @@
 import type { APIRoute } from "astro";
+import { CRON_SECRET } from "astro:env/server";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { getDailyWeather } from "@/lib/services/open-meteo";
 
 export const prerender = false;
 
 export const GET: APIRoute = async (context) => {
-  const cronHeader = context.request.headers.get("x-vercel-cron");
-  if (!cronHeader) {
+  const authHeader = context.request.headers.get("authorization");
+  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
     return new Response(JSON.stringify({ error: "forbidden" }), { status: 401 });
   }
 
