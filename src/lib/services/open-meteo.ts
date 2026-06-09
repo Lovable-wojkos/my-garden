@@ -43,6 +43,7 @@ export interface WeatherData {
   temperatureC: number;
   rainfall7dMm: number;
   lastRainDate: string | null;
+  lastRainMm: number | null;
   fetchedAt: string;
 }
 
@@ -85,6 +86,7 @@ export async function getWeather(lat: number, lng: number): Promise<WeatherData>
   // Never include today or any forecast day to avoid leaking future predictions.
   let rainfall7dMm = 0;
   let lastRainDate: string | null = null;
+  let lastRainMm: number | null = null;
 
   for (let i = times.length - 1; i >= 0; i--) {
     if (times[i] >= todayInTz) continue;
@@ -93,6 +95,7 @@ export async function getWeather(lat: number, lng: number): Promise<WeatherData>
       rainfall7dMm += rMm;
       if (rMm > 0 && !lastRainDate) {
         lastRainDate = times[i];
+        lastRainMm = rMm;
       }
     }
   }
@@ -101,6 +104,7 @@ export async function getWeather(lat: number, lng: number): Promise<WeatherData>
     temperatureC: currentTemp,
     rainfall7dMm: Number(rainfall7dMm.toFixed(1)),
     lastRainDate,
+    lastRainMm: lastRainMm != null ? Number(lastRainMm.toFixed(1)) : null,
     fetchedAt: new Date().toISOString(),
   };
 }
