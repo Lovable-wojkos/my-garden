@@ -10,6 +10,50 @@ describe("middleware onRequest", () => {
     vi.clearAllMocks();
   });
 
+  it("redirects unauthenticated user from /admin to /auth/signin", async () => {
+    vi.mocked(createClient).mockReturnValue({
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
+    } as any);
+
+    const redirect = vi.fn().mockReturnValue(new Response(null, { status: 302 }));
+    const context = {
+      url: new URL("http://localhost/admin/plant-requests"),
+      request: new Request("http://localhost/admin/plant-requests"),
+      cookies: {},
+      locals: {} as Record<string, unknown>,
+      redirect,
+    };
+    const next = vi.fn().mockResolvedValue(new Response("next"));
+
+    const handler: MiddlewareHandler = onRequest;
+    await handler(context, next);
+
+    expect(redirect).toHaveBeenCalledWith("/auth/signin");
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("redirects unauthenticated user from /api/admin to /auth/signin", async () => {
+    vi.mocked(createClient).mockReturnValue({
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
+    } as any);
+
+    const redirect = vi.fn().mockReturnValue(new Response(null, { status: 302 }));
+    const context = {
+      url: new URL("http://localhost/api/admin/plant-requests"),
+      request: new Request("http://localhost/api/admin/plant-requests"),
+      cookies: {},
+      locals: {} as Record<string, unknown>,
+      redirect,
+    };
+    const next = vi.fn().mockResolvedValue(new Response("next"));
+
+    const handler: MiddlewareHandler = onRequest;
+    await handler(context, next);
+
+    expect(redirect).toHaveBeenCalledWith("/auth/signin");
+    expect(next).not.toHaveBeenCalled();
+  });
+
   it("redirects unauthenticated user from /dashboard to /auth/signin", async () => {
     vi.mocked(createClient).mockReturnValue({
       auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },

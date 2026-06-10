@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase";
 // /api/cron/* routes authenticate via x-vercel-cron header, NOT middleware — do not add them here.
 const PROTECTED_ROUTES = [
   "/dashboard",
+  "/admin",
+  "/api/admin",
   "/api/weather",
   "/api/user-preferences",
   "/api/geocoding-suggestions",
