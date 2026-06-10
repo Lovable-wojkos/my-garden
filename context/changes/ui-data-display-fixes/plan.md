@@ -140,22 +140,22 @@ Update the "Ostatni deszcz" row to display date and volume inline: `{date} · {v
 
 #### Automated
 
-- [x] 1.1 TypeScript compilation passes: `npm run build`
-- [x] 1.2 Linting passes: `npm run lint`
+- [x] 1.1 TypeScript compilation passes: `npm run build` — 981c3a5
+- [x] 1.2 Linting passes: `npm run lint` — 981c3a5
 
 #### Manual
 
-- [ ] 1.3 No type errors in the IDE for `WeatherData` consumers
+- [x] 1.3 No type errors in the IDE for `WeatherData` consumers
 
 ### Phase 2: Update WeatherWidget Render
 
 #### Automated
 
-- [ ] 2.1 TypeScript compilation passes: `npm run build`
-- [ ] 2.2 Linting passes: `npm run lint`
+- [x] 2.1 TypeScript compilation passes: `npm run build`
+- [x] 2.2 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.3 "Ostatni deszcz" shows `{date} · {volume} mm` for location with recent rain
-- [ ] 2.4 "Ostatni deszcz" shows "Brak danych" for dry location
-- [ ] 2.5 No regressions in temperature or 7-day rainfall rows
+- [x] 2.3 "Ostatni deszcz" shows `{date} · {volume} mm` for location with recent rain
+- [x] 2.4 "Ostatni deszcz" shows "Brak danych" for dry location
+- [x] 2.5 No regressions in temperature or 7-day rainfall rows

@@ -228,7 +228,7 @@ export default function WeatherWidget({ initialCity }: WeatherWidgetProps) {
               <span className="text-sm text-white/60">Ostatni deszcz</span>
               <span className="font-semibold">
                 {weatherState.data.lastRainDate
-                  ? new Date(weatherState.data.lastRainDate).toLocaleDateString("pl-PL")
+                  ? `${new Date(weatherState.data.lastRainDate).toLocaleDateString("pl-PL")} · ${weatherState.data.lastRainMm} mm`
                   : "Brak danych"}
               </span>
             </div>
