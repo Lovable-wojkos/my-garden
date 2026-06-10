@@ -1,10 +1,10 @@
 ---
 change_id: ui-data-display-fixes
 title: Fix weather temperature, last rain volume display, and location granularity
-status: implemented
+status: archived
 created: 2026-06-09
 updated: 2026-06-10
-archived_at: null
+archived_at: 2026-06-10T00:00:00Z
 ---
 
 ## Notes
