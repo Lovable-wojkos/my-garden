@@ -151,11 +151,11 @@ Update the "Ostatni deszcz" row to display date and volume inline: `{date} · {v
 
 #### Automated
 
-- [x] 2.1 TypeScript compilation passes: `npm run build`
-- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.1 TypeScript compilation passes: `npm run build` — 437157a
+- [x] 2.2 Linting passes: `npm run lint` — 437157a
 
 #### Manual
 
-- [x] 2.3 "Ostatni deszcz" shows `{date} · {volume} mm` for location with recent rain
-- [x] 2.4 "Ostatni deszcz" shows "Brak danych" for dry location
-- [x] 2.5 No regressions in temperature or 7-day rainfall rows
+- [x] 2.3 "Ostatni deszcz" shows `{date} · {volume} mm` for location with recent rain — 437157a
+- [x] 2.4 "Ostatni deszcz" shows "Brak danych" for dry location — 437157a
+- [x] 2.5 No regressions in temperature or 7-day rainfall rows — 437157a
