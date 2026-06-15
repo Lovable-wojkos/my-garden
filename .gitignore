@@ -28,9 +28,20 @@ pnpm-debug.log*
 .vscode/
 */skills/10x-*
 .windsurf/.10x-cli-manifest.json
+
+# Playwright
+playwright/.auth/
+playwright-report/
+test-results/
+auth.json
 */skills/hallmark
 opencode.json
 skills-lock.json
 
 # git worktrees
 worktrees/
+.windsurf/prompts/m*
+
+.claude/prompts/m*
+.claude/.10x-cli-manifest.json
+skill-explainer.md
