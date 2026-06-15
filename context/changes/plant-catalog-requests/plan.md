@@ -345,9 +345,9 @@ Build the React island and its Astro wrapper. The island receives the pending pl
 
 #### Manual
 
-- [x] 1.4 Supabase Studio shows `plants` with `user_id`, `status`, nullable `growth_days`
-- [x] 1.5 `plant_requests` table is absent from Studio
-- [x] 1.6 10 seeded global plants appear in Studio
+- [x] 1.4 Supabase Studio shows `plants` with `user_id`, `status`, nullable `growth_days` — a354dd5
+- [x] 1.5 `plant_requests` table is absent from Studio — a354dd5
+- [x] 1.6 10 seeded global plants appear in Studio — a354dd5
 
 ### Phase 2: Service Layer
 
@@ -358,8 +358,8 @@ Build the React island and its Astro wrapper. The island receives the pending pl
 
 #### Manual
 
-- [x] 2.3 `getPlants()` with anon client returns only 10 global plants
-- [x] 2.4 `getPendingPlants()` with service-role returns empty array
+- [x] 2.3 `getPlants()` with anon client returns only 10 global plants — a354dd5
+- [x] 2.4 `getPendingPlants()` with service-role returns empty array — a354dd5
 
 ### Phase 3: Admin API Routes + Middleware
 
@@ -371,24 +371,24 @@ Build the React island and its Astro wrapper. The island receives the pending pl
 
 #### Manual
 
-- [x] 3.4 Unauthenticated GET `/api/admin/plant-requests` → 302 redirect
-- [x] 3.5 Authenticated non-admin GET → 403 `{ error: 'Forbidden' }` (deferred to Phase 4 UI testing)
-- [x] 3.6 Admin GET → 200 `{ plants: [] }` (deferred to Phase 4 UI testing)
-- [x] 3.7 PATCH with invalid body → 422 with field errors (deferred to Phase 4 UI testing)
-- [x] 3.8 PATCH approve on Studio-inserted pending plant → 200, Studio shows `status = 'global'` (deferred to Phase 4 UI testing)
-- [x] 3.9 DELETE reject on Studio-inserted pending plant → 200, row deleted in Studio (deferred to Phase 4 UI testing)
+- [x] 3.4 Unauthenticated GET `/api/admin/plant-requests` → 302 redirect — a354dd5
+- [x] 3.5 Authenticated non-admin GET → 403 `{ error: 'Forbidden' }` (deferred to Phase 4 UI testing) — a354dd5
+- [x] 3.6 Admin GET → 200 `{ plants: [] }` (deferred to Phase 4 UI testing) — a354dd5
+- [x] 3.7 PATCH with invalid body → 422 with field errors (deferred to Phase 4 UI testing) — a354dd5
+- [x] 3.8 PATCH approve on Studio-inserted pending plant → 200, Studio shows `status = 'global'` (deferred to Phase 4 UI testing) — a354dd5
+- [x] 3.9 DELETE reject on Studio-inserted pending plant → 200, row deleted in Studio — a354dd5 (deferred to Phase 4 UI testing)
 
 ### Phase 4: Admin UI
 
 #### Automated
 
-- [x] 4.1 `npm run lint` passes
-- [x] 4.2 `npm run build` succeeds
+- [x] 4.1 `npm run lint` passes — a354dd5
+- [x] 4.2 `npm run build` succeeds — a354dd5
 
 #### Manual
 
-- [x] 4.3 Non-admin visits `/admin/plant-requests` → redirected to `/dashboard`
-- [x] 4.4 Admin visits page → "No pending plant requests." shown
-- [x] 4.5 Studio-inserted pending plant appears on page reload
-- [x] 4.6 Approve flow: modal → submit → plant removed from list; Studio confirms `status = 'global'`
-- [x] 4.7 Reject flow: confirm → plant removed from list; Studio confirms row deleted
+- [x] 4.3 Non-admin visits `/admin/plant-requests` → redirected to `/dashboard` — a354dd5
+- [x] 4.4 Admin visits page → "No pending plant requests." shown — a354dd5
+- [x] 4.5 Studio-inserted pending plant appears on page reload — a354dd5
+- [x] 4.6 Approve flow: modal → submit → plant removed from list; Studio confirms `status = 'global'` — a354dd5
+- [x] 4.7 Reject flow: confirm → plant removed from list; Studio confirms row deleted — a354dd5
