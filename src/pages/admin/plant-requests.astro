@@ -1,0 +1,31 @@
+---
+export const prerender = false;
+
+import AdminPlantRequestList from "@/components/plants/AdminPlantRequestList";
+import Layout from "@/layouts/Layout.astro";
+import { getPendingPlants } from "@/lib/services/plants";
+import { createServiceRoleClient } from "@/lib/supabase";
+import type { PlantRow } from "@/types";
+
+if (Astro.locals.user?.app_metadata.role !== "admin") {
+  return Astro.redirect("/dashboard");
+}
+
+let plants: PlantRow[] = [];
+
+const serviceClient = createServiceRoleClient();
+if (serviceClient) {
+  const { data } = await getPendingPlants(serviceClient);
+  plants = data ?? [];
+}
+---
+
+<Layout title="Plant Requests">
+  <div class="bg-cosmic min-h-screen p-4 md:p-6">
+    <div class="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-white p-6 shadow-xl">
+      <h1 class="mb-1 text-2xl font-semibold text-slate-900">Plant Requests</h1>
+      <p class="mb-6 text-sm text-slate-600">Approve pending plants into the global catalog or reject them.</p>
+      <AdminPlantRequestList client:load initialPlants={plants} />
+    </div>
+  </div>
+</Layout>
