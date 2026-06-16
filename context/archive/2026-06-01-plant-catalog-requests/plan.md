@@ -40,7 +40,7 @@ A single migration drops `plant_requests`, adds `user_id` + `status` + nullable 
 
 **Migration ordering**: Drop `plant_requests` RLS policies and its index BEFORE `DROP TABLE plant_requests`. Add new columns to `plants` BEFORE the new RLS policies that reference them.
 
-**`getPlants()` filter change**: Adding `.eq('status', 'global')` changes what callers receive. No UI currently calls it (no plant list exists yet), so the change is safe — but note that S-03 will need a separate function to fetch global + user's own pending plants for the plant picker; do not repurpose `getPlants()` for that.
+**`getPlants()` filter change**: Adding `.eq('status', 'global')` changes what callers receive. One production caller exists today: `src/pages/dashboard/fields/[id].astro` (field planting page → `FieldGrid` catalog combobox). The global-only filter is correct for that use case. S-03 will still need a separate function to fetch global + user's own pending plants for inline plant creation; do not repurpose `getPlants()` for that.
 
 **Nullable `growth_days`**: `PlantRow.growth_days` changes from `number` to `number | null`. Future harvest date calculation code must null-guard before using this value.
 
@@ -158,8 +158,8 @@ Remove the three functions that operated on `plant_requests`, fix `getPlants()` 
 - **Modify** `getPlants(client)` — add `.eq('status', 'global')` before `.order('name')` so it returns only catalog plants
 - **Add** `createUserPlant(client, data: { name: string; user_id: string })` — inserts `{ name, user_id, status: 'pending' }` into `plants`, returns the new `PlantRow`; called with the anon client in S-03
 - **Add** `getPendingPlants(client)` — selects all plants where `status = 'pending'`, ordered `created_at` descending, typed `PlantRow[]`; must be called with service-role client
-- **Add** `approvePlant(client, id: string, data: { growth_days: number; watering_needs?: string | null })` — updates the row: `{ status: 'global', growth_days, watering_needs }`; returns updated `PlantRow`; must be called with service-role client
-- **Add** `rejectPlant(client, id: string)` — deletes the row by id; must be called with service-role client
+- **Add** `approvePlant(client, id: string, data: { growth_days: number; watering_needs?: string | null })` — updates the row where `id` matches **and** `status = 'pending'`: `{ status: 'global', growth_days, watering_needs }`; returns updated `PlantRow`; returns error when no pending row matches; must be called with service-role client
+- **Add** `rejectPlant(client, id: string)` — deletes the row where `id` matches **and** `status = 'pending'`; returns error when no pending row matches; must be called with service-role client
 
 Update the import line: remove `PlantRequestInsert`, `PlantRequestRow`, `PlantRequestStatus`; keep `PlantRow`; add `PlantInsert` for `createUserPlant`.
 
@@ -220,8 +220,8 @@ Extend `PROTECTED_ROUTES` to cover `/admin` and `/api/admin`, then create the th
 
 - `export const prerender = false`
 - Both handlers share the same admin check + service-role client setup as `index.ts` above
-- `export const PATCH: APIRoute`: parse body with Zod `{ growth_days: z.number().int().min(1), watering_needs: z.string().optional() }`; on parse failure return 422 `{ errors: Record<string, string[]> }` (aggregate per field, same pattern as `src/pages/api/fields/index.ts:8–13`); call `approvePlant(serviceClient, context.params.id!, data)`; return 200 `{ plant: PlantRow }`
-- `export const DELETE: APIRoute`: no body; call `rejectPlant(serviceClient, context.params.id!)`; return 200 `{ ok: true }`
+- `export const PATCH: APIRoute`: parse body with Zod `{ growth_days: z.number().int().min(1), watering_needs: z.string().optional() }`; on parse failure return 422 `{ errors: Record<string, string[]> }` (aggregate per field, same pattern as `src/pages/api/fields/index.ts:8–13`); call `approvePlant(serviceClient, context.params.id!, data)`; return 404 when no pending plant matches; return 200 `{ plant: PlantRow }`
+- `export const DELETE: APIRoute`: no body; call `rejectPlant(serviceClient, context.params.id!)`; return 404 when no pending plant matches; return 200 `{ ok: true }`
 
 ### Success Criteria:
 

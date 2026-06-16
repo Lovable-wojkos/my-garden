@@ -3,7 +3,7 @@ project: Garden Management App
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-06-09
+updated: 2026-06-15
 prd_version: 1
 top_blocker: external
 ---
@@ -32,7 +32,7 @@ A garden management app that replaces paper notebooks with digital tracking for 
 | S-01 | imgw-weather-probe           | type a city name, pick from geocoded suggestions, and see current temperature, 7-day rainfall, and last-rain date | —                | FR-006, FR-008, FR-009, FR-010                                         | done     |
 | F-02 | nightly-weather-job-scaffold | (foundation) Vercel Cron job fetches Open-Meteo data nightly and stores records in weather_records                | F-01             | FR-007                                                                 | done     |
 | S-02 | field-creation               | add a field with columns-and-rows layout                                                                          | F-01             | FR-001, FR-002                                                         | done     |
-| S-05 | plant-catalog-requests       | request a new plant type; admin approves and it appears in the catalog                                            | F-01             | FR-014, FR-015                                                         | proposed |
+| S-05 | plant-catalog-requests       | request a new plant type; admin approves and it appears in the catalog                                            | F-01             | FR-014, FR-015                                                         | done     |
 | S-03 | planting-record              | assign plants to field cells, set seeding date, and see auto-calculated harvest date                              | F-01, S-02       | FR-003, FR-005, FR-011                                                 | done     |
 | S-04 | field-weather-view           | view full field with planting details and live weather panel (current weather + 7-day rain + last rain)           | S-01, S-03, F-02 | FR-006, FR-008, FR-009, FR-010, US-01                                  | done     |
 
@@ -121,7 +121,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - What data fields does an admin need to fill in when approving a plant (growth category, watering needs, harvest ratio)? These feed FR-003, FR-005, FR-011 downstream. Owner: dev. Block: no.
 - **Risk:** Admin UI is rarely used but must be correct — missing plant data attributes block watering logic and harvest date calculation.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Planting record
 
@@ -185,3 +185,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-02: user can add a named field to their garden and define its layout using a columns-and-rows grid** — Archived 2026-06-08 → `context/archive/2026-06-01-field-creation/`. Lesson: —.
 - **S-03: user can assign plants from the catalog to field cells, set a seeding date, and see the automatically calculated expected harvest date** — Archived 2026-06-08 → `context/archive/2026-06-01-planting-record/`. Lesson: —.
 - **S-04: user can view their planted field with crop details and a live weather panel showing current weather, rainfall in mm for the last 7 days, and the date of last rain — completing the end-to-end flow of US-01** — Archived 2026-06-09 → `context/archive/2026-06-01-field-weather-view/`. Lesson: —.
+- **S-05: request a new plant type; admin approves and it appears in the catalog** — Archived 2026-06-15 → `context/archive/2026-06-01-plant-catalog-requests/`. Lesson: —.

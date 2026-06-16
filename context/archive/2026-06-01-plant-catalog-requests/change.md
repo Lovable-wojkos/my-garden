@@ -1,10 +1,10 @@
 ---
 change_id: plant-catalog-requests
 title: Plant catalog requests
-status: implemented
+status: archived
 created: 2026-06-01
 updated: 2026-06-15
-archived_at: null
+archived_at: 2026-06-15T20:27:00Z
 ---
 
 ## Notes
