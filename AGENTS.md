@@ -11,8 +11,14 @@ Astro 6 SSR app (React 19 islands, Tailwind 4, shadcn/ui, Supabase auth) deploye
 - `astro/no-set-html-directive` is an ESLint error — do not use `set:html`.
 - Prefix intentionally unused variables with `_` to satisfy `@typescript-eslint/no-unused-vars`.
 
+## UI & Design
+
+- Before any UI change (layout, styling, components, pages), read `context/foundation/DESIGN.md` and follow the design direction documented there.
+- When UI work establishes or updates design decisions, reflect them in `context/foundation/DESIGN.md` so future changes stay consistent.
+
 ## Project Structure
 
+- `context/foundation/DESIGN.md` — UI/UX design spec (colors, typography, layout patterns, component usage)
 - `src/layouts/` — Astro layouts
 - `src/pages/` — SSR pages; `src/pages/api/` for API endpoints
 - `src/components/` — Astro + React components; `src/components/ui/` for shadcn/ui

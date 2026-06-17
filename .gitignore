@@ -45,3 +45,4 @@ worktrees/
 .claude/prompts/m*
 .claude/.10x-cli-manifest.json
 skill-explainer.md
+context/*_current.md
