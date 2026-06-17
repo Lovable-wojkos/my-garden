@@ -2,7 +2,9 @@
 export const prerender = false;
 
 import AdminPlantRequestList from "@/components/plants/AdminPlantRequestList";
+import AppShell from "@/components/AppShell.astro";
 import Layout from "@/layouts/Layout.astro";
+import { pl } from "@/lib/copy/pl";
 import { getPendingPlants } from "@/lib/services/plants";
 import { createServiceRoleClient } from "@/lib/supabase";
 import type { PlantRow } from "@/types";
@@ -20,12 +22,11 @@ if (serviceClient) {
 }
 ---
 
-<Layout title="Plant Requests">
-  <div class="bg-cosmic min-h-screen p-4 md:p-6">
-    <div class="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-white p-6 shadow-xl">
-      <h1 class="mb-1 text-2xl font-semibold text-slate-900">Plant Requests</h1>
-      <p class="mb-6 text-sm text-slate-600">Approve pending plants into the global catalog or reject them.</p>
+<Layout title={pl.admin.title}>
+  <AppShell title={pl.admin.title} activeNav="admin">
+    <div class="mx-auto max-w-3xl space-y-6">
+      <p class="text-muted-foreground text-sm">{pl.admin.subtitle}</p>
       <AdminPlantRequestList client:load initialPlants={plants} />
     </div>
-  </div>
+  </AppShell>
 </Layout>

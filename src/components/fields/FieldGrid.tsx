@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { FieldRow, PlantingRow, PlantRow } from "@/types";
 import { getHarvestDate } from "@/lib/harvest";
+import { pl } from "@/lib/copy/pl";
+import { cn } from "@/lib/utils";
 import PlantingDialog from "./PlantingDialog";
 
 interface FieldGridProps {
@@ -37,7 +39,7 @@ export default function FieldGrid({ field, plantings: initialPlantings, plants }
   return (
     <div>
       <div
-        className="grid gap-1"
+        className="grid gap-1.5"
         style={{ gridTemplateColumns: `repeat(${field.cols}, minmax(0, 1fr))` }}
         aria-label={`Field grid ${field.rows} rows by ${field.cols} columns`}
       >
@@ -50,21 +52,28 @@ export default function FieldGrid({ field, plantings: initialPlantings, plants }
                 onClick={() => {
                   openCell(row, col);
                 }}
-                className="flex min-h-[72px] flex-col items-start rounded-lg border border-white/20 bg-white/5 p-2 text-left text-xs transition-colors hover:bg-white/10"
+                className={cn(
+                  "focus-visible:ring-ring flex min-h-11 min-w-11 flex-col items-start rounded-lg border p-2 text-left text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none",
+                  planting
+                    ? "border-primary/30 bg-primary/10 hover:bg-primary/15"
+                    : "border-border bg-muted/50 hover:bg-muted",
+                )}
                 aria-label={
                   planting
-                    ? `Cell (${row},${col}) planted with ${planting.plant_name ?? "unknown"}`
+                    ? `Cell (${row},${col}) planted with ${planting.plant_name ?? pl.fields.unknownPlant}`
                     : `Cell (${row},${col}) empty`
                 }
               >
                 {planting ? (
                   <>
-                    <span className="font-semibold text-white">{planting.plant_name ?? "Unknown"}</span>
-                    <span className="text-blue-100/70">{planting.seeding_date}</span>
-                    <span className="text-blue-100/50">🌾 {getHarvestDate(planting, plants)}</span>
+                    <span className="text-foreground font-semibold">
+                      {planting.plant_name ?? pl.fields.unknownPlant}
+                    </span>
+                    <span className="text-muted-foreground">{planting.seeding_date}</span>
+                    <span className="text-muted-foreground">🌾 {getHarvestDate(planting, plants)}</span>
                   </>
                 ) : (
-                  <span className="text-blue-100/40">Empty</span>
+                  <span className="text-muted-foreground">{pl.fields.emptyCell}</span>
                 )}
               </button>
             );

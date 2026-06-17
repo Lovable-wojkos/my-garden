@@ -1,8 +1,10 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import type { WeatherData } from "@/lib/services/open-meteo";
+import { getWeatherIconUrl } from "@/lib/services/weather-icons";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { pl } from "@/lib/copy/pl";
 import { cn } from "@/lib/utils";
 
 interface GeocodingResult {
@@ -20,6 +22,8 @@ interface WeatherWidgetProps {
     longitude: number;
   } | null;
   reloadOnSelect?: boolean;
+  /** When false, location is display-only (dashboard). When true, click to edit (settings). */
+  editable?: boolean;
 }
 
 interface WeatherState {
@@ -40,7 +44,28 @@ async function doFetchSuggestions(q: string, signal: AbortSignal): Promise<Geoco
   return (await res.json()) as GeocodingResult[];
 }
 
-export default function WeatherWidget({ initialCity, reloadOnSelect }: WeatherWidgetProps) {
+function parseLocationDisplay(cityInput: string): { primary: string; rest: string | null } {
+  const commaIdx = cityInput.indexOf(",");
+  if (commaIdx === -1) return { primary: cityInput.trim(), rest: null };
+  return {
+    primary: cityInput.slice(0, commaIdx).trim(),
+    rest: cityInput.slice(commaIdx + 1).trim(),
+  };
+}
+
+function formatRelativeRainDate(dateStr: string): string {
+  const rainDay = new Date(dateStr);
+  rainDay.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((today.getTime() - rainDay.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) return pl.weather.relativeToday;
+  if (diffDays === 1) return pl.weather.relativeYesterday;
+  return pl.weather.relativeDaysAgo(diffDays);
+}
+
+export default function WeatherWidget({ initialCity, reloadOnSelect, editable = false }: WeatherWidgetProps) {
   const [cityInput, setCityInput] = useState(initialCity?.cityName ?? "");
   const [suggestions, setSuggestions] = useState<GeocodingResult[]>([]);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -51,9 +76,11 @@ export default function WeatherWidget({ initialCity, reloadOnSelect }: WeatherWi
   const [loading, setLoading] = useState(Boolean(initialCity));
   const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isEditingLocation, setIsEditingLocation] = useState(editable && !initialCity?.cityName);
 
   const abortRef = useRef<AbortController | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Primitive deps to avoid effect re-runs on object identity changes
   const lat = coords?.lat;
@@ -72,7 +99,7 @@ export default function WeatherWidget({ initialCity, reloadOnSelect }: WeatherWi
       .catch((err: unknown) => {
         if (err instanceof Error && err.name === "AbortError") return;
         setWeatherState((prev) => (prev.data ? { ...prev, stale: true } : prev));
-        setError("Nie udalo sie pobrac danych pogodowych.");
+        setError(pl.weather.fetchError);
       })
       .finally(() => {
         setLoading(false);
@@ -148,6 +175,7 @@ export default function WeatherWidget({ initialCity, reloadOnSelect }: WeatherWi
     setCoords({ lat: suggestion.latitude, lng: suggestion.longitude });
     setSuggestions([]);
     setShowSuggestions(false);
+    setIsEditingLocation(false);
     setLoading(true);
 
     const res = await fetch("/api/user-preferences", {
@@ -172,81 +200,120 @@ export default function WeatherWidget({ initialCity, reloadOnSelect }: WeatherWi
       })
     : null;
 
+  const showLocationInput = editable && (isEditingLocation || !cityInput.trim());
+  const { primary: locationPrimary } = parseLocationDisplay(cityInput);
+
+  useEffect(() => {
+    if (editable && isEditingLocation) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [editable, isEditingLocation]);
+
   return (
-    <Card className="w-full max-w-sm border-white/10 bg-white/10 text-white backdrop-blur-xl">
+    <Card className="border-border bg-card text-foreground w-full max-w-sm shadow-sm">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-semibold">Pogoda</CardTitle>
+        <CardTitle className="text-lg font-semibold">{pl.weather.title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="relative">
-          <Input
-            value={cityInput}
-            onChange={(e) => {
-              handleInputChange(e.target.value);
-            }}
-            onFocus={() => {
-              setShowSuggestions(suggestions.length > 0);
-            }}
-            onBlur={() =>
-              setTimeout(() => {
-                setShowSuggestions(false);
-              }, 150)
-            }
-            placeholder="Wpisz nazwe miasta..."
-            className="border-white/20 bg-white/10 text-white placeholder:text-white/40"
-          />
-          {showSuggestions && suggestions.length > 0 && (
-            <ul className="absolute z-10 mt-1 w-full rounded-md border border-white/20 bg-slate-800 shadow-lg">
+        <div className="relative text-left">
+          {weatherState.data && (
+            <img
+              src={getWeatherIconUrl(weatherState.data.weatherCode)}
+              alt=""
+              width={64}
+              height={64}
+              className="mb-1 h-16 w-16"
+            />
+          )}
+          {showLocationInput ? (
+            <Input
+              ref={inputRef}
+              value={cityInput}
+              onChange={(e) => {
+                handleInputChange(e.target.value);
+              }}
+              onFocus={() => {
+                setShowSuggestions(suggestions.length > 0);
+              }}
+              onBlur={() =>
+                setTimeout(() => {
+                  setShowSuggestions(false);
+                  if (cityInput.trim()) setIsEditingLocation(false);
+                }, 150)
+              }
+              placeholder={pl.weather.searchPlaceholder}
+            />
+          ) : cityInput.trim() ? (
+            editable ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditingLocation(true);
+                }}
+                className="hover:bg-muted/50 w-full rounded-md px-1 py-1 text-left transition-colors"
+                aria-label={`${pl.settings.changeCity}: ${locationPrimary}`}
+              >
+                <span className="text-foreground block truncate text-4xl leading-tight font-bold">
+                  {locationPrimary}
+                </span>
+              </button>
+            ) : (
+              <p className="text-foreground truncate px-1 text-4xl leading-tight font-bold">{locationPrimary}</p>
+            )
+          ) : null}
+          {showLocationInput && showSuggestions && suggestions.length > 0 && (
+            <ul className="border-border bg-popover text-popover-foreground absolute z-10 mt-1 w-full rounded-md border shadow-lg">
               {suggestions.map((s, i) => (
                 <li
                   key={i}
                   onMouseDown={() => void handleSelectSuggestion(s)}
-                  className="cursor-pointer px-3 py-2 text-sm text-white hover:bg-white/10"
+                  className="hover:bg-muted cursor-pointer px-3 py-2 text-sm"
                 >
                   {s.displayName}
                 </li>
               ))}
             </ul>
           )}
-          {showSuggestions && cityInput.trim().length >= 2 && suggestions.length === 0 && (
-            <div className="absolute z-10 mt-1 w-full rounded-md border border-white/20 bg-slate-800 px-3 py-2 text-sm text-white/50">
-              Brak wynikow
+          {showLocationInput && showSuggestions && cityInput.trim().length >= 2 && suggestions.length === 0 && (
+            <div className="border-border bg-popover text-muted-foreground absolute z-10 mt-1 w-full rounded-md border px-3 py-2 text-sm">
+              {pl.weather.noResults}
             </div>
           )}
         </div>
 
-        {loading && <p className="text-sm text-white/60">Ladowanie danych pogodowych...</p>}
+        {loading && <p className="text-muted-foreground text-sm">{pl.weather.loading}</p>}
 
-        {error && !weatherState.data && <p className="text-sm text-red-300">{error}</p>}
+        {error && !weatherState.data && <p className="text-destructive text-sm">{error}</p>}
 
         {weatherState.data && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/60">Temperatura</span>
-              <span className={cn("text-xl font-bold")}>{weatherState.data.temperatureC}&#176;C</span>
+              <span className="text-muted-foreground text-sm">{pl.weather.temperature}</span>
+              <span className={cn("text-3xl font-bold")}>{weatherState.data.temperatureC}&#176;C</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/60">Opady (7 dni)</span>
+              <span className="text-muted-foreground text-sm">{pl.weather.rainfall} (7 dni)</span>
               <span className="font-semibold">{weatherState.data.rainfall7dMm} mm</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/60">Ostatni deszcz</span>
+              <span className="text-muted-foreground text-sm">{pl.weather.lastRain}</span>
               <span className="font-semibold">
                 {weatherState.data.lastRainDate
-                  ? `${new Date(weatherState.data.lastRainDate).toLocaleDateString("pl-PL")} · ${weatherState.data.lastRainMm} mm`
-                  : "Brak danych"}
+                  ? `${formatRelativeRainDate(weatherState.data.lastRainDate)} · ${weatherState.data.lastRainMm} mm`
+                  : pl.weather.lastRainNoData}
               </span>
             </div>
             {weatherState.stale && staleTime && (
-              <Badge variant="outline" className="border-yellow-400/40 text-yellow-300">
-                dane z {staleTime}
+              <Badge variant="outline" className="border-border text-muted-foreground">
+                {pl.weather.stale} ({staleTime})
               </Badge>
             )}
           </div>
         )}
 
-        {!loading && !weatherState.data && !error && (
-          <p className="text-sm text-white/50">Wyszukaj miasto, aby zobaczyc pogode.</p>
+        {!loading && !weatherState.data && !error && editable && (
+          <p className="text-muted-foreground text-sm">{pl.weather.searchPrompt}</p>
         )}
       </CardContent>
     </Card>

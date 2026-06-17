@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { pl } from "@/lib/copy/pl";
 import { cn } from "@/lib/utils";
 import { getHarvestDate } from "@/lib/harvest";
 import type { PlantingRow, PlantRow } from "@/types";
@@ -44,7 +45,6 @@ export default function PlantingDialog({
 
   const isEditMode = existingPlanting != null;
 
-  // Build a fake planting for harvest date preview
   const previewPlanting: PlantingRow = {
     id: "",
     field_id: fieldId,
@@ -73,58 +73,52 @@ export default function PlantingDialog({
 
   function handleTextEntry(value: string) {
     setPlantName(value);
-    setPlantId(null); // Free-text clears catalog selection
+    setPlantId(null);
   }
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLoading(true);
     setError(null);
 
-    if (!plantId && !plantName.trim()) {
-      setError("Enter a plant name or select from the catalog.");
-      return;
-    }
-
-    setLoading(true);
     try {
-      let res: Response;
-      if (isEditMode) {
-        res = await fetch(`/api/plantings/${existingPlanting.id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            plant_id: plantId,
-            plant_name: plantName.trim() || null,
-            seeding_date: seedingDate,
-            notes: notes.trim() || null,
-          }),
-        });
-      } else {
-        res = await fetch("/api/plantings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            field_id: fieldId,
-            plant_id: plantId,
-            plant_name: plantName.trim() || null,
-            cell_row: cellRow,
-            cell_col: cellCol,
-            seeding_date: seedingDate,
-            notes: notes.trim() || null,
-          }),
-        });
-      }
+      const createBody = {
+        field_id: fieldId,
+        cell_row: cellRow,
+        cell_col: cellCol,
+        plant_id: plantId,
+        plant_name: plantName.trim() || null,
+        seeding_date: seedingDate,
+        notes: notes.trim() || null,
+      };
+
+      const updateBody = {
+        plant_id: plantId,
+        plant_name: plantName.trim() || null,
+        seeding_date: seedingDate,
+        notes: notes.trim() || null,
+      };
+
+      const res = isEditMode
+        ? await fetch(`/api/plantings/${existingPlanting.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updateBody),
+          })
+        : await fetch("/api/plantings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(createBody),
+          });
 
       if (!res.ok) {
-        const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-        const apiError = json.error as string | undefined;
-        const fieldErrors = json.errors as Record<string, string[]> | undefined;
-        const errorMsg = apiError ?? (fieldErrors ? Object.values(fieldErrors).flat().join(", ") : "");
-        setError(errorMsg || "Something went wrong.");
+        setError(pl.fields.errors.general);
         return;
       }
 
       onSuccess();
+    } catch {
+      setError(pl.fields.errors.network);
     } finally {
       setLoading(false);
     }
@@ -140,7 +134,7 @@ export default function PlantingDialog({
     try {
       const res = await fetch(`/api/plantings/${existingPlanting.id}`, { method: "DELETE" });
       if (!res.ok) {
-        setError("Failed to delete planting.");
+        setError(pl.fields.errors.general);
         return;
       }
       onSuccess();
@@ -151,15 +145,14 @@ export default function PlantingDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="border-white/10 bg-slate-900 text-white">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEditMode ? "Edit planting" : "Add planting"}</DialogTitle>
+          <DialogTitle>{isEditMode ? pl.fields.plantingEditTitle : pl.fields.plantingAddTitle}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Catalog combobox */}
-          <div className="space-y-1">
-            <Label>Select from catalog</Label>
+          <div className="space-y-1.5">
+            <Label>{pl.fields.catalogSelectLabel}</Label>
             <Popover open={catalogOpen} onOpenChange={setCatalogOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -167,17 +160,17 @@ export default function PlantingDialog({
                   variant="outline"
                   role="combobox"
                   aria-expanded={catalogOpen}
-                  className="w-full justify-between border-white/20 bg-white/5"
+                  className="w-full justify-between"
                 >
-                  {selectedPlant?.name ?? "Search catalog…"}
+                  {selectedPlant?.name ?? pl.fields.plantPlaceholder}
                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-full p-0">
                 <Command>
-                  <CommandInput placeholder="Search plants…" />
+                  <CommandInput placeholder={pl.fields.plantSearch} />
                   <CommandList>
-                    <CommandEmpty>No plants in catalog yet — enter a name manually below.</CommandEmpty>
+                    <CommandEmpty>{pl.fields.catalogEmpty}</CommandEmpty>
                     <CommandGroup>
                       {plants.map((plant) => (
                         <CommandItem
@@ -200,24 +193,21 @@ export default function PlantingDialog({
             </Popover>
           </div>
 
-          {/* Free-text name */}
-          <div className="space-y-1">
-            <Label htmlFor="plant-name">Or enter plant name</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="plant-name">{pl.fields.plantManualLabel}</Label>
             <Input
               id="plant-name"
               value={plantName}
               onChange={(e) => {
                 handleTextEntry(e.target.value);
               }}
-              placeholder="e.g. Courgette"
+              placeholder={pl.plantRequests.formPlaceholder}
               maxLength={100}
-              className="border-white/20 bg-white/5"
             />
           </div>
 
-          {/* Seeding date */}
-          <div className="space-y-1">
-            <Label htmlFor="seeding-date">Seeding date</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="seeding-date">{pl.fields.seedingDateLabel}</Label>
             <Input
               id="seeding-date"
               type="date"
@@ -226,13 +216,11 @@ export default function PlantingDialog({
                 setSeedingDate(e.target.value);
               }}
               required
-              className="border-white/20 bg-white/5"
             />
           </div>
 
-          {/* Notes */}
-          <div className="space-y-1">
-            <Label htmlFor="notes">Notes (optional)</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="notes">{pl.fields.notesLabel}</Label>
             <textarea
               id="notes"
               value={notes}
@@ -241,18 +229,17 @@ export default function PlantingDialog({
               }}
               maxLength={500}
               rows={3}
-              placeholder="Any additional notes…"
-              className="w-full rounded-md border border-white/20 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:ring-2 focus:ring-white/20 focus:outline-none"
+              placeholder={pl.fields.notesPlaceholder}
+              className="border-input bg-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-20 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:outline-none"
             />
           </div>
 
-          {/* Harvest date preview */}
-          <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm">
-            <span className="text-blue-100/60">Estimated harvest: </span>
-            <span className="font-medium text-white">{harvestPreview}</span>
+          <div className="border-border bg-muted/50 rounded-lg border px-3 py-2 text-sm">
+            <span className="text-muted-foreground">{pl.fields.harvestEstimate}: </span>
+            <span className="text-foreground font-medium">{harvestPreview}</span>
           </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-destructive text-sm">{error}</p>}
 
           <DialogFooter className="flex-col gap-2 sm:flex-row">
             {isEditMode && (
@@ -263,7 +250,7 @@ export default function PlantingDialog({
                 disabled={loading}
                 className="sm:mr-auto"
               >
-                {confirmDelete ? "Confirm delete?" : "Delete"}
+                {confirmDelete ? pl.fields.deleteConfirmButton : pl.fields.deletePlanting}
               </Button>
             )}
             <Button
@@ -274,10 +261,10 @@ export default function PlantingDialog({
               }}
               disabled={loading}
             >
-              Cancel
+              {pl.common.cancel}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving…" : isEditMode ? "Update" : "Plant"}
+              {loading ? pl.fields.savePending : isEditMode ? pl.fields.updatePlanting : pl.fields.plantButton}
             </Button>
           </DialogFooter>
         </form>

@@ -472,10 +472,10 @@ Apply earthy light tokens and Polish copy to remaining React islands and admin p
 
 #### Automated
 
-- [ ] 4.1 `npm run lint` passes
-- [ ] 4.2 `npm run build` passes
-- [ ] 4.3 Plant-requests API and service tests pass
-- [ ] 4.4 `npm run test:run` passes
+- [x] 4.1 `npm run lint` passes
+- [x] 4.2 `npm run build` passes
+- [x] 4.3 Plant-requests API and service tests pass
+- [x] 4.4 `npm run test:run` passes
 
 #### Manual
 
@@ -488,12 +488,12 @@ Apply earthy light tokens and Polish copy to remaining React islands and admin p
 
 #### Automated
 
-- [ ] 5.1 `npm run lint` passes
-- [ ] 5.2 `npm run build` passes
-- [ ] 5.3 `npm run test:run` passes
+- [x] 5.1 `npm run lint` passes
+- [x] 5.2 `npm run build` passes
+- [x] 5.3 `npm run test:run` passes
 
 #### Manual
 
-- [ ] 5.4 No cosmic/starter styling remains
-- [ ] 5.5 Full user and admin journeys visually consistent
-- [ ] 5.6 Mobile field grid and dialogs acceptable
+- [x] 5.4 No cosmic/starter styling remains
+- [x] 5.5 Full user and admin journeys visually consistent
+- [x] 5.6 Mobile field grid and dialogs acceptable

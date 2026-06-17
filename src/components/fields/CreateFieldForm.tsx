@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { pl } from "@/lib/copy/pl";
 
 interface FormErrors {
   name?: string[];
@@ -39,14 +40,14 @@ export default function CreateFieldForm() {
         if (data.errors) {
           setErrors(data.errors);
         } else {
-          setErrors({ general: data.error ?? "Something went wrong" });
+          setErrors({ general: data.error ?? pl.fields.errors.general });
         }
         return;
       }
 
       window.location.href = `/dashboard/fields/${data.id ?? ""}`;
     } catch {
-      setErrors({ general: "Network error. Please try again." });
+      setErrors({ general: pl.fields.errors.network });
     } finally {
       setLoading(false);
     }
@@ -55,11 +56,13 @@ export default function CreateFieldForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {errors.general && (
-        <p className="rounded-md border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-700">{errors.general}</p>
+        <p className="border-destructive/30 bg-destructive/10 text-destructive rounded-md border px-4 py-2 text-sm">
+          {errors.general}
+        </p>
       )}
 
       <div className="space-y-1.5">
-        <Label htmlFor="name">Field name</Label>
+        <Label htmlFor="name">{pl.fields.nameLabel}</Label>
         <Input
           id="name"
           type="text"
@@ -67,16 +70,16 @@ export default function CreateFieldForm() {
           onChange={(e) => {
             setName(e.target.value);
           }}
-          placeholder="e.g. Main vegetable bed"
+          placeholder={pl.fields.namePlaceholder}
           maxLength={50}
           required
         />
-        {errors.name && <p className="text-sm text-red-600">{errors.name[0]}</p>}
+        {errors.name && <p className="text-destructive text-sm">{errors.name[0]}</p>}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <Label htmlFor="cols">Columns (width)</Label>
+          <Label htmlFor="cols">{pl.fields.colsLabel}</Label>
           <Input
             id="cols"
             type="number"
@@ -88,11 +91,11 @@ export default function CreateFieldForm() {
             max={20}
             required
           />
-          {errors.cols && <p className="text-sm text-red-600">{errors.cols[0]}</p>}
+          {errors.cols && <p className="text-destructive text-sm">{errors.cols[0]}</p>}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="rows">Rows (height)</Label>
+          <Label htmlFor="rows">{pl.fields.rowsLabel}</Label>
           <Input
             id="rows"
             type="number"
@@ -104,12 +107,12 @@ export default function CreateFieldForm() {
             max={20}
             required
           />
-          {errors.rows && <p className="text-sm text-red-600">{errors.rows[0]}</p>}
+          {errors.rows && <p className="text-destructive text-sm">{errors.rows[0]}</p>}
         </div>
       </div>
 
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "Creating…" : "Create field"}
+        {loading ? pl.fields.createPending : pl.fields.createButton}
       </Button>
     </form>
   );
