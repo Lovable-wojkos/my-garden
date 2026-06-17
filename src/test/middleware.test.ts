@@ -5,74 +5,103 @@ import { onRequest } from "@/middleware";
 
 vi.mock("@/lib/supabase");
 
+const PROTECTED_PREFIXES = [
+  "/dashboard",
+  "/admin",
+  "/api/admin",
+  "/api/weather",
+  "/api/user-preferences",
+  "/api/geocoding-suggestions",
+  "/api/plantings",
+] as const;
+
+const MOCK_USER = { id: "user-123", email: "user@example.com" };
+
+function makeContext(pathname: string) {
+  const redirect = vi.fn().mockReturnValue(new Response(null, { status: 302 }));
+  return {
+    url: new URL(`http://localhost${pathname}`),
+    request: new Request(`http://localhost${pathname}`),
+    cookies: {},
+    locals: {} as Record<string, unknown>,
+    redirect,
+    next: vi.fn().mockResolvedValue(new Response("next")),
+  };
+}
+
 describe("middleware onRequest", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("redirects unauthenticated user from /admin to /auth/signin", async () => {
-    vi.mocked(createClient).mockReturnValue({
-      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-    } as any);
+  describe.each(PROTECTED_PREFIXES)("unauthenticated access to %s", (prefix) => {
+    it("redirects to /auth/signin", async () => {
+      vi.mocked(createClient).mockReturnValue({
+        auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
+      } as any);
 
-    const redirect = vi.fn().mockReturnValue(new Response(null, { status: 302 }));
-    const context = {
-      url: new URL("http://localhost/admin/plant-requests"),
-      request: new Request("http://localhost/admin/plant-requests"),
-      cookies: {},
-      locals: {} as Record<string, unknown>,
-      redirect,
-    };
-    const next = vi.fn().mockResolvedValue(new Response("next"));
+      const context = makeContext(`${prefix}/nested`);
+      const handler: MiddlewareHandler = onRequest;
+      await handler(context, context.next);
 
-    const handler: MiddlewareHandler = onRequest;
-    await handler(context, next);
-
-    expect(redirect).toHaveBeenCalledWith("/auth/signin");
-    expect(next).not.toHaveBeenCalled();
+      expect(context.redirect).toHaveBeenCalledWith("/auth/signin");
+      expect(context.next).not.toHaveBeenCalled();
+    });
   });
 
-  it("redirects unauthenticated user from /api/admin to /auth/signin", async () => {
-    vi.mocked(createClient).mockReturnValue({
-      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-    } as any);
+  describe.each(PROTECTED_PREFIXES)("authenticated access to %s", (prefix) => {
+    it("calls next and sets locals.user", async () => {
+      vi.mocked(createClient).mockReturnValue({
+        auth: { getUser: vi.fn().mockResolvedValue({ data: { user: MOCK_USER } }) },
+      } as any);
 
-    const redirect = vi.fn().mockReturnValue(new Response(null, { status: 302 }));
-    const context = {
-      url: new URL("http://localhost/api/admin/plant-requests"),
-      request: new Request("http://localhost/api/admin/plant-requests"),
-      cookies: {},
-      locals: {} as Record<string, unknown>,
-      redirect,
-    };
-    const next = vi.fn().mockResolvedValue(new Response("next"));
+      const context = makeContext(`${prefix}/nested`);
+      const handler: MiddlewareHandler = onRequest;
+      await handler(context, context.next);
 
-    const handler: MiddlewareHandler = onRequest;
-    await handler(context, next);
-
-    expect(redirect).toHaveBeenCalledWith("/auth/signin");
-    expect(next).not.toHaveBeenCalled();
+      expect(context.next).toHaveBeenCalled();
+      expect(context.redirect).not.toHaveBeenCalled();
+      expect(context.locals.user).toEqual(MOCK_USER);
+    });
   });
 
-  it("redirects unauthenticated user from /dashboard to /auth/signin", async () => {
-    vi.mocked(createClient).mockReturnValue({
-      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
-    } as any);
+  it.each(["/", "/api/auth/signin", "/auth/signup"])(
+    "allows unauthenticated access to public route %s",
+    async (pathname) => {
+      vi.mocked(createClient).mockReturnValue({
+        auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
+      } as any);
 
-    const redirect = vi.fn().mockReturnValue(new Response(null, { status: 302 }));
-    const context = {
-      url: new URL("http://localhost/dashboard"),
-      request: new Request("http://localhost/dashboard"),
-      cookies: {},
-      locals: {} as Record<string, unknown>,
-      redirect,
-    };
-    const next = vi.fn().mockResolvedValue(new Response("next"));
+      const context = makeContext(pathname);
+      const handler: MiddlewareHandler = onRequest;
+      await handler(context, context.next);
 
+      expect(context.next).toHaveBeenCalled();
+      expect(context.redirect).not.toHaveBeenCalled();
+    },
+  );
+
+  it("sets locals.user to null and still redirects when createClient returns null", async () => {
+    vi.mocked(createClient).mockReturnValue(null);
+
+    const context = makeContext("/dashboard");
     const handler: MiddlewareHandler = onRequest;
-    await handler(context, next);
+    await handler(context, context.next);
 
-    expect(redirect).toHaveBeenCalledWith("/auth/signin");
-    expect(next).not.toHaveBeenCalled();
+    expect(context.locals.user).toBeNull();
+    expect(context.redirect).toHaveBeenCalledWith("/auth/signin");
+    expect(context.next).not.toHaveBeenCalled();
+  });
+
+  it("sets locals.user to null on public route when createClient returns null", async () => {
+    vi.mocked(createClient).mockReturnValue(null);
+
+    const context = makeContext("/");
+    const handler: MiddlewareHandler = onRequest;
+    await handler(context, context.next);
+
+    expect(context.locals.user).toBeNull();
+    expect(context.next).toHaveBeenCalled();
+    expect(context.redirect).not.toHaveBeenCalled();
   });
 });

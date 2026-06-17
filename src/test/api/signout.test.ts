@@ -25,4 +25,24 @@ describe("POST /api/auth/signout", () => {
 
     expect(context.redirect).toHaveBeenCalledWith("/");
   });
+
+  it("calls signOut and redirects to / when Supabase is configured", async () => {
+    const signOut = vi.fn().mockResolvedValue({ error: null });
+    vi.mocked(createClient).mockReturnValue({
+      auth: { signOut },
+    } as any);
+
+    const context: Pick<APIContext, "request" | "cookies" | "redirect"> = {
+      request: new Request("http://localhost/api/auth/signout", { method: "POST" }),
+      cookies: { set: vi.fn() },
+      redirect: vi
+        .fn()
+        .mockImplementation((url: string) => new Response(null, { status: 302, headers: { Location: url } })),
+    };
+
+    await POST(context);
+
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(context.redirect).toHaveBeenCalledWith("/");
+  });
 });

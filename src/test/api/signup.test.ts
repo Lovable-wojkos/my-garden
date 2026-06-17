@@ -49,4 +49,30 @@ describe("POST /api/auth/signup", () => {
       expect.stringContaining(encodeURIComponent("Email already registered")),
     );
   });
+
+  it("redirects to /auth/confirm-email on successful signup and writes session cookies via createClient", async () => {
+    const cookiesSet = vi.fn();
+    const cookies = { set: cookiesSet };
+    const context = makeContext();
+    context.cookies = cookies;
+
+    vi.mocked(createClient).mockImplementation((headers, cookiesArg) => {
+      expect(headers).toBe(context.request.headers);
+      expect(cookiesArg).toBe(cookies);
+      return {
+        auth: {
+          signUp: vi.fn().mockImplementation(() => {
+            cookiesArg.set("sb-access-token", "mock-token", { path: "/" });
+            return Promise.resolve({ error: null });
+          }),
+        },
+      } as any;
+    });
+
+    await POST(context);
+
+    expect(context.redirect).toHaveBeenCalledWith("/auth/confirm-email");
+    expect(createClient).toHaveBeenCalledWith(context.request.headers, cookies);
+    expect(cookiesSet).toHaveBeenCalledWith("sb-access-token", "mock-token", { path: "/" });
+  });
 });
