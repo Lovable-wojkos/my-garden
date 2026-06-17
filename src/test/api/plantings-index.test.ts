@@ -2,15 +2,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { APIContext } from "astro";
 import { createClient } from "@/lib/supabase";
 import * as plantingsService from "@/lib/services/plantings";
-import { POST } from "@/pages/api/plantings/index";
+import { GET, POST } from "@/pages/api/plantings/index";
 
 vi.mock("@/lib/supabase");
 vi.mock("@/lib/services/plantings");
 
 const TEST_USER = { id: "user-123" };
+const TEST_FIELD_ID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
 const VALID_BODY = {
-  field_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+  field_id: TEST_FIELD_ID,
   plant_name: "Tomato",
   cell_row: 0,
   cell_col: 0,
@@ -24,6 +25,24 @@ function makeContext(body?: unknown, user: unknown = TEST_USER): Pick<APIContext
       headers: { "Content-Type": "application/json" },
       body: body !== undefined ? JSON.stringify(body) : undefined,
     }),
+    cookies: { set: vi.fn() } as any,
+    locals: { user } as any,
+  };
+}
+
+function makeGetContext(
+  searchParams?: Record<string, string>,
+  user: unknown = TEST_USER,
+): Pick<APIContext, "request" | "cookies" | "locals" | "url"> {
+  const url = new URL("http://localhost/api/plantings");
+  if (searchParams) {
+    for (const [key, value] of Object.entries(searchParams)) {
+      url.searchParams.set(key, value);
+    }
+  }
+  return {
+    url,
+    request: new Request(url.toString(), { method: "GET" }),
     cookies: { set: vi.fn() } as any,
     locals: { user } as any,
   };
@@ -105,5 +124,48 @@ describe("POST /api/plantings", () => {
     expect(response.status).toBe(201);
     const json = await response.json();
     expect(json.id).toBe("planting-abc");
+  });
+});
+
+describe("GET /api/plantings", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns 401 when user is not authenticated", async () => {
+    const response = await GET(makeGetContext({ field_id: TEST_FIELD_ID }, null) as any);
+    expect(response.status).toBe(401);
+  });
+
+  it("returns 400 when field_id query param is missing", async () => {
+    vi.mocked(createClient).mockReturnValue({} as any);
+    const response = await GET(makeGetContext() as any);
+    expect(response.status).toBe(400);
+  });
+
+  it("returns 400 when field_id query param is invalid", async () => {
+    vi.mocked(createClient).mockReturnValue({} as any);
+    const response = await GET(makeGetContext({ field_id: "not-a-uuid" }) as any);
+    expect(response.status).toBe(400);
+  });
+
+  it("returns 503 when database is not configured", async () => {
+    vi.mocked(createClient).mockReturnValue(null);
+    const response = await GET(makeGetContext({ field_id: TEST_FIELD_ID }) as any);
+    expect(response.status).toBe(503);
+  });
+
+  it("returns 200 with plantings on success", async () => {
+    const mockPlantings = [{ id: "planting-1", field_id: TEST_FIELD_ID, plant_name: "Tomato" }];
+    vi.mocked(createClient).mockReturnValue({} as any);
+    vi.mocked(plantingsService.getPlantingsByField).mockResolvedValue({
+      data: mockPlantings,
+      error: null,
+    } as any);
+    const response = await GET(makeGetContext({ field_id: TEST_FIELD_ID }) as any);
+    expect(response.status).toBe(200);
+    const json = await response.json();
+    expect(json).toEqual(mockPlantings);
+    expect(plantingsService.getPlantingsByField).toHaveBeenCalledWith(expect.anything(), TEST_FIELD_ID);
   });
 });

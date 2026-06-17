@@ -351,13 +351,13 @@ No schema or production code changes. If migration seed plants change in a futur
 
 #### Automated
 
-- [x] 1.1 `npm run test:run -- src/test/middleware.test.ts src/test/api/signin.test.ts src/test/api/signup.test.ts src/test/api/signout.test.ts` passes
-- [x] 1.2 `npm run lint` passes on edited test files
+- [x] 1.1 `npm run test:run -- src/test/middleware.test.ts src/test/api/signin.test.ts src/test/api/signup.test.ts src/test/api/signout.test.ts` passes — fc86005
+- [x] 1.2 `npm run lint` passes on edited test files — fc86005
 
 #### Manual
 
-- [x] 1.3 New middleware tests cover all seven protected prefixes with explicit unauth cases
-- [x] 1.4 Auth success tests verify cookie writes or signOut invocation, not redirect-only
+- [x] 1.3 New middleware tests cover all seven protected prefixes with explicit unauth cases — fc86005
+- [x] 1.4 Auth success tests verify cookie writes or signOut invocation, not redirect-only — fc86005
 
 ### Phase 2: API Handler Gaps
 
