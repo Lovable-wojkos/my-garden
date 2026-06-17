@@ -1,7 +1,7 @@
 ---
 change_id: testing-critical-path-coverage
 title: Phase 1 critical-path coverage for auth, catalog, and harvest dates
-status: implementing
+status: implemented
 created: 2026-06-15
 updated: 2026-06-17
 archived_at: null

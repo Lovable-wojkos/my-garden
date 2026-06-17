@@ -375,22 +375,22 @@ No schema or production code changes. If migration seed plants change in a futur
 
 #### Automated
 
-- [x] 3.1 `npm run test:run -- src/test/fixtures/expected-catalog.ts src/test/lib/plants.test.ts src/test/lib/harvest.test.ts` passes
-- [x] 3.2 `npm run lint` passes
+- [x] 3.1 `npm run test:run -- src/test/fixtures/expected-catalog.ts src/test/lib/plants.test.ts src/test/lib/harvest.test.ts` passes — 6d8c760
+- [x] 3.2 `npm run lint` passes — 6d8c760
 
 #### Manual
 
-- [x] 3.3 `EXPECTED_CATALOG` matches migration seed (10 plants, correct attributes)
-- [x] 3.4 Harvest Tomato test uses oracle computation, not hard-coded date string
+- [x] 3.3 `EXPECTED_CATALOG` matches migration seed (10 plants, correct attributes) — 6d8c760
+- [x] 3.4 Harvest Tomato test uses oracle computation, not hard-coded date string — 6d8c760
 
 ### Phase 4: Cookbook & Close-Out
 
 #### Automated
 
-- [ ] 4.1 `npm run test:run` passes (full suite)
-- [ ] 4.2 `npm run lint` passes
+- [x] 4.1 `npm run test:run` passes (full suite)
+- [x] 4.2 `npm run lint` passes
 
 #### Manual
 
-- [ ] 4.3 §6.1–§6.4 contain actionable examples referencing real repo files
-- [ ] 4.4 §6.6 note captures dual auth semantics and fixture approach
+- [x] 4.3 §6.1–§6.4 contain actionable examples referencing real repo files
+- [x] 4.4 §6.6 note captures dual auth semantics and fixture approach

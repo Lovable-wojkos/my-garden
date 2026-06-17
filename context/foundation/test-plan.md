@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-06-02
+> Last updated: 2026-06-17
 
 ## 1. Strategy
 
@@ -65,7 +65,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | #   | Phase name                   | Goal (one line)                                                                    | Risks covered | Test types                   | Status        | Change folder                                   |
 | --- | ---------------------------- | ---------------------------------------------------------------------------------- | ------------- | ---------------------------- | ------------- | ----------------------------------------------- |
-| 1   | Critical-path coverage       | Bootstrap Vitest; defend auth gating, catalog completeness, and harvest date logic | #1, #2, #6    | unit + integration           | change opened | context/changes/testing-critical-path-coverage/ |
+| 1   | Critical-path coverage       | Bootstrap Vitest; defend auth gating, catalog completeness, and harvest date logic | #1, #2, #6    | unit + integration           | implemented   | context/changes/testing-critical-path-coverage/ |
 | 2   | Integration around hot-spots | Catch regressions in weather sync and auth/RLS data-boundary checks                | #3, #4        | integration (Supabase local) | not started   | —                                               |
 | 3   | Data integrity               | Migration dry-run review + smoke tests against seed data                           | #5            | manual smoke + review script | not started   | —                                               |
 | 4   | Quality-gates wiring         | Wire unit + integration tests into CI; enforce on PR                               | cross-cutting | CI gates                     | not started   | —                                               |
@@ -117,19 +117,57 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.1 Adding a unit test
 
-TBD — see §3 Phase 1 (critical-path coverage: auth gating, catalog completeness, harvest date calculation patterns).
+Place pure-function and service-layer tests under `src/test/lib/`, mirroring the source path (e.g. `src/lib/harvest.ts` → `src/test/lib/harvest.test.ts`).
+
+**Supabase builder mock.** Service tests mock the Supabase client with a chainable query builder. Copy the `makeQueryBuilder` / `makeClient` pattern from `src/test/lib/plants.test.ts`: each chain method (`select`, `eq`, `order`, …) returns the builder; terminal methods (`single`, `overrideTypes`) or a `then` handler resolve the mocked `{ data, error }` payload.
+
+**Catalog fixture.** For plant-catalog assertions, import `EXPECTED_CATALOG` from `src/test/fixtures/expected-catalog.ts`. This array mirrors the 10 global seed plants in `supabase/migrations/20260609000000_plants_scope_drop_requests.sql`. When migration seed data changes, update the fixture in the same PR.
+
+**Harvest oracle.** For `getHarvestDate` (Risk #6), never hard-code a locale-formatted date string in the assertion. Compute the expected value with the same `Date` arithmetic and `toLocaleDateString("pl-PL")` call — see `src/test/lib/harvest.test.ts`. Importing `growth_days` from `EXPECTED_CATALOG` keeps catalog and harvest tests aligned.
+
+Run scoped: `npm run test:run -- src/test/lib/<name>.test.ts`
 
 ### 6.2 Adding an integration test
 
-TBD — see §3 Phase 1 and Phase 2 (auth RLS, weather sync, IDOR patterns).
+Phase 1 integration tests import API route handlers directly — no live Supabase, no HTTP server. Place files under `src/test/api/` (e.g. `src/pages/api/plantings/index.ts` → `src/test/api/plantings-index.test.ts`).
+
+**Handler import pattern.**
+
+1. `vi.mock("@/lib/supabase")` and `vi.mock("@/lib/services/<domain>")` at the top.
+2. Import the named export (`GET`, `POST`, …) from the route file.
+3. Build a minimal `APIContext` stub with `request`, `cookies`, `locals`, and `url` (for GET with query params). See `makeContext` / `makeGetContext` in `src/test/api/plantings-index.test.ts`.
+4. Mock `createClient` to return a client object (or `null` for 503 cases); mock service functions to return controlled data.
+5. Call the handler, assert `response.status` and parse `response.json()` for body shape.
+
+**Middleware tests** live at `src/test/middleware.test.ts`: mock `createClient`, stub `context` with `url`, `cookies`, `locals`, and assert `redirect` vs `next()` plus `locals.user` population.
+
+Phase 2 will add live Supabase / RLS integration tests for Risks #3 and #4; until then, keep mocking at the service boundary.
+
+Run scoped: `npm run test:run -- src/test/api/<name>.test.ts src/test/middleware.test.ts`
 
 ### 6.3 Adding an e2e test
 
-TBD — see §3 Phase 2.
+E2E coverage is Phase 2+ scope (unauth redirect, critical user flows). Playwright is already bootstrapped:
+
+- Config: `playwright.config.ts`
+- Auth setup: `playwright/auth/auth.setup.ts`
+- Specs: `playwright/tests/` (e.g. `dashboard.spec.ts`, `seed.spec.ts`)
+- Quality rules: `playwright/tests/e2e-quality-rules.md`
+
+Do not add e2e tests for risks already covered by unit/integration mocks unless the test-plan phase explicitly calls for browser-level verification. Prefer `/10x-e2e` when driving approved e2e phases.
 
 ### 6.4 Adding a test for a new API endpoint
 
-TBD — see §3 Phase 1.
+Checklist for every new route under `src/pages/api/`:
+
+1. **401 unauthenticated** — `locals.user` null → 401 JSON with `{ error: "Unauthorized" }` (or 302 redirect if the route is in `PROTECTED_ROUTES`; see dual-auth note below).
+2. **400 validation** — invalid JSON, missing required fields, schema failures (assert status and error shape).
+3. **Success path** — authenticated user, valid input → expected status (200/201) and response body from mocked service.
+4. **503 unavailable** — `createClient` returns `null` → 503.
+5. **Mock the service layer** — `vi.mock("@/lib/services/<domain>")`; assert the handler delegates correctly, not Supabase internals.
+6. **Use existing templates** — `src/test/api/plantings-index.test.ts` (middleware-protected, GET + POST) and `src/test/api/fields-index.test.ts` (handler-only 401).
+
+**Dual auth semantics.** Routes listed in `PROTECTED_ROUTES` (`src/middleware.ts`) redirect unauthenticated browser requests before the handler runs. Routes outside that list (e.g. `/api/fields`) rely on handler-level guards and return 401 JSON. Document the distinction in a header comment when adding tests for handler-only routes.
 
 ### 6.5 Adding a migration review / smoke test
 
@@ -139,6 +177,8 @@ TBD — see §3 Phase 3 (data integrity pattern).
 
 (Optional. After each phase lands, `/10x-implement` appends a 2-3 line note
 here capturing anything surprising the rollout phase taught.)
+
+**Phase 1 (critical-path coverage, 2026-06-17).** Auth has dual semantics: middleware-protected routes (`/api/plantings`, etc.) redirect unauthenticated requests, while `/api/fields` returns 401 JSON at the handler — both are intentional. Catalog completeness tests use a shared `EXPECTED_CATALOG` fixture instead of live DB queries; update it whenever migration seed plants change.
 
 ## 7. What We Deliberately Don't Test
 
