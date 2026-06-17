@@ -13,6 +13,7 @@ const PROTECTED_PREFIXES = [
   "/api/user-preferences",
   "/api/geocoding-suggestions",
   "/api/plantings",
+  "/api/plant-requests",
 ] as const;
 
 const MOCK_USER = { id: "user-123", email: "user@example.com" };

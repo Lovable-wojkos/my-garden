@@ -1,6 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import type { PlantRow } from "@/types";
-import { getPlants, createUserPlant, getPendingPlants, approvePlant, rejectPlant } from "@/lib/services/plants";
+import {
+  getPlants,
+  createUserPlant,
+  getPendingPlants,
+  getUserPendingPlants,
+  approvePlant,
+  rejectPlant,
+} from "@/lib/services/plants";
 import { EXPECTED_CATALOG } from "@/test/fixtures/expected-catalog";
 
 // Build a chainable Supabase query builder mock
@@ -165,6 +172,21 @@ describe("getPendingPlants", () => {
   it("orders results by created_at descending", async () => {
     const c = makeClient({ data: [PENDING_PLANT], error: null });
     await getPendingPlants(c as any);
+    expect(c._builder.order).toHaveBeenCalledWith("created_at", { ascending: false });
+  });
+});
+
+describe("getUserPendingPlants", () => {
+  it("filters by status = 'pending' and user_id", async () => {
+    const c = makeClient({ data: [PENDING_PLANT], error: null });
+    await getUserPendingPlants(c as any, "user-42");
+    expect(c._builder.eq).toHaveBeenCalledWith("status", "pending");
+    expect(c._builder.eq).toHaveBeenCalledWith("user_id", "user-42");
+  });
+
+  it("orders results by created_at descending", async () => {
+    const c = makeClient({ data: [PENDING_PLANT], error: null });
+    await getUserPendingPlants(c as any, "user-42");
     expect(c._builder.order).toHaveBeenCalledWith("created_at", { ascending: false });
   });
 });
