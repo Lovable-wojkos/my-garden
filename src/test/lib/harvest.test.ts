@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { getHarvestDate } from "@/lib/harvest";
 import type { PlantingRow, PlantRow } from "@/types";
+import { EXPECTED_CATALOG } from "@/test/fixtures/expected-catalog";
 
 const mockPlants: PlantRow[] = [
   {
@@ -38,6 +39,54 @@ describe("getHarvestDate", () => {
 
   it('returns "–" when catalog is empty', () => {
     expect(getHarvestDate(basePlanting, [])).toBe("–");
+  });
+
+  it('returns "–" when matched plant has growth_days null', () => {
+    const plants: PlantRow[] = [
+      {
+        id: "plant-null-growth",
+        name: "UnknownPeriod",
+        growth_days: null,
+        watering_needs: null,
+        user_id: null,
+        status: "global",
+        created_at: "2026-01-01T00:00:00Z",
+        updated_at: "2026-01-01T00:00:00Z",
+      },
+    ];
+    const planting = { ...basePlanting, plant_id: "plant-null-growth" };
+    expect(getHarvestDate(planting, plants)).toBe("–");
+  });
+
+  it("returns harvest date for Tomato seed catalog entry using oracle computation", () => {
+    const tomato = EXPECTED_CATALOG.find((p) => p.name === "Tomato");
+    expect(tomato).toBeDefined();
+    if (!tomato) throw new Error("Tomato entry missing from EXPECTED_CATALOG");
+
+    const plants: PlantRow[] = [
+      {
+        id: tomato.id,
+        name: tomato.name,
+        growth_days: tomato.growth_days,
+        watering_needs: tomato.watering_needs,
+        user_id: null,
+        status: "global",
+        created_at: "2026-01-01T00:00:00Z",
+        updated_at: "2026-01-01T00:00:00Z",
+      },
+    ];
+    const planting: PlantingRow = {
+      ...basePlanting,
+      plant_id: tomato.id,
+      plant_name: tomato.name,
+      seeding_date: "2026-05-01",
+    };
+
+    const seeding = new Date("2026-05-01");
+    seeding.setDate(seeding.getDate() + tomato.growth_days);
+    const expected = seeding.toLocaleDateString("pl-PL");
+
+    expect(getHarvestDate(planting, plants)).toBe(expected);
   });
 
   it("returns harvest date = seeding_date + growth_days", () => {

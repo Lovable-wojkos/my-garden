@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type { PlantRow } from "@/types";
 import { getPlants, createUserPlant, getPendingPlants, approvePlant, rejectPlant } from "@/lib/services/plants";
+import { EXPECTED_CATALOG } from "@/test/fixtures/expected-catalog";
 
 // Build a chainable Supabase query builder mock
 function makeQueryBuilder(resolvedValue: unknown) {
@@ -13,6 +14,7 @@ function makeQueryBuilder(resolvedValue: unknown) {
   builder.eq = vi.fn(chain);
   builder.order = vi.fn(chain);
   builder.single = vi.fn(() => Promise.resolve(resolvedValue));
+  builder.maybeSingle = vi.fn(() => Promise.resolve(resolvedValue));
   builder.overrideTypes = vi.fn(() => Promise.resolve(resolvedValue));
   // Allow awaiting the builder directly (for queries that don't end in .single())
   builder.then = (resolve: (v: unknown) => unknown) => Promise.resolve(resolvedValue).then(resolve);
@@ -46,7 +48,76 @@ const PENDING_PLANT: PlantRow = {
   updated_at: "2026-06-01T00:00:00Z",
 };
 
+function catalogToPlantRows(): PlantRow[] {
+  return EXPECTED_CATALOG.map((entry) => ({
+    id: entry.id,
+    name: entry.name,
+    growth_days: entry.growth_days,
+    watering_needs: entry.watering_needs,
+    user_id: null,
+    status: "global" as const,
+    created_at: "2026-01-01T00:00:00Z",
+    updated_at: "2026-01-01T00:00:00Z",
+  }));
+}
+
+/** Mock that simulates Supabase filtering pending rows when eq("status", "global") is applied. */
+function makeClientWithCatalog(includePending = true) {
+  const globalRows = catalogToPlantRows();
+  const pendingRow: PlantRow = {
+    id: "plant-pending",
+    name: "UserPending",
+    growth_days: null,
+    watering_needs: null,
+    user_id: "user-99",
+    status: "pending",
+    created_at: "2026-06-01T00:00:00Z",
+    updated_at: "2026-06-01T00:00:00Z",
+  };
+  const allRows = includePending ? [...globalRows, pendingRow] : globalRows;
+
+  const builder: Record<string, unknown> = {};
+  let statusFilter: string | null = null;
+  const chain = () => builder;
+  const filteredResult = () => ({
+    data: statusFilter === "global" ? allRows.filter((r) => r.status === "global") : allRows,
+    error: null,
+  });
+
+  builder.select = vi.fn(chain);
+  builder.eq = vi.fn((col: string, val: string) => {
+    if (col === "status") statusFilter = val;
+    return builder;
+  });
+  builder.order = vi.fn(chain);
+  builder.overrideTypes = vi.fn(() => Promise.resolve(filteredResult()));
+  builder.then = (resolve: (v: unknown) => unknown) => Promise.resolve(filteredResult()).then(resolve);
+
+  return { from: vi.fn(() => builder), _builder: builder };
+}
+
 describe("getPlants", () => {
+  it("returns complete global catalog with correct attributes", async () => {
+    const client = makeClientWithCatalog(true);
+    const result = await getPlants(client as any);
+
+    expect(result.data).toHaveLength(EXPECTED_CATALOG.length);
+    for (const expected of EXPECTED_CATALOG) {
+      const found = result.data?.find((p) => p.name === expected.name);
+      expect(found).toBeDefined();
+      expect(found?.growth_days).toBe(expected.growth_days);
+      expect(found?.watering_needs).toBe(expected.watering_needs);
+    }
+  });
+
+  it("excludes pending plants from results", async () => {
+    const client = makeClientWithCatalog(true);
+    const result = await getPlants(client as any);
+
+    expect(result.data?.every((p) => p.status !== "pending")).toBe(true);
+    expect(result.data?.some((p) => p.name === "UserPending")).toBe(false);
+  });
+
   it("filters by status = 'global'", async () => {
     const { client, builder } = (() => {
       const c = makeClient({ data: [GLOBAL_PLANT], error: null });
@@ -109,6 +180,7 @@ describe("approvePlant", () => {
       watering_needs: "medium",
     });
     expect(c._builder.eq).toHaveBeenCalledWith("id", "plant-2");
+    expect(c._builder.eq).toHaveBeenCalledWith("status", "pending");
   });
 
   it("handles null watering_needs", async () => {
@@ -130,5 +202,6 @@ describe("rejectPlant", () => {
 
     expect(c._builder.delete).toHaveBeenCalled();
     expect(c._builder.eq).toHaveBeenCalledWith("id", "plant-2");
+    expect(c._builder.eq).toHaveBeenCalledWith("status", "pending");
   });
 });

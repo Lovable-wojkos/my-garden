@@ -83,6 +83,7 @@ const testConfig = tseslint.config({
 });
 
 export default tseslint.config(
+  { ignores: [".opencode/**"] },
   includeIgnoreFile(gitignorePath),
   baseConfig,
   reactConfig,

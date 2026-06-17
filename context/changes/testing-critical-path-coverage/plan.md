@@ -363,8 +363,8 @@ No schema or production code changes. If migration seed plants change in a futur
 
 #### Automated
 
-- [x] 2.1 `npm run test:run -- src/test/api/plantings-index.test.ts src/test/api/fields-index.test.ts` passes
-- [x] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run test:run -- src/test/api/plantings-index.test.ts src/test/api/fields-index.test.ts` passes — a074602
+- [x] 2.2 `npm run lint` passes — a074602
 
 #### Manual
 
@@ -380,8 +380,8 @@ No schema or production code changes. If migration seed plants change in a futur
 
 #### Manual
 
-- [ ] 3.3 `EXPECTED_CATALOG` matches migration seed (10 plants, correct attributes)
-- [ ] 3.4 Harvest Tomato test uses oracle computation, not hard-coded date string
+- [x] 3.3 `EXPECTED_CATALOG` matches migration seed (10 plants, correct attributes)
+- [x] 3.4 Harvest Tomato test uses oracle computation, not hard-coded date string
 
 ### Phase 4: Cookbook & Close-Out
 
