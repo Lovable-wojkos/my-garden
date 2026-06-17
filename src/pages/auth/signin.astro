@@ -3,6 +3,10 @@ import Layout from "@/layouts/Layout.astro";
 import SignInForm from "@/components/auth/SignInForm";
 import { pl } from "@/lib/copy/pl";
 
+if (Astro.locals.user) {
+  return Astro.redirect("/dashboard");
+}
+
 const error = Astro.url.searchParams.get("error");
 ---
 

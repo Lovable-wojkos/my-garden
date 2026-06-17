@@ -1,6 +1,7 @@
 ---
 export const prerender = false;
 
+import AppShell from "@/components/AppShell.astro";
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { getFieldById } from "@/lib/services/fields";
@@ -9,6 +10,7 @@ import { getPlants } from "@/lib/services/plants";
 import { getUserPreferences } from "@/lib/services/user-preferences";
 import FieldGrid from "@/components/fields/FieldGrid";
 import WeatherWidget from "@/components/WeatherWidget";
+import { pl } from "@/lib/copy/pl";
 
 const { id } = Astro.params;
 
@@ -44,35 +46,20 @@ const initialCity = userPrefs
   : null;
 ---
 
-<Layout title={field.name}>
-  <div class="bg-cosmic min-h-screen p-4">
-    <div class="mx-auto max-w-6xl">
-      <div class="mb-6 flex items-center justify-between">
-        <div>
-          <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-            {field.name}
-          </h1>
-          <p class="mt-1 text-sm text-blue-100/60">
-            {field.rows} rows × {field.cols} columns
-          </p>
-        </div>
-        <a
-          href="/dashboard"
-          class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
-        >
-          ← Back to Dashboard
-        </a>
+<Layout title={pl.fields.detailTitle(field.name)}>
+  <AppShell title={field.name} activeNav="dashboard">
+    <p class="text-muted-foreground mb-6 text-sm">
+      {pl.dashboard.rowsCols(field.rows, field.cols)}
+    </p>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto]">
+      <div class="border-border bg-card rounded-xl border p-4 shadow-sm md:p-6">
+        <FieldGrid client:load field={field} plantings={plantings ?? []} plants={plants ?? []} />
       </div>
 
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto]">
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-          <FieldGrid client:load field={field} plantings={plantings ?? []} plants={plants ?? []} />
-        </div>
-
-        <div class="flex items-start justify-center lg:justify-start">
-          <WeatherWidget client:load initialCity={initialCity} />
-        </div>
+      <div class="flex items-start justify-center lg:justify-start">
+        <WeatherWidget client:load initialCity={initialCity} editable={false} />
       </div>
     </div>
-  </div>
+  </AppShell>
 </Layout>

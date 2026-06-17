@@ -1,0 +1,67 @@
+---
+import AppShell from "@/components/AppShell.astro";
+import Layout from "@/layouts/Layout.astro";
+import { pl } from "@/lib/copy/pl";
+import { createClient } from "@/lib/supabase";
+import { getPlants } from "@/lib/services/plants";
+import type { PlantRow } from "@/types";
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+const { data: plants, error } = supabase ? await getPlants(supabase) : { data: null, error: null };
+
+function formatWateringNeeds(needs: string | null): string {
+  if (!needs) return "—";
+  switch (needs) {
+    case "low":
+      return pl.catalog.wateringLow;
+    case "medium":
+      return pl.catalog.wateringMedium;
+    case "high":
+      return pl.catalog.wateringHigh;
+    default:
+      return needs;
+  }
+}
+---
+
+<Layout title={pl.catalog.title}>
+  <AppShell title={pl.catalog.title} activeNav="catalog">
+    <div class="mx-auto max-w-3xl space-y-6">
+      <p class="text-muted-foreground">{pl.catalog.subtitle}</p>
+
+      {
+        error ? (
+          <p class="text-destructive text-sm">{pl.common.error}</p>
+        ) : plants && plants.length > 0 ? (
+          <ul class="space-y-2">
+            {plants.map((plant: PlantRow) => (
+              <li class="border-border bg-card rounded-xl border p-4 shadow-sm">
+                <p class="text-foreground font-semibold">{plant.name}</p>
+                <dl class="text-muted-foreground mt-2 grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <dt class="inline">{pl.catalog.growthDays}: </dt>
+                    <dd class="text-foreground inline font-medium">
+                      {plant.growth_days != null ? plant.growth_days : "—"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="inline">{pl.catalog.wateringNeeds}: </dt>
+                    <dd class="text-foreground inline font-medium">{formatWateringNeeds(plant.watering_needs)}</dd>
+                  </div>
+                </dl>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-muted-foreground">{pl.catalog.empty}</p>
+        )
+      }
+
+      <p>
+        <a href="/dashboard/plant-requests" class="text-primary text-sm font-medium hover:underline">
+          {pl.catalog.requestLink}
+        </a>
+      </p>
+    </div>
+  </AppShell>
+</Layout>

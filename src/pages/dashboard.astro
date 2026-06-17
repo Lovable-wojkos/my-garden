@@ -1,6 +1,8 @@
 ---
+import AppShell from "@/components/AppShell.astro";
 import Layout from "@/layouts/Layout.astro";
 import WeatherWidget from "@/components/WeatherWidget";
+import { pl } from "@/lib/copy/pl";
 import { createClient } from "@/lib/supabase";
 import { getUserPreferences } from "@/lib/services/user-preferences";
 import { getFieldsByUser } from "@/lib/services/fields";
@@ -18,93 +20,67 @@ const locationRequired = Astro.url.searchParams.get("location") === "required";
 const initialCity = prefs ? { cityName: prefs.city_name, latitude: prefs.latitude, longitude: prefs.longitude } : null;
 ---
 
-<Layout title="Dashboard">
-  {
-    !hasRegion ? (
-      <div class="bg-cosmic flex min-h-screen flex-col">
-        <div class="flex justify-end p-4">
-          <form method="POST" action="/api/auth/signout">
-            <button
-              type="submit"
-              class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
+<Layout title={pl.dashboard.title}>
+  <AppShell title={pl.dashboard.title} activeNav="dashboard">
+    {
+      !hasRegion ? (
+        <div class="mx-auto flex max-w-md flex-col items-center gap-4 py-8 text-center">
+          {locationRequired && <p class="text-destructive text-sm">{pl.dashboard.locationRequiredBeforeField}</p>}
+          <div class="border-border bg-card space-y-4 rounded-xl border p-8 shadow-sm">
+            <p class="text-muted-foreground text-sm">{pl.dashboard.locationNotSet}</p>
+            <a
+              href="/dashboard/settings"
+              class="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-11 items-center rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
-              Sign out
-            </button>
-          </form>
-        </div>
-        {locationRequired && (
-          <p class="mx-auto max-w-md px-4 text-center text-sm text-amber-200">
-            Wybierz lokalizację ogrodu, zanim utworzysz pole.
-          </p>
-        )}
-        <div class="flex flex-1 items-center justify-center p-4">
-          <WeatherWidget initialCity={initialCity} reloadOnSelect client:load />
-        </div>
-      </div>
-    ) : (
-      <div class="bg-cosmic min-h-screen p-4">
-        <div class="mx-auto max-w-6xl">
-          <div class="mb-8 flex items-center justify-between">
-            <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-              Dashboard
-            </h1>
-            <form method="POST" action="/api/auth/signout">
-              <button
-                type="submit"
-                class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
-              >
-                Sign out
-              </button>
-            </form>
+              {pl.dashboard.goToSettings}
+            </a>
           </div>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto]">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h2 class="text-foreground text-lg font-semibold">{pl.dashboard.myFields}</h2>
+              <a
+                href="/dashboard/fields/new"
+                class="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+              >
+                + {pl.dashboard.newField}
+              </a>
+            </div>
 
-          <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto]">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <h2 class="text-lg font-semibold text-white">My Fields</h2>
-                <a
-                  href="/dashboard/fields/new"
-                  class="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/20"
-                >
-                  + New field
+            {fields && fields.length > 0 ? (
+              <ul class="space-y-2">
+                {fields.map((field) => (
+                  <li>
+                    <a
+                      href={`/dashboard/fields/${field.id}`}
+                      class="border-border bg-card hover:bg-muted flex items-center justify-between rounded-xl border p-4 shadow-sm transition-colors"
+                    >
+                      <div>
+                        <p class="text-foreground font-semibold">{field.name}</p>
+                        <p class="text-muted-foreground text-sm">{pl.dashboard.rowsCols(field.rows, field.cols)}</p>
+                      </div>
+                      <span class="text-muted-foreground">→</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div class="border-border bg-card text-muted-foreground rounded-xl border p-8 text-center shadow-sm">
+                <p>{pl.dashboard.noFields}</p>
+                <a href="/dashboard/fields/new" class="text-primary mt-2 inline-block text-sm hover:underline">
+                  {pl.dashboard.createFirstField}
                 </a>
               </div>
+            )}
+          </div>
 
-              {fields && fields.length > 0 ? (
-                <ul class="space-y-2">
-                  {fields.map((field) => (
-                    <li>
-                      <a
-                        href={`/dashboard/fields/${field.id}`}
-                        class="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 text-white backdrop-blur-xl transition-colors hover:bg-white/10"
-                      >
-                        <div>
-                          <p class="font-semibold">{field.name}</p>
-                          <p class="text-sm text-blue-100/60">
-                            {field.rows} rows × {field.cols} columns
-                          </p>
-                        </div>
-                        <span class="text-white/40">→</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div class="rounded-xl border border-white/10 bg-white/5 p-8 text-center text-white/50 backdrop-blur-xl">
-                  <p>No fields yet.</p>
-                  <a href="/dashboard/fields/new" class="mt-2 inline-block text-sm text-blue-300 hover:underline">
-                    Create your first field →
-                  </a>
-                </div>
-              )}
-            </div>
-
-            <div class="flex items-start justify-center lg:justify-start">
-              <WeatherWidget initialCity={initialCity} client:load />
-            </div>
+          <div class="flex items-start justify-center lg:justify-start">
+            <WeatherWidget initialCity={initialCity} editable={false} client:load />
           </div>
         </div>
-      </div>
-    )
-  }
+      )
+    }
+  </AppShell>
 </Layout>

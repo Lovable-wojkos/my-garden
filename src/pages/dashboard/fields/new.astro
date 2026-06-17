@@ -1,8 +1,10 @@
 ---
 export const prerender = false;
 
+import AppShell from "@/components/AppShell.astro";
 import Layout from "@/layouts/Layout.astro";
 import CreateFieldForm from "@/components/fields/CreateFieldForm";
+import { pl } from "@/lib/copy/pl";
 import { createClient } from "@/lib/supabase";
 import { getUserPreferences } from "@/lib/services/user-preferences";
 
@@ -24,17 +26,16 @@ if (prefsError) {
 }
 
 if (!prefs?.region_id) {
-  return Astro.redirect("/dashboard?location=required");
+  return Astro.redirect("/dashboard/settings");
 }
 ---
 
-<Layout title="New Field">
-  <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
-    <div class="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
-      <h1 class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
-        Create a new field
-      </h1>
-      <CreateFieldForm client:load />
+<Layout title={pl.fields.newTitle}>
+  <AppShell title={pl.fields.newTitle} activeNav="dashboard">
+    <div class="mx-auto w-full max-w-md">
+      <div class="border-border bg-card rounded-xl border p-6 shadow-sm md:p-8">
+        <CreateFieldForm client:load />
+      </div>
     </div>
-  </div>
+  </AppShell>
 </Layout>

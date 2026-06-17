@@ -1,0 +1,49 @@
+---
+import AppShell from "@/components/AppShell.astro";
+import Layout from "@/layouts/Layout.astro";
+import WeatherWidget from "@/components/WeatherWidget";
+import { pl } from "@/lib/copy/pl";
+import { createClient } from "@/lib/supabase";
+import { getUserPreferences } from "@/lib/services/user-preferences";
+
+const { user } = Astro.locals;
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+const { data: prefs } = user && supabase ? await getUserPreferences(supabase, user.id) : { data: null };
+const initialCity = prefs ? { cityName: prefs.city_name, latitude: prefs.latitude, longitude: prefs.longitude } : null;
+---
+
+<Layout title={pl.settings.title}>
+  <AppShell title={pl.settings.title} activeNav="settings">
+    <div class="mx-auto max-w-3xl space-y-8">
+      <section class="border-border bg-card space-y-3 rounded-xl border p-6 shadow-sm">
+        <h2 class="text-foreground text-lg font-semibold">{pl.settings.profileHeading}</h2>
+        <div>
+          <p class="text-muted-foreground text-sm">{pl.settings.emailLabel}</p>
+          <p class="text-foreground font-medium">{user?.email ?? "—"}</p>
+        </div>
+      </section>
+
+      <section class="space-y-4">
+        <div>
+          <h2 class="text-foreground text-lg font-semibold">{pl.settings.locationHeading}</h2>
+          <p class="text-muted-foreground mt-1 text-sm">{pl.settings.locationDescription}</p>
+        </div>
+        <WeatherWidget initialCity={initialCity} editable reloadOnSelect client:load />
+      </section>
+
+      <section class="border-border bg-card space-y-3 rounded-xl border p-6 shadow-sm">
+        <h2 class="text-foreground text-lg font-semibold">{pl.settings.signOutHeading}</h2>
+        <p class="text-muted-foreground text-sm">{pl.settings.signOutDescription}</p>
+        <form method="POST" action="/api/auth/signout">
+          <button
+            type="submit"
+            class="border-border bg-card text-foreground hover:bg-muted inline-flex min-h-11 items-center rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+          >
+            {pl.nav.signOut}
+          </button>
+        </form>
+      </section>
+    </div>
+  </AppShell>
+</Layout>

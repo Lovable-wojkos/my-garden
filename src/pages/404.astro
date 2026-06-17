@@ -1,0 +1,27 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { pl } from "@/lib/copy/pl";
+---
+
+<Layout title={pl.common.notFound}>
+  <div class="bg-background text-foreground flex min-h-screen flex-col items-center justify-center px-4 py-16">
+    <div class="border-border bg-card max-w-md space-y-6 rounded-xl border p-8 text-center shadow-sm">
+      <h1 class="text-foreground text-3xl font-bold">{pl.common.notFound}</h1>
+      <p class="text-muted-foreground">{pl.common.notFoundMessage}</p>
+      <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
+        <a
+          href="/"
+          class="border-border bg-card text-foreground hover:bg-muted inline-flex min-h-11 items-center justify-center rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
+        >
+          {pl.common.goHome}
+        </a>
+        <a
+          href="/dashboard"
+          class="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex min-h-11 items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+        >
+          {pl.common.goDashboard}
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

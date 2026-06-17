@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import FieldGrid from "@/components/fields/FieldGrid";
+import { pl } from "@/lib/copy/pl";
 import type { FieldRow, PlantingRow, PlantRow } from "@/types";
 
 const mockField: FieldRow = {
@@ -47,9 +48,9 @@ describe("FieldGrid", () => {
     expect(cells).toHaveLength(6);
   });
 
-  it("shows 'Empty' for unplanted cells", () => {
+  it("shows empty label for unplanted cells", () => {
     render(<FieldGrid field={mockField} plantings={[]} plants={[]} />);
-    const emptyCells = screen.getAllByText(/empty/i);
+    const emptyCells = screen.getAllByText(pl.fields.emptyCell);
     expect(emptyCells).toHaveLength(6);
   });
 
@@ -66,7 +67,7 @@ describe("FieldGrid", () => {
   it("marks remaining cells as empty when only one cell is planted", () => {
     render(<FieldGrid field={mockField} plantings={[mockPlanting]} plants={mockPlants} />);
     // 1 planted, 5 empty
-    const emptyCells = screen.getAllByText(/empty/i);
+    const emptyCells = screen.getAllByText(pl.fields.emptyCell);
     expect(emptyCells).toHaveLength(5);
   });
 });
