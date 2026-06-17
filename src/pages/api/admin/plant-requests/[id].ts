@@ -11,6 +11,7 @@ const ApproveSchema = z.object({
 });
 
 function adminGuard(context: Parameters<APIRoute>[0]) {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (context.locals.user?.app_metadata?.role !== "admin") {
     return new Response(JSON.stringify({ error: "Forbidden" }), {
       status: 403,
@@ -22,7 +23,7 @@ function adminGuard(context: Parameters<APIRoute>[0]) {
 
 function serviceClientOrError() {
   const client = createServiceRoleClient();
-  if (!client) {
+  if (client === null) {
     return {
       client: null,
       errorResponse: new Response(JSON.stringify({ error: "Service unavailable" }), {
@@ -64,10 +65,24 @@ export const PATCH: APIRoute = async (context) => {
     });
   }
 
-  const { data, error } = await approvePlant(client, context.params.id!, parsed.data);
+  const id = context.params.id;
+  if (!id) {
+    return new Response(JSON.stringify({ error: "Missing plant ID" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const { data, error } = await approvePlant(client, id, parsed.data);
   if (error) {
     return new Response(JSON.stringify({ error: "Failed to approve plant" }), {
       status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  if (!data) {
+    return new Response(JSON.stringify({ error: "Pending plant not found" }), {
+      status: 404,
       headers: { "Content-Type": "application/json" },
     });
   }
@@ -85,10 +100,24 @@ export const DELETE: APIRoute = async (context) => {
   const { client, errorResponse } = serviceClientOrError();
   if (errorResponse) return errorResponse;
 
-  const { error } = await rejectPlant(client, context.params.id!);
+  const id = context.params.id;
+  if (!id) {
+    return new Response(JSON.stringify({ error: "Missing plant ID" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const { data, error } = await rejectPlant(client, id);
   if (error) {
     return new Response(JSON.stringify({ error: "Failed to reject plant" }), {
       status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  if (!data) {
+    return new Response(JSON.stringify({ error: "Pending plant not found" }), {
+      status: 404,
       headers: { "Content-Type": "application/json" },
     });
   }

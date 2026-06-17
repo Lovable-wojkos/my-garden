@@ -8,15 +8,17 @@
 // ── regions ──────────────────────────────────────────────────
 export interface RegionRow {
   id: string;
-  code: string;
-  name: string;
+  latitude: number;
+  longitude: number;
+  display_name: string;
   created_at: string;
 }
 
 export interface RegionInsert {
   id?: string;
-  code: string;
-  name: string;
+  latitude: number;
+  longitude: number;
+  display_name: string;
   created_at?: string;
 }
 
@@ -134,6 +136,7 @@ export interface UserPreferencesRow {
   city_name: string;
   latitude: number;
   longitude: number;
+  region_id: string | null;
   updated_at: string;
 }
 
@@ -142,6 +145,7 @@ export interface UserPreferencesInsert {
   city_name: string;
   latitude: number;
   longitude: number;
+  region_id?: string | null;
   updated_at?: string;
 }
 

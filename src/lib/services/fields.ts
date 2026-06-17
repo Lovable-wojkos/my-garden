@@ -27,3 +27,10 @@ export async function updateField(client: SupabaseClient, id: string, update: Fi
 export async function deleteField(client: SupabaseClient, id: string) {
   return client.from("fields").delete().eq("id", id);
 }
+
+export async function updateFieldsRegionForUser(client: SupabaseClient, userId: string, regionId: string) {
+  return client
+    .from("fields")
+    .update({ region_id: regionId, updated_at: new Date().toISOString() })
+    .eq("user_id", userId);
+}

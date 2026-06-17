@@ -5,6 +5,7 @@ import { getPendingPlants } from "@/lib/services/plants";
 export const prerender = false;
 
 export const GET: APIRoute = async (context) => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (context.locals.user?.app_metadata?.role !== "admin") {
     return new Response(JSON.stringify({ error: "Forbidden" }), {
       status: 403,
@@ -13,7 +14,7 @@ export const GET: APIRoute = async (context) => {
   }
 
   const serviceClient = createServiceRoleClient();
-  if (!serviceClient) {
+  if (serviceClient === null) {
     return new Response(JSON.stringify({ error: "Service unavailable" }), {
       status: 503,
       headers: { "Content-Type": "application/json" },

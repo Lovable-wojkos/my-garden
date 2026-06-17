@@ -134,7 +134,7 @@ export default function CreateFieldForm({ regions }: Props) {
               aria-expanded={regionOpen}
               className="w-full justify-between"
             >
-              {selectedRegion ? selectedRegion.name : "Select a region…"}
+              {selectedRegion ? selectedRegion.display_name : "Select a region…"}
               <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -147,14 +147,14 @@ export default function CreateFieldForm({ regions }: Props) {
                   {regions.map((region) => (
                     <CommandItem
                       key={region.id}
-                      value={region.name}
+                      value={region.display_name}
                       onSelect={() => {
                         setRegionId(region.id);
                         setRegionOpen(false);
                       }}
                     >
                       <CheckIcon className={cn("mr-2 size-4", regionId === region.id ? "opacity-100" : "opacity-0")} />
-                      {region.name}
+                      {region.display_name}
                     </CommandItem>
                   ))}
                 </CommandGroup>

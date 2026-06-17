@@ -44,10 +44,11 @@ export async function approvePlant(
       watering_needs: data.watering_needs ?? null,
     } satisfies import("@/types").PlantUpdate)
     .eq("id", id)
+    .eq("status", "pending")
     .select("*")
-    .single<PlantRow>();
+    .maybeSingle<PlantRow>();
 }
 
 export async function rejectPlant(client: SupabaseClient, id: string) {
-  return client.from("plants").delete().eq("id", id);
+  return client.from("plants").delete().eq("id", id).eq("status", "pending").select("id").maybeSingle();
 }

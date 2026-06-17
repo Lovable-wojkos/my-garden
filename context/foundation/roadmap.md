@@ -175,6 +175,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Marketplace (seeds/harvests)** — Why parked: PRD §Non-Goals.
 - **Push notifications** — Why parked: PRD §Non-Goals (v2).
 - **Observability / error tracking** — Why parked: not in PRD scope; add before scaling beyond pilot users.
+- **Orphan region cleanup job** — Why parked: `regions` catalog grows as users pick cities; periodic cleanup of unreferenced rows is harmless to defer post-`fix-field-region`. See `context/changes/fix-field-region/plan.md` §What We're NOT Doing.
 - **Multi-language beyond Polish/English** — Why parked: PRD §Non-Goals.
 
 ## Done

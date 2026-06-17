@@ -92,7 +92,7 @@ describe("DELETE /api/admin/plant-requests/[id]", () => {
 
   it("returns 200 ok on success", async () => {
     vi.mocked(createServiceRoleClient).mockReturnValue({} as any);
-    vi.mocked(plantsService.rejectPlant).mockResolvedValue({ data: null, error: null } as any);
+    vi.mocked(plantsService.rejectPlant).mockResolvedValue({ data: { id: PLANT_ID }, error: null } as any);
     const response = await DELETE(makeContext("DELETE") as any);
     expect(response.status).toBe(200);
     const json = await response.json();
