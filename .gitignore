@@ -46,3 +46,6 @@ worktrees/
 .claude/.10x-cli-manifest.json
 skill-explainer.md
 context/*_current.md
+.cursor/.10x-cli-manifest.json
+.cursor/prompts/m*l*.md
+.cursor/rules/10x-course.mdc

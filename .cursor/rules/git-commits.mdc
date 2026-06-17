@@ -1,0 +1,15 @@
+---
+description: Commit without asking for message approval — test project
+alwaysApply: true
+---
+
+# Git commits — no approval prompts
+
+This is a test/learning project. Commit messages do not need review or polish.
+
+When the user asks you to commit:
+
+- **Do not** ask the user to approve the commit message (e.g. "Approve commit message for Phase 1?").
+- **Do not** use AskQuestion or similar prompts to confirm the message before committing.
+- Draft a short, reasonable message yourself and commit immediately.
+- Only ask about commits when the user has **not** requested one, or when you need clarification on **what** to include in the commit (not how to word the message).
