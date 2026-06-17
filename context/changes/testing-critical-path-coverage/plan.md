@@ -387,10 +387,10 @@ No schema or production code changes. If migration seed plants change in a futur
 
 #### Automated
 
-- [x] 4.1 `npm run test:run` passes (full suite)
-- [x] 4.2 `npm run lint` passes
+- [x] 4.1 `npm run test:run` passes (full suite) — 56f4d0f
+- [x] 4.2 `npm run lint` passes — 56f4d0f
 
 #### Manual
 
-- [x] 4.3 §6.1–§6.4 contain actionable examples referencing real repo files
-- [x] 4.4 §6.6 note captures dual auth semantics and fixture approach
+- [x] 4.3 §6.1–§6.4 contain actionable examples referencing real repo files — 56f4d0f
+- [x] 4.4 §6.6 note captures dual auth semantics and fixture approach — 56f4d0f
