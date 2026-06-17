@@ -1,7 +1,7 @@
 ---
 change_id: fix-field-region
 title: Unify field region with widget location and weather cache
-status: implementing
+status: implemented
 created: 2026-06-17
 updated: 2026-06-17
 archived_at: null

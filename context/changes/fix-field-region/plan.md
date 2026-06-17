@@ -371,26 +371,26 @@ Remove voivodeship picker from field create; server derives region from prefs; g
 
 #### Automated
 
-- [ ] 2.1 Unit tests pass: `npx vitest run src/test/api/cron-weather.test.ts`
-- [ ] 2.2 Linting passes: `npm run lint`
-- [ ] 2.3 Build passes: `npm run build`
+- [x] 2.1 Unit tests pass: `npx vitest run src/test/api/cron-weather.test.ts`
+- [x] 2.2 Linting passes: `npm run lint`
+- [x] 2.3 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.4 Trigger cron locally with `CRON_SECRET` → new `weather_records` rows have non-null `region_id`
-- [ ] 2.5 Two users sharing a region → cron fetches that region once (check logs / response `locations` count)
+- [x] 2.4 Trigger cron locally with `CRON_SECRET` → new `weather_records` rows have non-null `region_id`
+- [x] 2.5 Two users sharing a region → cron fetches that region once (check logs / response `locations` count)
 
 ### Phase 3: Field Creation Unified + Dashboard Gating
 
 #### Automated
 
-- [ ] 3.1 Unit tests pass: `npx vitest run src/test/api/fields-index.test.ts`
-- [ ] 3.2 Linting passes: `npm run lint`
-- [ ] 3.3 Build passes: `npm run build`
+- [x] 3.1 Unit tests pass: `npx vitest run src/test/api/fields-index.test.ts`
+- [x] 3.2 Linting passes: `npm run lint`
+- [x] 3.3 Build passes: `npm run build`
 
 #### Manual
 
-- [ ] 3.4 Fresh user → dashboard shows only full-screen weather widget → pick city → page reloads → fields panel and "+ New field" appear
-- [ ] 3.5 Navigate to `/dashboard/fields/new` without region → redirected to dashboard
-- [ ] 3.6 Create field → no region picker → field created with correct `region_id`
-- [ ] 3.7 Change city in widget → all fields update region (from Phase 1, re-verify in full flow)
+- [x] 3.4 Fresh user → dashboard shows only full-screen weather widget → pick city → page reloads → fields panel and "+ New field" appear
+- [x] 3.5 Navigate to `/dashboard/fields/new` without region → redirected to dashboard
+- [x] 3.6 Create field → no region picker → field created with correct `region_id`
+- [x] 3.7 Change city in widget → all fields update region (from Phase 1, re-verify in full flow)
