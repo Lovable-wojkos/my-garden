@@ -488,12 +488,12 @@ Apply earthy light tokens and Polish copy to remaining React islands and admin p
 
 #### Automated
 
-- [x] 5.1 `npm run lint` passes
-- [x] 5.2 `npm run build` passes
-- [x] 5.3 `npm run test:run` passes
+- [x] 5.1 `npm run lint` passes — 548b2ce
+- [x] 5.2 `npm run build` passes — 548b2ce
+- [x] 5.3 `npm run test:run` passes — 548b2ce
 
 #### Manual
 
-- [x] 5.4 No cosmic/starter styling remains
-- [x] 5.5 Full user and admin journeys visually consistent
-- [x] 5.6 Mobile field grid and dialogs acceptable
+- [x] 5.4 No cosmic/starter styling remains — 548b2ce
+- [x] 5.5 Full user and admin journeys visually consistent — 548b2ce
+- [x] 5.6 Mobile field grid and dialogs acceptable — 548b2ce
