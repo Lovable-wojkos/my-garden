@@ -4,6 +4,7 @@ import { FormField } from "@/components/auth/FormField";
 import { PasswordToggle } from "@/components/auth/PasswordToggle";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { ServerError } from "@/components/auth/ServerError";
+import { pl } from "@/lib/copy/pl";
 
 const MIN_PASSWORD_LENGTH = 6;
 
@@ -23,21 +24,21 @@ export default function SignUpForm({ serverError }: Props) {
     const next: typeof errors = {};
 
     if (!email.trim()) {
-      next.email = "Email is required";
+      next.email = pl.auth.errors.emailRequired;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      next.email = "Enter a valid email address";
+      next.email = pl.auth.errors.emailInvalid;
     }
 
     if (!password) {
-      next.password = "Password is required";
+      next.password = pl.auth.errors.passwordRequired;
     } else if (password.length < MIN_PASSWORD_LENGTH) {
-      next.password = `Password must be at least ${MIN_PASSWORD_LENGTH} characters`;
+      next.password = pl.auth.errors.passwordMinLength(MIN_PASSWORD_LENGTH);
     }
 
     if (!confirmPassword) {
-      next.confirmPassword = "Please confirm your password";
+      next.confirmPassword = pl.auth.errors.confirmPasswordRequired;
     } else if (password !== confirmPassword) {
-      next.confirmPassword = "Passwords do not match";
+      next.confirmPassword = pl.auth.errors.passwordsMismatch;
     }
 
     setErrors(next);
@@ -54,12 +55,10 @@ export default function SignUpForm({ serverError }: Props) {
     }
   }
 
+  const charsNeeded = MIN_PASSWORD_LENGTH - password.length;
   const passwordHint =
     !errors.password && password.length > 0 && password.length < MIN_PASSWORD_LENGTH ? (
-      <p className="mt-1 text-xs text-blue-100/50">
-        {MIN_PASSWORD_LENGTH - password.length} more character
-        {MIN_PASSWORD_LENGTH - password.length !== 1 ? "s" : ""} needed
-      </p>
+      <p className="text-muted-foreground mt-1 text-xs">{pl.auth.errors.passwordCharsNeeded(charsNeeded)}</p>
     ) : undefined;
 
   return (
@@ -67,27 +66,27 @@ export default function SignUpForm({ serverError }: Props) {
       <FormField
         id="email"
         type="email"
-        label="Email"
+        label={pl.auth.emailLabel}
         value={email}
         onChange={(v) => {
           setEmail(v);
           clearError("email");
         }}
-        placeholder="you@example.com"
+        placeholder={pl.auth.emailPlaceholder}
         error={errors.email}
         icon={<Mail className="size-4" />}
       />
 
       <FormField
         id="password"
-        label="Password"
+        label={pl.auth.passwordLabel}
         type={showPassword ? "text" : "password"}
         value={password}
         onChange={(v) => {
           setPassword(v);
           clearError("password");
         }}
-        placeholder="Min. 6 characters"
+        placeholder={pl.auth.passwordMinPlaceholder}
         error={errors.password}
         hint={passwordHint}
         icon={<Lock className="size-4" />}
@@ -104,14 +103,14 @@ export default function SignUpForm({ serverError }: Props) {
       <FormField
         id="confirmPassword"
         name="confirmPassword"
-        label="Confirm password"
+        label={pl.auth.confirmPasswordLabel}
         type={showConfirmPassword ? "text" : "password"}
         value={confirmPassword}
         onChange={(v) => {
           setConfirmPassword(v);
           clearError("confirmPassword");
         }}
-        placeholder="Re-enter your password"
+        placeholder={pl.auth.confirmPasswordPlaceholder}
         error={errors.confirmPassword}
         icon={<Lock className="size-4" />}
         endContent={
@@ -126,8 +125,8 @@ export default function SignUpForm({ serverError }: Props) {
 
       <ServerError message={serverError} />
 
-      <SubmitButton pendingText="Creating account..." icon={<UserPlus className="size-4" />}>
-        Create account
+      <SubmitButton pendingText={pl.auth.signUpPending} icon={<UserPlus className="size-4" />}>
+        {pl.auth.signUpButton}
       </SubmitButton>
     </form>
   );

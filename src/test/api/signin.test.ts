@@ -50,7 +50,7 @@ describe("POST /api/auth/signin", () => {
     );
   });
 
-  it("redirects to / on successful signin and writes session cookies via createClient", async () => {
+  it("redirects to /dashboard on successful signin and writes session cookies via createClient", async () => {
     const cookiesSet = vi.fn();
     const cookies = { set: cookiesSet };
     const context = makeContext();
@@ -71,7 +71,7 @@ describe("POST /api/auth/signin", () => {
 
     await POST(context);
 
-    expect(context.redirect).toHaveBeenCalledWith("/");
+    expect(context.redirect).toHaveBeenCalledWith("/dashboard");
     expect(createClient).toHaveBeenCalledWith(context.request.headers, cookies);
     expect(cookiesSet).toHaveBeenCalledWith("sb-access-token", "mock-token", { path: "/" });
   });
