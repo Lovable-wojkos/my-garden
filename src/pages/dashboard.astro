@@ -13,75 +13,98 @@ const [{ data: prefs }, { data: fields }] =
     ? await Promise.all([getUserPreferences(supabase, user.id), getFieldsByUser(supabase, user.id)])
     : [{ data: null }, { data: [] }];
 
+const hasRegion = Boolean(prefs?.region_id);
+const locationRequired = Astro.url.searchParams.get("location") === "required";
 const initialCity = prefs ? { cityName: prefs.city_name, latitude: prefs.latitude, longitude: prefs.longitude } : null;
 ---
 
 <Layout title="Dashboard">
-  <div class="bg-cosmic min-h-screen p-4">
-    <div class="mx-auto max-w-6xl">
-      <div class="mb-8 flex items-center justify-between">
-        <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
-          Dashboard
-        </h1>
-        <form method="POST" action="/api/auth/signout">
-          <button
-            type="submit"
-            class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
-          >
-            Sign out
-          </button>
-        </form>
-      </div>
-
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto]">
-        <!-- left: fields list -->
-        <div class="space-y-4">
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-white">My Fields</h2>
-            <a
-              href="/dashboard/fields/new"
-              class="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/20"
+  {
+    !hasRegion ? (
+      <div class="bg-cosmic flex min-h-screen flex-col">
+        <div class="flex justify-end p-4">
+          <form method="POST" action="/api/auth/signout">
+            <button
+              type="submit"
+              class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
             >
-              + New field
-            </a>
+              Sign out
+            </button>
+          </form>
+        </div>
+        {locationRequired && (
+          <p class="mx-auto max-w-md px-4 text-center text-sm text-amber-200">
+            Wybierz lokalizację ogrodu, zanim utworzysz pole.
+          </p>
+        )}
+        <div class="flex flex-1 items-center justify-center p-4">
+          <WeatherWidget initialCity={initialCity} reloadOnSelect client:load />
+        </div>
+      </div>
+    ) : (
+      <div class="bg-cosmic min-h-screen p-4">
+        <div class="mx-auto max-w-6xl">
+          <div class="mb-8 flex items-center justify-between">
+            <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+              Dashboard
+            </h1>
+            <form method="POST" action="/api/auth/signout">
+              <button
+                type="submit"
+                class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm text-white transition-colors hover:bg-white/20"
+              >
+                Sign out
+              </button>
+            </form>
           </div>
 
-          {
-            fields && fields.length > 0 ? (
-              <ul class="space-y-2">
-                {fields.map((field) => (
-                  <li>
-                    <a
-                      href={`/dashboard/fields/${field.id}`}
-                      class="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 text-white backdrop-blur-xl transition-colors hover:bg-white/10"
-                    >
-                      <div>
-                        <p class="font-semibold">{field.name}</p>
-                        <p class="text-sm text-blue-100/60">
-                          {field.rows} rows × {field.cols} columns
-                        </p>
-                      </div>
-                      <span class="text-white/40">→</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div class="rounded-xl border border-white/10 bg-white/5 p-8 text-center text-white/50 backdrop-blur-xl">
-                <p>No fields yet.</p>
-                <a href="/dashboard/fields/new" class="mt-2 inline-block text-sm text-blue-300 hover:underline">
-                  Create your first field →
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto]">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-white">My Fields</h2>
+                <a
+                  href="/dashboard/fields/new"
+                  class="rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/20"
+                >
+                  + New field
                 </a>
               </div>
-            )
-          }
-        </div>
 
-        <!-- right: weather -->
-        <div class="flex items-start justify-center lg:justify-start">
-          <WeatherWidget initialCity={initialCity} client:load />
+              {fields && fields.length > 0 ? (
+                <ul class="space-y-2">
+                  {fields.map((field) => (
+                    <li>
+                      <a
+                        href={`/dashboard/fields/${field.id}`}
+                        class="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 text-white backdrop-blur-xl transition-colors hover:bg-white/10"
+                      >
+                        <div>
+                          <p class="font-semibold">{field.name}</p>
+                          <p class="text-sm text-blue-100/60">
+                            {field.rows} rows × {field.cols} columns
+                          </p>
+                        </div>
+                        <span class="text-white/40">→</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div class="rounded-xl border border-white/10 bg-white/5 p-8 text-center text-white/50 backdrop-blur-xl">
+                  <p>No fields yet.</p>
+                  <a href="/dashboard/fields/new" class="mt-2 inline-block text-sm text-blue-300 hover:underline">
+                    Create your first field →
+                  </a>
+                </div>
+              )}
+            </div>
+
+            <div class="flex items-start justify-center lg:justify-start">
+              <WeatherWidget initialCity={initialCity} client:load />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    )
+  }
 </Layout>

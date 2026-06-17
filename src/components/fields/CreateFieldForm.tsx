@@ -1,35 +1,21 @@
 import { useState } from "react";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import type { RegionRow } from "@/types";
-
-interface Props {
-  regions: RegionRow[];
-}
 
 interface FormErrors {
   name?: string[];
   cols?: string[];
   rows?: string[];
-  region_id?: string[];
   general?: string;
 }
 
-export default function CreateFieldForm({ regions }: Props) {
+export default function CreateFieldForm() {
   const [name, setName] = useState("");
   const [cols, setCols] = useState("");
   const [rows, setRows] = useState("");
-  const [regionId, setRegionId] = useState("");
-  const [regionOpen, setRegionOpen] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
-
-  const selectedRegion = regions.find((r) => r.id === regionId);
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,7 +30,6 @@ export default function CreateFieldForm({ regions }: Props) {
           name,
           cols: Number(cols),
           rows: Number(rows),
-          region_id: regionId,
         }),
       });
 
@@ -121,48 +106,6 @@ export default function CreateFieldForm({ regions }: Props) {
           />
           {errors.rows && <p className="text-sm text-red-600">{errors.rows[0]}</p>}
         </div>
-      </div>
-
-      <div className="space-y-1.5">
-        <Label>Region</Label>
-        <Popover open={regionOpen} onOpenChange={setRegionOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              type="button"
-              variant="outline"
-              role="combobox"
-              aria-expanded={regionOpen}
-              className="w-full justify-between"
-            >
-              {selectedRegion ? selectedRegion.display_name : "Select a region…"}
-              <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-full p-0" align="start">
-            <Command>
-              <CommandInput placeholder="Search regions…" />
-              <CommandList>
-                <CommandEmpty>No region found.</CommandEmpty>
-                <CommandGroup>
-                  {regions.map((region) => (
-                    <CommandItem
-                      key={region.id}
-                      value={region.display_name}
-                      onSelect={() => {
-                        setRegionId(region.id);
-                        setRegionOpen(false);
-                      }}
-                    >
-                      <CheckIcon className={cn("mr-2 size-4", regionId === region.id ? "opacity-100" : "opacity-0")} />
-                      {region.display_name}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-        {errors.region_id && <p className="text-sm text-red-600">{errors.region_id[0]}</p>}
       </div>
 
       <Button type="submit" disabled={loading} className="w-full">

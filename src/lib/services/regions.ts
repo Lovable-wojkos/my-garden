@@ -1,11 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { RegionRow } from "@/types";
 
-/** @deprecated Removed in Phase 3 — field create no longer uses voivodeship list */
-export async function getRegions(client: SupabaseClient) {
-  return client.from("regions").select("*").order("display_name").overrideTypes<RegionRow[], { merge: false }>();
-}
-
 export async function getRegionById(client: SupabaseClient, id: string) {
   return client.from("regions").select("*").eq("id", id).single<RegionRow>();
 }

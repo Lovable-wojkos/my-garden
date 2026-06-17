@@ -19,6 +19,7 @@ interface WeatherWidgetProps {
     latitude: number;
     longitude: number;
   } | null;
+  reloadOnSelect?: boolean;
 }
 
 interface WeatherState {
@@ -39,7 +40,7 @@ async function doFetchSuggestions(q: string, signal: AbortSignal): Promise<Geoco
   return (await res.json()) as GeocodingResult[];
 }
 
-export default function WeatherWidget({ initialCity }: WeatherWidgetProps) {
+export default function WeatherWidget({ initialCity, reloadOnSelect }: WeatherWidgetProps) {
   const [cityInput, setCityInput] = useState(initialCity?.cityName ?? "");
   const [suggestions, setSuggestions] = useState<GeocodingResult[]>([]);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -149,7 +150,7 @@ export default function WeatherWidget({ initialCity }: WeatherWidgetProps) {
     setShowSuggestions(false);
     setLoading(true);
 
-    await fetch("/api/user-preferences", {
+    const res = await fetch("/api/user-preferences", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -158,6 +159,10 @@ export default function WeatherWidget({ initialCity }: WeatherWidgetProps) {
         longitude: suggestion.longitude,
       }),
     });
+
+    if (res.ok && reloadOnSelect) {
+      window.location.reload();
+    }
   };
 
   const staleTime = weatherState.data?.fetchedAt

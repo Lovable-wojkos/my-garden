@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase";
 import { createField } from "@/lib/services/fields";
+import { getUserPreferences } from "@/lib/services/user-preferences";
 
 export const prerender = false;
 
@@ -9,7 +10,6 @@ const CreateFieldSchema = z.object({
   name: z.string().min(1).max(50),
   cols: z.number().int().min(1).max(20),
   rows: z.number().int().min(1).max(20),
-  region_id: z.uuid(),
 });
 
 export const POST: APIRoute = async (context) => {
@@ -52,8 +52,19 @@ export const POST: APIRoute = async (context) => {
     });
   }
 
+  const { data: prefs } = await getUserPreferences(supabase, user.id);
+  if (!prefs?.region_id) {
+    return new Response(JSON.stringify({ error: "location_required" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   const { data, error } = await createField(supabase, {
-    ...parsed.data,
+    name: parsed.data.name,
+    cols: parsed.data.cols,
+    rows: parsed.data.rows,
+    region_id: prefs.region_id,
     user_id: user.id,
   });
 
