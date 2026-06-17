@@ -31,6 +31,16 @@ export async function getPendingPlants(client: SupabaseClient) {
     .overrideTypes<PlantRow[], { merge: false }>();
 }
 
+export async function getUserPendingPlants(client: SupabaseClient, userId: string) {
+  return client
+    .from("plants")
+    .select("*")
+    .eq("status", "pending")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .overrideTypes<PlantRow[], { merge: false }>();
+}
+
 export async function approvePlant(
   client: SupabaseClient,
   id: string,

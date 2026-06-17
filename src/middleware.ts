@@ -11,6 +11,7 @@ const PROTECTED_ROUTES = [
   "/api/user-preferences",
   "/api/geocoding-suggestions",
   "/api/plantings",
+  "/api/plant-requests",
 ];
 
 export const onRequest = defineMiddleware(async (context, next) => {

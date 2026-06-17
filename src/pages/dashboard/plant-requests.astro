@@ -1,0 +1,22 @@
+---
+import AppShell from "@/components/AppShell.astro";
+import Layout from "@/layouts/Layout.astro";
+import PlantRequestForm from "@/components/plants/PlantRequestForm";
+import { pl } from "@/lib/copy/pl";
+import { createClient } from "@/lib/supabase";
+import { getUserPendingPlants } from "@/lib/services/plants";
+
+const { user } = Astro.locals;
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+const { data: pendingPlants } = user && supabase ? await getUserPendingPlants(supabase, user.id) : { data: [] };
+---
+
+<Layout title={pl.plantRequests.title}>
+  <AppShell title={pl.plantRequests.title} activeNav="catalog">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <p class="text-muted-foreground">{pl.plantRequests.subtitle}</p>
+      <PlantRequestForm initialPending={pendingPlants ?? []} client:load />
+    </div>
+  </AppShell>
+</Layout>
