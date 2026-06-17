@@ -2,8 +2,11 @@ import type { APIRoute } from "astro";
 import { CRON_SECRET } from "astro:env/server";
 import { createServiceRoleClient } from "@/lib/supabase";
 import { getDailyWeather } from "@/lib/services/open-meteo";
+import type { RegionRow } from "@/types";
 
 export const prerender = false;
+
+type CronRegion = Pick<RegionRow, "id" | "latitude" | "longitude">;
 
 export const GET: APIRoute = async (context) => {
   const authHeader = context.request.headers.get("authorization");
@@ -16,47 +19,44 @@ export const GET: APIRoute = async (context) => {
     return new Response(JSON.stringify({ error: "service_role_key_not_configured" }), { status: 500 });
   }
 
-  const { data: prefs } = await supabase.from("user_preferences").select("latitude, longitude");
+  const { data: regions, error: regionsError } = await supabase
+    .from("regions")
+    .select("id, latitude, longitude")
+    .overrideTypes<CronRegion[], { merge: false }>();
 
-  const uniqueCoords = new Map<string, { lat: number; lng: number }>();
-  for (const p of prefs ?? []) {
-    const lat = p.latitude as number | null;
-    const lng = p.longitude as number | null;
-    if (lat !== null && lng !== null) {
-      uniqueCoords.set(`${lat},${lng}`, { lat, lng });
-    }
+  if (regionsError) {
+    return new Response(JSON.stringify({ error: "regions_query_failed" }), { status: 500 });
   }
 
   let fetched = 0;
   let failed = 0;
 
-  for (const { lat, lng } of uniqueCoords.values()) {
+  for (const region of regions) {
+    const { id: regionId, latitude: lat, longitude: lng } = region;
     try {
       const dailyRecords = await getDailyWeather(lat, lng);
 
       const inserts = dailyRecords.map((r) => ({
+        region_id: regionId,
         latitude: lat,
         longitude: lng,
         recorded_at: `${r.date}T00:00:00Z`,
         temperature_c: r.temperatureC,
         rainfall_mm: r.rainfallMm,
-        region_id: null,
       }));
 
       if (inserts.length > 0) {
         const { error: upsertError } = await supabase
           .from("weather_records")
-          .upsert(inserts, { onConflict: "latitude, longitude, recorded_at" });
+          .upsert(inserts, { onConflict: "region_id, recorded_at" });
 
         if (upsertError) {
-          console.error(`Failed to upsert for ${lat},${lng}:`, upsertError);
           failed++;
         } else {
           fetched++;
         }
       }
-    } catch (e) {
-      console.error(`Failed to fetch weather for ${lat},${lng}:`, e);
+    } catch (_e) {
       failed++;
     }
   }
@@ -65,7 +65,7 @@ export const GET: APIRoute = async (context) => {
     JSON.stringify({
       fetched,
       failed,
-      locations: uniqueCoords.size,
+      locations: regions.length,
       backfilled: true,
     }),
     { status: 200, headers: { "Content-Type": "application/json" } },
