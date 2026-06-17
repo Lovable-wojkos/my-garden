@@ -44,6 +44,8 @@ export interface WeatherData {
   rainfall7dMm: number;
   lastRainDate: string | null;
   lastRainMm: number | null;
+  weatherCode: number;
+  isDay: boolean;
   fetchedAt: string;
 }
 
@@ -51,7 +53,7 @@ export async function getWeather(lat: number, lng: number): Promise<WeatherData>
   const url = new URL("https://api.open-meteo.com/v1/forecast");
   url.searchParams.set("latitude", lat.toString());
   url.searchParams.set("longitude", lng.toString());
-  url.searchParams.set("current", "temperature_2m,precipitation");
+  url.searchParams.set("current", "temperature_2m,precipitation,weather_code,is_day");
   url.searchParams.set("daily", "precipitation_sum");
   url.searchParams.set("past_days", "7");
   url.searchParams.set("timezone", "auto");
@@ -67,6 +69,8 @@ export async function getWeather(lat: number, lng: number): Promise<WeatherData>
     current?: {
       temperature_2m?: number;
       precipitation?: number;
+      weather_code?: number;
+      is_day?: number;
     };
     daily?: {
       time?: string[];
@@ -105,6 +109,8 @@ export async function getWeather(lat: number, lng: number): Promise<WeatherData>
     rainfall7dMm: Number(rainfall7dMm.toFixed(1)),
     lastRainDate,
     lastRainMm: lastRainMm != null ? Number(lastRainMm.toFixed(1)) : null,
+    weatherCode: data.current?.weather_code ?? 0,
+    isDay: data.current?.is_day !== 0,
     fetchedAt: new Date().toISOString(),
   };
 }

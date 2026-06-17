@@ -32,7 +32,10 @@ function makeCronClient(regions: typeof REGIONS) {
   const upsertCalls: { inserts: unknown[]; options: unknown }[] = [];
 
   const regionsBuilder = {
-    select: vi.fn(() => Promise.resolve({ data: regions, error: null })),
+    select: vi.fn(function (this: typeof regionsBuilder) {
+      return this;
+    }),
+    overrideTypes: vi.fn(() => Promise.resolve({ data: regions, error: null })),
   };
 
   const weatherRecordsBuilder = {
