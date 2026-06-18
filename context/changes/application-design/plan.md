@@ -432,41 +432,41 @@ Apply earthy light tokens and Polish copy to remaining React islands and admin p
 
 #### Automated
 
-- [ ] 1.1 `npm run lint` passes
-- [ ] 1.2 `npm run build` passes
+- [x] 1.1 `npm run lint` passes
+- [x] 1.2 `npm run build` passes
 
 #### Manual
 
-- [ ] 1.3 `DESIGN.md` is garden earthy light spec (no emma.love)
-- [ ] 1.4 `global.css` tokens match DESIGN.md
-- [ ] 1.5 `pl.ts` covers nav, landing, auth, dashboard, catalog, settings
+- [x] 1.3 `DESIGN.md` is garden earthy light spec (no emma.love)
+- [x] 1.4 `global.css` tokens match DESIGN.md
+- [x] 1.5 `pl.ts` covers nav, landing, auth, dashboard, catalog, settings
 
 ### Phase 2: Public Home & Auth Rebrand
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes
-- [ ] 2.2 `npm run build` passes
+- [x] 2.1 `npm run lint` passes
+- [x] 2.2 `npm run build` passes
 
 #### Manual
 
-- [ ] 2.3 Polish garden landing at `/` (no starter branding)
-- [ ] 2.4 Auth pages light-themed and Polish
-- [ ] 2.5 Sign-in redirects to `/dashboard`
+- [x] 2.3 Polish garden landing at `/` (no starter branding)
+- [x] 2.4 Auth pages light-themed and Polish
+- [x] 2.5 Sign-in redirects to `/dashboard`
 
 ### Phase 3: App Shell & Navigation
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes
-- [ ] 3.2 `npm run build` passes
-- [ ] 3.3 Middleware tests pass
+- [x] 3.1 `npm run lint` passes
+- [x] 3.2 `npm run build` passes
+- [x] 3.3 Middleware tests pass
 
 #### Manual
 
-- [ ] 3.4 AppShell nav on dashboard and field pages
-- [ ] 3.5 Mobile bottom nav usable
-- [ ] 3.6 Admin nav link for admin role only
+- [x] 3.4 AppShell nav on dashboard and field pages
+- [x] 3.5 Mobile bottom nav usable
+- [x] 3.6 Admin nav link for admin role only
 
 ### Phase 4: Missing Pages & User Plant-Request API
 
@@ -479,10 +479,10 @@ Apply earthy light tokens and Polish copy to remaining React islands and admin p
 
 #### Manual
 
-- [ ] 4.5 Catalog page lists global plants
-- [ ] 4.6 Plant request submit and list works
-- [ ] 4.7 Settings page shows email and location
-- [ ] 4.8 Polish 404 page
+- [x] 4.5 Catalog page lists global plants
+- [x] 4.6 Plant request submit and list works
+- [x] 4.7 Settings page shows email and location
+- [x] 4.8 Polish 404 page
 
 ### Phase 5: Theme Migration & Admin Polish
 
