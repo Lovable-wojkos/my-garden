@@ -157,6 +157,18 @@ The planting grid is the core interactive surface.
 
 Labels for row/column indices: `text-xs text-muted-foreground`.
 
+**Watering badges** (field list + grid cells):
+
+| Status | Badge style | Copy (PL) |
+|--------|-------------|-----------|
+| `ok` | `bg-muted text-muted-foreground` | Wystarczające opady |
+| `water_soon` | `bg-accent/10 border-accent/40` | Podlej wkrótce |
+| `water_now` | `bg-accent text-accent-foreground` | Podlej dziś |
+
+- Use `WateringBadge` with `variant="compact"` on grid cells and field list rows
+- Hide badge when rainfall data is missing/stale, or status is `unknown` (manual planting)
+- Field list shows worst-case status among evaluable plantings only
+
 ---
 
 ## 7. Weather Panel

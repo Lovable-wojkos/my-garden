@@ -42,6 +42,10 @@ export const pl = {
     errors: {
       emailRequired: "E-mail jest wymagany",
       emailInvalid: "Podaj prawidłowy adres e-mail",
+      notConfigured: "Usługa logowania jest niedostępna.",
+      sendFailed: "Nie udało się wysłać linku logowania. Spróbuj ponownie później.",
+      callbackFailed: "Link logowania jest nieprawidłowy lub wygasł. Poproś o nowy link.",
+      invalidLink: "Nieprawidłowy link logowania.",
     },
   },
 
@@ -165,6 +169,15 @@ export const pl = {
       fog: "Mgła",
       unknown: "Nieznane",
     },
+  },
+
+  watering: {
+    ok: "Wystarczające opady",
+    okShort: "OK",
+    waterSoon: "Podlej wkrótce",
+    waterSoonShort: "Wkrótce",
+    waterNow: "Podlej dziś",
+    waterNowShort: "Dziś",
   },
 
   admin: {

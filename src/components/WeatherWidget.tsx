@@ -24,6 +24,8 @@ interface WeatherWidgetProps {
   reloadOnSelect?: boolean;
   /** When false, location is display-only (dashboard). When true, click to edit (settings). */
   editable?: boolean;
+  rainfall7dMmFromDb?: number | null;
+  rainfallStale?: boolean;
 }
 
 interface WeatherState {
@@ -65,7 +67,13 @@ function formatRelativeRainDate(dateStr: string): string {
   return pl.weather.relativeDaysAgo(diffDays);
 }
 
-export default function WeatherWidget({ initialCity, reloadOnSelect, editable = false }: WeatherWidgetProps) {
+export default function WeatherWidget({
+  initialCity,
+  reloadOnSelect,
+  editable = false,
+  rainfall7dMmFromDb,
+  rainfallStale = false,
+}: WeatherWidgetProps) {
   const [cityInput, setCityInput] = useState(initialCity?.cityName ?? "");
   const [suggestions, setSuggestions] = useState<GeocodingResult[]>([]);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -200,6 +208,10 @@ export default function WeatherWidget({ initialCity, reloadOnSelect, editable = 
       })
     : null;
 
+  const displayRainfall7dMm = rainfall7dMmFromDb ?? weatherState.data?.rainfall7dMm;
+
+  const showStaleBadge = weatherState.stale || rainfallStale;
+
   const showLocationInput = editable && (isEditingLocation || !cityInput.trim());
   const { primary: locationPrimary } = parseLocationDisplay(cityInput);
 
@@ -294,7 +306,9 @@ export default function WeatherWidget({ initialCity, reloadOnSelect, editable = 
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground text-sm">{pl.weather.rainfall} (7 dni)</span>
-              <span className="font-semibold">{weatherState.data.rainfall7dMm} mm</span>
+              <span className="font-semibold">
+                {displayRainfall7dMm != null ? `${displayRainfall7dMm} mm` : pl.weather.lastRainNoData}
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground text-sm">{pl.weather.lastRain}</span>
@@ -304,9 +318,10 @@ export default function WeatherWidget({ initialCity, reloadOnSelect, editable = 
                   : pl.weather.lastRainNoData}
               </span>
             </div>
-            {weatherState.stale && staleTime && (
+            {showStaleBadge && (
               <Badge variant="outline" className="border-border text-muted-foreground">
-                {pl.weather.stale} ({staleTime})
+                {pl.weather.stale}
+                {staleTime ? ` (${staleTime})` : ""}
               </Badge>
             )}
           </div>

@@ -1,17 +1,20 @@
 import { useState } from "react";
 import type { FieldRow, PlantingRow, PlantRow } from "@/types";
 import { getHarvestDate } from "@/lib/harvest";
+import { evaluatePlantingWatering } from "@/lib/watering";
 import { pl } from "@/lib/copy/pl";
 import { cn } from "@/lib/utils";
 import PlantingDialog from "./PlantingDialog";
+import WateringBadge from "./WateringBadge";
 
 interface FieldGridProps {
   field: FieldRow;
   plantings: PlantingRow[];
   plants: PlantRow[];
+  rainfall7dMm?: number | null;
 }
 
-export default function FieldGrid({ field, plantings: initialPlantings, plants }: FieldGridProps) {
+export default function FieldGrid({ field, plantings: initialPlantings, plants, rainfall7dMm = null }: FieldGridProps) {
   const [plantings, setPlantings] = useState<PlantingRow[]>(initialPlantings);
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -46,6 +49,8 @@ export default function FieldGrid({ field, plantings: initialPlantings, plants }
         {Array.from({ length: field.rows }, (_, row) =>
           Array.from({ length: field.cols }, (_, col) => {
             const planting = plantingMap.get(`${row}:${col}`);
+            const wateringStatus =
+              planting && rainfall7dMm != null ? evaluatePlantingWatering(planting, plants, rainfall7dMm) : null;
             return (
               <button
                 key={`${row}:${col}`}
@@ -71,6 +76,9 @@ export default function FieldGrid({ field, plantings: initialPlantings, plants }
                     </span>
                     <span className="text-muted-foreground">{planting.seeding_date}</span>
                     <span className="text-muted-foreground">🌾 {getHarvestDate(planting, plants)}</span>
+                    {wateringStatus && wateringStatus !== "unknown" ? (
+                      <WateringBadge status={wateringStatus} variant="compact" />
+                    ) : null}
                   </>
                 ) : (
                   <span className="text-muted-foreground">{pl.fields.emptyCell}</span>

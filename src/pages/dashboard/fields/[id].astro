@@ -8,6 +8,7 @@ import { getFieldById } from "@/lib/services/fields";
 import { getPlantingsByField } from "@/lib/services/plantings";
 import { getPlants } from "@/lib/services/plants";
 import { getUserPreferences } from "@/lib/services/user-preferences";
+import { getRainfall7dCalendarMm } from "@/lib/services/weather";
 import FieldGrid from "@/components/fields/FieldGrid";
 import WeatherWidget from "@/components/WeatherWidget";
 import { pl } from "@/lib/copy/pl";
@@ -44,6 +45,17 @@ if (fieldError) {
 const initialCity = userPrefs
   ? { cityName: userPrefs.city_name, latitude: userPrefs.latitude, longitude: userPrefs.longitude }
   : null;
+
+let rainfall7dMm: number | null = null;
+let rainfall7dMmFromDb: number | null = null;
+let rainfallStale = false;
+
+if (userPrefs?.region_id) {
+  const { data, rainfallStale: stale } = await getRainfall7dCalendarMm(supabase, userPrefs.region_id);
+  rainfall7dMmFromDb = data;
+  rainfallStale = stale;
+  rainfall7dMm = data !== null && !stale ? data : null;
+}
 ---
 
 <Layout title={pl.fields.detailTitle(field.name)}>
@@ -54,11 +66,23 @@ const initialCity = userPrefs
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto]">
       <div class="border-border bg-card rounded-xl border p-4 shadow-sm md:p-6">
-        <FieldGrid client:load field={field} plantings={plantings ?? []} plants={plants ?? []} />
+        <FieldGrid
+          client:load
+          field={field}
+          plantings={plantings ?? []}
+          plants={plants ?? []}
+          rainfall7dMm={rainfall7dMm}
+        />
       </div>
 
       <div class="flex items-start justify-center lg:justify-start">
-        <WeatherWidget client:load initialCity={initialCity} editable={false} />
+        <WeatherWidget
+          client:load
+          initialCity={initialCity}
+          editable={false}
+          rainfall7dMmFromDb={rainfall7dMmFromDb}
+          rainfallStale={rainfallStale}
+        />
       </div>
     </div>
   </AppShell>

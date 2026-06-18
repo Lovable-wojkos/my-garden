@@ -5,6 +5,10 @@ export async function getPlantingsByField(client: SupabaseClient, fieldId: strin
   return client.from("plantings").select("*").eq("field_id", fieldId).overrideTypes<PlantingRow[], { merge: false }>();
 }
 
+export async function getPlantingsByUser(client: SupabaseClient, userId: string) {
+  return client.from("plantings").select("*").eq("user_id", userId).overrideTypes<PlantingRow[], { merge: false }>();
+}
+
 export async function createPlanting(client: SupabaseClient, insert: PlantingInsert) {
   return client.from("plantings").insert(insert).select().single<PlantingRow>();
 }
