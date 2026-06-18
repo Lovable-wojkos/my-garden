@@ -11,6 +11,7 @@ interface Props {
 
 export default function SignInForm({ serverError }: Props) {
   const [email, setEmail] = useState("");
+  const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<{ email?: string }>({});
 
   function validate() {
@@ -31,7 +32,9 @@ export default function SignInForm({ serverError }: Props) {
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     if (!validate()) {
       e.preventDefault();
+      return;
     }
+    setPending(true);
   }
 
   return (
@@ -52,7 +55,7 @@ export default function SignInForm({ serverError }: Props) {
 
       <ServerError message={serverError} />
 
-      <SubmitButton pendingText={pl.auth.magicLinkSendPending} icon={<Send className="size-4" />}>
+      <SubmitButton pending={pending} pendingText={pl.auth.magicLinkSendPending} icon={<Send className="size-4" />}>
         {pl.auth.magicLinkSendButton}
       </SubmitButton>
     </form>

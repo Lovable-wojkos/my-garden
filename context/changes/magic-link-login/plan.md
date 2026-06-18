@@ -435,3 +435,15 @@ Existing users created via password signup retain Supabase auth accounts — mag
 
 - [x] 4.2 Playwright auth setup + dashboard spec pass with E2E env
 - [x] 4.3 Production Supabase redirect URL documented
+
+## Implementation Addenda
+
+Post-implementation notes captured during impl-review (2026-06-18):
+
+### Dev redirect debugging (Phase 1)
+
+In `import.meta.env.DEV`, `POST /api/auth/magic-link` appends `?dev_redirect=<emailRedirectTo>` to the check-email redirect. `check-email.astro` shows the exact callback URL sent to Supabase so local redirect-URL mismatches are visible without digging through mail. Production builds omit the query param and panel.
+
+### SITE_URL origin override (Phase 1)
+
+`resolveAppOrigin()` prefers `SITE_URL` from `astro:env/server` when set, falling back to `new URL(request.url).origin`. Supports Vercel preview/production where the request origin may differ from the canonical app URL. Documented in `README.md` and `.env.example`.

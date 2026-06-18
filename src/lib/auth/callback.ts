@@ -1,5 +1,9 @@
 import type { AstroCookies } from "astro";
+import { logAuthError, signInErrorRedirect } from "@/lib/auth/errors";
+import { pl } from "@/lib/copy/pl";
 import { createClient } from "@/lib/supabase";
+
+const ALLOWED_OTP_TYPES = new Set(["email", "magiclink", "signup"]);
 
 export async function handleAuthCallback(
   searchParams: URLSearchParams,
@@ -12,18 +16,23 @@ export async function handleAuthCallback(
 
   const supabase = createClient(headers, cookies);
   if (!supabase) {
-    return { redirect: `/auth/signin?error=${encodeURIComponent("Supabase is not configured")}` };
+    return { redirect: signInErrorRedirect(pl.auth.errors.notConfigured) };
   }
 
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) {
-      return { redirect: `/auth/signin?error=${encodeURIComponent(error.message)}` };
+      logAuthError("callback:pkce", error);
+      return { redirect: signInErrorRedirect(pl.auth.errors.callbackFailed) };
     }
     return { redirect: "/dashboard" };
   }
 
   if (tokenHash && type) {
+    if (!ALLOWED_OTP_TYPES.has(type)) {
+      return { redirect: signInErrorRedirect(pl.auth.errors.callbackFailed) };
+    }
+
     // Supabase verifyOtp token_hash flow uses type "email" (magiclink/signup types are deprecated).
     const verifyType = type === "magiclink" || type === "signup" ? "email" : type;
     const { error } = await supabase.auth.verifyOtp({
@@ -31,10 +40,11 @@ export async function handleAuthCallback(
       type: verifyType as "email" | "invite" | "recovery" | "email_change",
     });
     if (error) {
-      return { redirect: `/auth/signin?error=${encodeURIComponent(error.message)}` };
+      logAuthError("callback:verify-otp", error);
+      return { redirect: signInErrorRedirect(pl.auth.errors.callbackFailed) };
     }
     return { redirect: "/dashboard" };
   }
 
-  return { redirect: `/auth/signin?error=${encodeURIComponent("Invalid authentication link")}` };
+  return { redirect: signInErrorRedirect(pl.auth.errors.invalidLink) };
 }
