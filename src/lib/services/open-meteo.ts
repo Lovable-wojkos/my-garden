@@ -130,6 +130,23 @@ export interface DailyWeatherRecord {
   rainfallMm: number | null;
 }
 
+/** Resolve Open-Meteo auto timezone for coordinates (same source as getDailyWeather). */
+export async function getAutoTimezone(lat: number, lng: number): Promise<string> {
+  const url = new URL("https://api.open-meteo.com/v1/forecast");
+  url.searchParams.set("latitude", lat.toString());
+  url.searchParams.set("longitude", lng.toString());
+  url.searchParams.set("forecast_days", "1");
+  url.searchParams.set("timezone", "auto");
+
+  const response = await fetch(url.toString());
+  if (!response.ok) {
+    throw new Error(`Open-Meteo forecast API error: ${response.statusText}`);
+  }
+
+  const data = (await response.json()) as { timezone?: string };
+  return data.timezone ?? "UTC";
+}
+
 export async function getDailyWeather(lat: number, lng: number): Promise<DailyWeatherRecord[]> {
   const url = new URL("https://api.open-meteo.com/v1/forecast");
   url.searchParams.set("latitude", lat.toString());
