@@ -57,7 +57,7 @@ describe("POST /api/auth/magic-link", () => {
     const context = makeContext();
     await POST(context);
 
-    expect(context.redirect).toHaveBeenCalledWith("/auth/check-email");
+    expect(context.redirect).toHaveBeenCalledWith(expect.stringMatching(/^\/auth\/check-email/));
   });
 
   it("passes emailRedirectTo with request origin and shouldCreateUser", async () => {

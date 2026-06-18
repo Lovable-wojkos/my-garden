@@ -21,10 +21,6 @@ export const POST: APIRoute = async (context) => {
   const origin = resolveAppOrigin(context.request.url);
   const emailRedirectTo = `${origin}/auth/callback`;
 
-  if (import.meta.env.DEV) {
-    console.log("[magic-link] emailRedirectTo:", emailRedirectTo, "| SITE_URL:", SITE_URL ?? "(not set, using request origin)");
-  }
-
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {

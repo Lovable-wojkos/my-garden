@@ -24,9 +24,11 @@ export async function handleAuthCallback(
   }
 
   if (tokenHash && type) {
+    // Supabase verifyOtp token_hash flow uses type "email" (magiclink/signup types are deprecated).
+    const verifyType = type === "magiclink" || type === "signup" ? "email" : type;
     const { error } = await supabase.auth.verifyOtp({
       token_hash: tokenHash,
-      type: type as "email" | "magiclink" | "signup" | "invite" | "recovery" | "email_change",
+      type: verifyType as "email" | "invite" | "recovery" | "email_change",
     });
     if (error) {
       return { redirect: `/auth/signin?error=${encodeURIComponent(error.message)}` };

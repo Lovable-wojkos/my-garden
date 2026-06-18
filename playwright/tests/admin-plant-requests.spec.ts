@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import { pl } from "../../src/lib/copy/pl";
 
 type PlantStatus = "pending" | "global";
 
@@ -69,8 +70,9 @@ test.describe("risk #2: admin can safely process pending plant requests", () => 
     }
     createdPlantIds.add(rejectSeed.id);
 
-    await page.goto("/admin/plant-requests");
-    await expect(page.getByRole("heading", { name: "Plant Requests" })).toBeVisible();
+    await page.goto("/admin/plant-requests", { waitUntil: "networkidle" });
+    await expect(page).toHaveURL("/admin/plant-requests");
+    await expect(page.getByRole("heading", { name: pl.admin.title })).toBeVisible();
 
     const approveRow = page.getByRole("listitem").filter({ hasText: approvePlantName });
     const rejectRow = page.getByRole("listitem").filter({ hasText: rejectPlantName });
@@ -78,12 +80,15 @@ test.describe("risk #2: admin can safely process pending plant requests", () => 
     await expect(approveRow).toBeVisible();
     await expect(rejectRow).toBeVisible();
 
-    await approveRow.getByRole("button", { name: "Approve" }).click();
-    const dialog = page.getByRole("dialog", { name: "Approve plant request" });
-    await expect(dialog).toBeVisible();
-    await dialog.getByLabel("Growth days").fill("30");
-    await dialog.getByLabel("Watering needs").fill("medium");
-    await dialog.getByRole("button", { name: "Approve" }).click();
+    const approveButton = approveRow.getByRole("button", { name: pl.admin.approve });
+    await expect(approveButton).toBeEnabled();
+    await expect(async () => {
+      await approveButton.click();
+      await expect(page.getByLabel(pl.admin.growthDaysLabel)).toBeVisible({ timeout: 500 });
+    }).toPass({ timeout: 15_000 });
+    await page.getByLabel(pl.admin.growthDaysLabel).fill("30");
+    await page.getByLabel(pl.admin.wateringNeedsLabel).fill("medium");
+    await page.getByRole("dialog").getByRole("button", { name: pl.admin.approve }).click();
 
     await expect(approveRow).toHaveCount(0);
 
@@ -103,10 +108,9 @@ test.describe("risk #2: admin can safely process pending plant requests", () => 
       })
       .toBe("global:30:medium");
 
-    page.once("dialog", (confirmDialog) => {
-      void confirmDialog.accept();
-    });
-    await rejectRow.getByRole("button", { name: "Reject" }).click();
+    await rejectRow.getByRole("button", { name: pl.admin.reject }).click();
+    const rejectDialog = page.getByRole("alertdialog", { name: pl.admin.rejectConfirm });
+    await rejectDialog.getByRole("button", { name: pl.admin.reject }).click();
     await expect(rejectRow).toHaveCount(0);
 
     await expect
