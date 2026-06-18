@@ -123,6 +123,7 @@ font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helve
 - `bg-card border-input` with `focus-visible:ring-ring`
 - Error state: `border-destructive text-destructive` + message below field
 - Auth and create-field forms sit inside a centered card on `bg-background`
+- Sign-in is email-only magic link — no password fields anywhere in the app
 
 ### Dialogs
 

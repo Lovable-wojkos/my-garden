@@ -20,6 +20,8 @@ export default defineConfig({
       SUPABASE_ANON_KEY: envField.string({ context: "server", access: "secret", optional: true }),
       SUPABASE_SERVICE_ROLE_KEY: envField.string({ context: "server", access: "secret", optional: true }),
       CRON_SECRET: envField.string({ context: "server", access: "secret", optional: true }),
+      // Canonical app origin for magic-link redirects (e.g. http://localhost:4321). Falls back to request origin.
+      SITE_URL: envField.string({ context: "server", access: "secret", optional: true }),
     },
   },
 });

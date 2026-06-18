@@ -54,7 +54,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Frontend:** present — Astro 6 + React 19 islands + Tailwind 4 + shadcn/ui; pages at `src/pages/`, components at `src/components/ui/`
 - **Backend / API:** partial — auth API routes present (`src/pages/api/auth/`); no business-domain API routes, no background jobs or cron handlers
 - **Data:** partial — Supabase client wired (`src/lib/supabase.ts`); `supabase/migrations/` directory exists but is empty; no schema, no seeds
-- **Auth:** present — Supabase SSR magic-link flow; middleware guards `/dashboard` (`src/middleware.ts:6–22`)
+- **Auth:** present — passwordless magic-link login via Supabase SSR (`signInWithOtp` + `/auth/callback`); middleware guards protected routes (`src/middleware.ts`)
 - **Deploy / infra:** partial — GitHub Actions CI present (`.github/workflows/ci.yml`); no `vercel.json`, no Dockerfile
 - **Observability:** absent — no logging, error tracking, or monitoring anywhere
 

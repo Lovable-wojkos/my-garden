@@ -1,24 +1,7 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import SignUpForm from "@/components/auth/SignUpForm";
-import { pl } from "@/lib/copy/pl";
+if (Astro.locals.user) {
+  return Astro.redirect("/dashboard");
+}
 
-const error = Astro.url.searchParams.get("error");
+return Astro.redirect("/auth/signin");
 ---
-
-<Layout title={pl.auth.signUpTitle}>
-  <div class="bg-background flex min-h-screen items-center justify-center p-4">
-    <div class="border-border bg-card w-full max-w-sm rounded-xl border p-8 shadow-sm">
-      <h1 class="text-foreground mb-6 text-center text-2xl font-bold">
-        {pl.auth.signUpTitle}
-      </h1>
-      <SignUpForm serverError={error} client:load />
-      <p class="text-muted-foreground mt-4 text-center text-sm">
-        {pl.auth.hasAccount}{" "}
-        <a href="/auth/signin" class="text-primary hover:underline">
-          {pl.auth.linkSignIn}
-        </a>
-      </p>
-    </div>
-  </div>
-</Layout>

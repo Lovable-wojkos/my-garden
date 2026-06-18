@@ -66,7 +66,7 @@ describe("middleware onRequest", () => {
     });
   });
 
-  it.each(["/", "/api/auth/signin", "/auth/signup"])(
+  it.each(["/", "/api/auth/magic-link", "/auth/callback", "/auth/signup", "/auth/check-email"])(
     "allows unauthenticated access to public route %s",
     async (pathname) => {
       vi.mocked(createClient).mockReturnValue({

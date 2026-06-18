@@ -6,5 +6,6 @@ export const SUPABASE_URL = "http://localhost:54321";
 export const SUPABASE_ANON_KEY = "test-anon-key-do-not-use-in-production";
 export const SUPABASE_SERVICE_ROLE_KEY = "test-service-role-key-do-not-use-in-production";
 export const CRON_SECRET = "test-cron-secret-do-not-use-in-production";
+export const SITE_URL = "http://localhost:4321";
 
 export const defineMiddleware = (fn: unknown) => fn;

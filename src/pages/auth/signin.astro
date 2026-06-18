@@ -13,16 +13,13 @@ const error = Astro.url.searchParams.get("error");
 <Layout title={pl.auth.signInTitle}>
   <div class="bg-background flex min-h-screen items-center justify-center p-4">
     <div class="border-border bg-card w-full max-w-sm rounded-xl border p-8 shadow-sm">
-      <h1 class="text-foreground mb-6 text-center text-2xl font-bold">
+      <h1 class="text-foreground mb-2 text-center text-2xl font-bold">
         {pl.auth.signInTitle}
       </h1>
-      <SignInForm serverError={error} client:load />
-      <p class="text-muted-foreground mt-4 text-center text-sm">
-        {pl.auth.noAccount}{" "}
-        <a href="/auth/signup" class="text-primary hover:underline">
-          {pl.auth.linkSignUp}
-        </a>
+      <p class="text-muted-foreground mb-6 text-center text-sm">
+        {pl.auth.signInSubtitle}
       </p>
+      <SignInForm serverError={error} client:load />
     </div>
   </div>
 </Layout>

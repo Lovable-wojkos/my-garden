@@ -1,0 +1,33 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { pl } from "@/lib/copy/pl";
+
+const devRedirect = import.meta.env.DEV ? Astro.url.searchParams.get("dev_redirect") : null;
+---
+
+<Layout title={pl.auth.magicLinkSentTitle}>
+  <div class="bg-background flex min-h-screen items-center justify-center p-4">
+    <div class="border-border bg-card w-full max-w-sm rounded-xl border p-8 text-center shadow-sm">
+      <div class="mb-4 text-5xl">📧</div>
+      <h1 class="text-foreground mb-3 text-2xl font-bold">
+        {pl.auth.magicLinkSentTitle}
+      </h1>
+      <p class="text-muted-foreground mb-6">{pl.auth.magicLinkSentMessage}</p>
+      {
+        devRedirect && (
+          <div class="border-border bg-muted/50 mb-6 rounded-lg border p-3 text-left text-xs">
+            <p class="text-foreground mb-1 font-medium">Dev: redirect wysłany do Supabase</p>
+            <code class="text-muted-foreground break-all">{devRedirect}</code>
+            <p class="text-muted-foreground mt-2">
+              Ten URL musi być w Supabase → Authentication → Redirect URLs. Stary mail nie zmieni się — wyślij
+              link ponownie po zapisaniu ustawień.
+            </p>
+          </div>
+        )
+      }
+      <a href="/auth/signin" class="text-primary text-sm hover:underline">
+        {pl.auth.magicLinkSentBack}
+      </a>
+    </div>
+  </div>
+</Layout>

@@ -112,12 +112,35 @@ Add these to your `.env`:
 
 | Route | Description |
 |-------|-------------|
-| `/auth/signin` | Email/password sign-in |
-| `/auth/signup` | Email/password sign-up |
-| `/auth/confirm-email` | Post-signup confirmation page |
+| `/auth/signin` | Email-only magic-link sign-in |
+| `/auth/check-email` | Post-submit "check your inbox" page |
+| `/auth/callback` | Magic-link callback (session exchange) |
+| `/auth/signup` | Redirects to `/auth/signin` (bookmark compatibility) |
 | `/dashboard` | Protected page (redirects to `/auth/signin` if unauthenticated) |
 
 Route protection is handled in `src/middleware.ts`. Add paths to `PROTECTED_ROUTES` to require authentication.
+
+### Magic link — Supabase URL configuration
+
+Magic-link emails redirect to `{SITE_URL}/auth/callback`. If Supabase **Site URL** or **Redirect URLs** are wrong, the link may land on an unrelated page (e.g. Vercel signup from a starter placeholder).
+
+**Local Supabase** (`npx supabase start`):
+
+1. Emails appear in **Inbucket** (URL printed by `supabase start`), not your real inbox.
+2. After changing `supabase/config.toml`, restart: `npx supabase stop && npx supabase start`.
+3. Set `SITE_URL=http://localhost:4321` in `.env`.
+
+**Hosted Supabase** (cloud project in `.env`):
+
+1. Dashboard → **Authentication** → **URL Configuration**
+2. **Site URL**: `http://localhost:4321` while developing locally (or your production URL when deployed)
+3. **Redirect URLs** — add both:
+   - `http://localhost:4321/auth/callback`
+   - `http://127.0.0.1:4321/auth/callback`
+   - (production) `https://<your-domain>/auth/callback`
+4. Set `SITE_URL` in `.env` to the same origin you use in the browser (e.g. `http://localhost:4321`).
+
+Remove any placeholder Vercel starter URL from Site URL unless that deployment actually exists.
 
 ## Deployment (Vercel)
 

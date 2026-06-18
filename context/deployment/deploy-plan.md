@@ -188,6 +188,7 @@ Deployment is successful when:
 - [ ] Production build completes without errors
 - [ ] Application loads at production URL
 - [ ] Authentication flow works (magic link)
+- [ ] Supabase Auth redirect URL includes `https://<production-domain>/auth/callback` (Supabase dashboard → Auth → URL Configuration → Redirect URLs)
 - [ ] Supabase database connection succeeds
 - [ ] Core user flow (field creation, plant selection, weather view) functions
 - [ ] Environment variables are not exposed to client

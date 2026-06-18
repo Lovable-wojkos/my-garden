@@ -1,0 +1,6 @@
+---
+import { handleAuthCallback } from "@/lib/auth/callback";
+
+const { redirect } = await handleAuthCallback(Astro.url.searchParams, Astro.request.headers, Astro.cookies);
+return Astro.redirect(redirect);
+---
