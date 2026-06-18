@@ -24,7 +24,7 @@ async function ensureAdminUser(serviceClient: SupabaseClient, email: string): Pr
     return;
   }
 
-  if (existing.app_metadata?.role !== "admin") {
+  if (existing.app_metadata.role !== "admin") {
     const { error: updateError } = await serviceClient.auth.admin.updateUserById(existing.id, {
       app_metadata: { ...existing.app_metadata, role: "admin" },
     });

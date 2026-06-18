@@ -1,25 +1,35 @@
 import type { APIRoute } from "astro";
-import { SITE_URL } from "astro:env/server";
+import { z } from "zod";
+import { logAuthError, signInErrorRedirect } from "@/lib/auth/errors";
+import { isSameOriginRequest, resolveAppOrigin } from "@/lib/auth/origin";
+import { pl } from "@/lib/copy/pl";
 import { createClient } from "@/lib/supabase";
 
-function resolveAppOrigin(requestUrl: string): string {
-  if (SITE_URL) {
-    return SITE_URL.replace(/\/$/, "");
-  }
-  return new URL(requestUrl).origin;
-}
+const MagicLinkSchema = z.object({
+  email: z.preprocess((val) => (typeof val === "string" ? val.trim() : val), z.email()),
+});
 
 export const POST: APIRoute = async (context) => {
+  const appOrigin = resolveAppOrigin(context.request.url);
+  if (!isSameOriginRequest(context.request, appOrigin)) {
+    return context.redirect(signInErrorRedirect(pl.auth.errors.sendFailed));
+  }
+
   const form = await context.request.formData();
-  const email = form.get("email") as string;
+  const parsed = MagicLinkSchema.safeParse({ email: form.get("email") });
+
+  if (!parsed.success) {
+    return context.redirect(signInErrorRedirect(pl.auth.errors.emailInvalid));
+  }
+
+  const { email } = parsed.data;
 
   const supabase = createClient(context.request.headers, context.cookies);
   if (!supabase) {
-    return context.redirect(`/auth/signin?error=${encodeURIComponent("Supabase is not configured")}`);
+    return context.redirect(signInErrorRedirect(pl.auth.errors.notConfigured));
   }
 
-  const origin = resolveAppOrigin(context.request.url);
-  const emailRedirectTo = `${origin}/auth/callback`;
+  const emailRedirectTo = `${appOrigin}/auth/callback`;
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
@@ -30,7 +40,8 @@ export const POST: APIRoute = async (context) => {
   });
 
   if (error) {
-    return context.redirect(`/auth/signin?error=${encodeURIComponent(error.message)}`);
+    logAuthError("magic-link", error);
+    return context.redirect(signInErrorRedirect(pl.auth.errors.sendFailed));
   }
 
   const checkEmailUrl = import.meta.env.DEV
