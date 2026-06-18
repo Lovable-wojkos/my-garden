@@ -433,5 +433,5 @@ Existing users created via password signup retain Supabase auth accounts — mag
 
 #### Manual
 
-- [ ] 4.2 Playwright auth setup + dashboard spec pass with E2E env
+- [x] 4.2 Playwright auth setup + dashboard spec pass with E2E env
 - [x] 4.3 Production Supabase redirect URL documented
