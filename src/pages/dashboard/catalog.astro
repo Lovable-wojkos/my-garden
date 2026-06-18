@@ -40,9 +40,7 @@ function formatWateringNeeds(needs: string | null): string {
                 <dl class="text-muted-foreground mt-2 grid grid-cols-2 gap-2 text-sm">
                   <div>
                     <dt class="inline">{pl.catalog.growthDays}: </dt>
-                    <dd class="text-foreground inline font-medium">
-                      {plant.growth_days != null ? plant.growth_days : "—"}
-                    </dd>
+                    <dd class="text-foreground inline font-medium">{plant.growth_days ?? "—"}</dd>
                   </div>
                   <div>
                     <dt class="inline">{pl.catalog.wateringNeeds}: </dt>
