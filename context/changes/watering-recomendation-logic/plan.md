@@ -395,8 +395,8 @@ No schema migration. Existing cron job populates `weather_records`; watering bad
 
 #### Manual
 
-- [x] 3.3 Dashboard loads plantings + rainfall without per-field API calls
-- [x] 3.4 Field detail passes `rainfall7dMm` to FieldGrid
+- [x] 3.3 Dashboard loads plantings + rainfall without per-field API calls — 78808bd
+- [x] 3.4 Field detail passes `rainfall7dMm` to FieldGrid — 78808bd
 
 ### Phase 4: Watering UI (Field List + Grid)
 
@@ -407,9 +407,9 @@ No schema migration. Existing cron job populates `weather_records`; watering bad
 
 #### Manual
 
-- [ ] 4.3 Field list badges on planted fields only
-- [ ] 4.4 Grid per-cell badges; manual planting omitted
-- [ ] 4.5 Polish copy complete
+- [x] 4.3 Field list badges on planted fields only
+- [x] 4.4 Grid per-cell badges; manual planting omitted
+- [x] 4.5 Polish copy complete
 
 ### Phase 5: WeatherWidget 7d mm Alignment
 
