@@ -395,8 +395,8 @@ No schema migration. Existing cron job populates `weather_records`; watering bad
 
 #### Manual
 
-- [ ] 3.3 Dashboard loads plantings + rainfall without per-field API calls
-- [ ] 3.4 Field detail passes `rainfall7dMm` to FieldGrid
+- [x] 3.3 Dashboard loads plantings + rainfall without per-field API calls
+- [x] 3.4 Field detail passes `rainfall7dMm` to FieldGrid
 
 ### Phase 4: Watering UI (Field List + Grid)
 
