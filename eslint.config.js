@@ -82,6 +82,24 @@ const testConfig = tseslint.config({
   },
 });
 
+const scriptsConfig = tseslint.config({
+  files: ["scripts/**/*.mjs"],
+  languageOptions: {
+    globals: {
+      process: "readonly",
+      console: "readonly",
+    },
+  },
+  rules: {
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/restrict-plus-operands": "off",
+  },
+});
+
 export default tseslint.config(
   { ignores: [".opencode/**"] },
   includeIgnoreFile(gitignorePath),
@@ -91,5 +109,6 @@ export default tseslint.config(
   ...eslintPluginAstro.configs["flat/jsx-a11y-recommended"],
   astroConfig,
   testConfig,
+  scriptsConfig,
   eslintPluginPrettier,
 );

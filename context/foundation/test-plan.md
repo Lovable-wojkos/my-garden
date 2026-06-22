@@ -63,12 +63,12 @@ Each row is a discrete rollout phase that will open its own change folder
 via `/10x-new`. Status moves left-to-right through the values below; the
 orchestrator updates Status as artifacts appear on disk.
 
-| #   | Phase name                   | Goal (one line)                                                                    | Risks covered | Test types                   | Status        | Change folder                                   |
-| --- | ---------------------------- | ---------------------------------------------------------------------------------- | ------------- | ---------------------------- | ------------- | ----------------------------------------------- |
-| 1   | Critical-path coverage       | Bootstrap Vitest; defend auth gating, catalog completeness, and harvest date logic | #1, #2, #6    | unit + integration           | implemented   | context/changes/testing-critical-path-coverage/ |
-| 2   | Integration around hot-spots | Catch regressions in weather sync and auth/RLS data-boundary checks                | #3, #4        | integration (Supabase local) | not started   | —                                               |
-| 3   | Data integrity               | Migration dry-run review + smoke tests against seed data                           | #5            | manual smoke + review script | not started   | —                                               |
-| 4   | Quality-gates wiring         | Wire unit + integration tests into CI; enforce on PR                               | cross-cutting | CI gates                     | not started   | —                                               |
+| #   | Phase name                   | Goal (one line)                                                                    | Risks covered | Test types                   | Status      | Change folder                                   |
+| --- | ---------------------------- | ---------------------------------------------------------------------------------- | ------------- | ---------------------------- | ----------- | ----------------------------------------------- |
+| 1   | Critical-path coverage       | Bootstrap Vitest; defend auth gating, catalog completeness, and harvest date logic | #1, #2, #6    | unit + integration           | implemented | context/changes/testing-critical-path-coverage/ |
+| 2   | Integration around hot-spots | Catch regressions in weather sync and auth/RLS data-boundary checks                | #3, #4        | integration (Supabase local) | not started | —                                               |
+| 3   | Data integrity               | Migration dry-run review + smoke tests against seed data                           | #5            | manual smoke + review script | implemented | context/changes/testing-data-integrity/         |
+| 4   | Quality-gates wiring         | Wire unit + integration tests into CI; enforce on PR                               | cross-cutting | CI gates                     | not started | —                                               |
 
 ## 4. Stack
 
@@ -171,7 +171,25 @@ Checklist for every new route under `src/pages/api/`:
 
 ### 6.5 Adding a migration review / smoke test
 
-TBD — see §3 Phase 3 (data integrity pattern).
+Use this flow for any PR touching `supabase/migrations/`:
+
+1. Run `npm run db:review`.
+2. If you add destructive SQL (`DROP TABLE`, `DROP COLUMN`, `ALTER COLUMN ... DROP NOT NULL`), add `-- migration-review: acknowledged` on the same line or adjacent line with rationale.
+3. For seed-data changes, update both fixtures used by smoke checks:
+   - `src/test/fixtures/expected-catalog.ts` (plants)
+   - `src/test/fixtures/expected-regions.ts` (regions)
+
+Before production migration push, run:
+
+1. `npm run db:review`
+2. `npm run db:verify` (runs `db reset` + smoke checks)
+
+Smoke checks validate:
+
+- required core tables exist,
+- `plant_requests` table is absent,
+- region seed rows match `EXPECTED_REGIONS`,
+- global plant seed rows match `EXPECTED_CATALOG` attributes.
 
 ### 6.6 Per-rollout-phase notes
 
@@ -179,6 +197,8 @@ TBD — see §3 Phase 3 (data integrity pattern).
 here capturing anything surprising the rollout phase taught.)
 
 **Phase 1 (critical-path coverage, 2026-06-17).** Auth has dual semantics: middleware-protected routes (`/api/plantings`, etc.) redirect unauthenticated requests, while `/api/fields` returns 401 JSON at the handler — both are intentional. Catalog completeness tests use a shared `EXPECTED_CATALOG` fixture instead of live DB queries; update it whenever migration seed plants change.
+
+**Phase 3 (data integrity, 2026-06-21).** Migrations now have a static reviewer (`npm run db:review`) and live seed integrity smoke (`npm run db:smoke`). The one-command pre-prod local gate is `npm run db:verify`.
 
 ## 7. What We Deliberately Don't Test
 

@@ -96,27 +96,42 @@ SUPABASE_SERVICE_ROLE_KEY=<service_role key>
 npx supabase db reset
 ```
 
+4. Run seed integrity smoke checks:
+
+```bash
+npm run db:smoke
+```
+
+5. Run one-command reset + smoke verification:
+
+```bash
+npm run db:verify
+```
+
+`db:smoke` uses `DATABASE_URL` when set. Default local URL:
+`postgresql://postgres:postgres@127.0.0.1:54322/postgres`.
+
 Studio UI is available at `http://localhost:54323`.
 
 ### Cloud Supabase project
 
 Add these to your `.env`:
 
-| Variable | Description |
-|----------|-------------|
-| `SUPABASE_URL` | Project URL from Supabase dashboard → Settings → API |
-| `SUPABASE_ANON_KEY` | `anon` public key from Supabase dashboard → Settings → API |
+| Variable                    | Description                                                  |
+| --------------------------- | ------------------------------------------------------------ |
+| `SUPABASE_URL`              | Project URL from Supabase dashboard → Settings → API         |
+| `SUPABASE_ANON_KEY`         | `anon` public key from Supabase dashboard → Settings → API   |
 | `SUPABASE_SERVICE_ROLE_KEY` | `service_role` key — **keep secret**, used by cron jobs only |
 
 ### Auth routes
 
-| Route | Description |
-|-------|-------------|
-| `/auth/signin` | Email-only magic-link sign-in |
-| `/auth/check-email` | Post-submit "check your inbox" page |
-| `/auth/callback` | Magic-link callback (session exchange) |
-| `/auth/signup` | Redirects to `/auth/signin` (bookmark compatibility) |
-| `/dashboard` | Protected page (redirects to `/auth/signin` if unauthenticated) |
+| Route               | Description                                                     |
+| ------------------- | --------------------------------------------------------------- |
+| `/auth/signin`      | Email-only magic-link sign-in                                   |
+| `/auth/check-email` | Post-submit "check your inbox" page                             |
+| `/auth/callback`    | Magic-link callback (session exchange)                          |
+| `/auth/signup`      | Redirects to `/auth/signin` (bookmark compatibility)            |
+| `/dashboard`        | Protected page (redirects to `/auth/signin` if unauthenticated) |
 
 Route protection is handled in `src/middleware.ts`. Add paths to `PROTECTED_ROUTES` to require authentication.
 
@@ -159,12 +174,12 @@ vercel deploy --prod
 
 3. Set environment variables in Vercel dashboard → Settings → Environment Variables:
 
-| Variable | Description |
-|----------|-------------|
-| `SUPABASE_URL` | Supabase project URL |
-| `SUPABASE_ANON_KEY` | Supabase anon key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (for cron jobs) |
-| `CRON_SECRET` | Random secret for securing cron endpoints (see below) |
+| Variable                    | Description                                           |
+| --------------------------- | ----------------------------------------------------- |
+| `SUPABASE_URL`              | Supabase project URL                                  |
+| `SUPABASE_ANON_KEY`         | Supabase anon key                                     |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (for cron jobs)             |
+| `CRON_SECRET`               | Random secret for securing cron endpoints (see below) |
 
 ## Cron Jobs
 

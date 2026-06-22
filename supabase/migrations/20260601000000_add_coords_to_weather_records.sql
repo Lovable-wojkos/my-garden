@@ -2,6 +2,7 @@
 -- Makes region_id nullable so rows can be stored without a region reference.
 -- Adds latitude/longitude columns and a partial unique index for coord-based dedup.
 
+-- migration-review: acknowledged - existing weather rows may not have a region_id after coordinate rollout
 ALTER TABLE weather_records ALTER COLUMN region_id DROP NOT NULL;
 ALTER TABLE weather_records ADD COLUMN latitude numeric(9,6);
 ALTER TABLE weather_records ADD COLUMN longitude numeric(9,6);

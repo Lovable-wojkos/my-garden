@@ -3,6 +3,7 @@ ALTER TABLE plants
   ADD COLUMN user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
   ADD COLUMN status text NOT NULL DEFAULT 'global'
     CHECK (status IN ('pending', 'global')),
+  -- migration-review: acknowledged - growth_days nullable supports pending user-submitted plants
   ALTER COLUMN growth_days DROP NOT NULL;
 
 -- 2. Replace plants RLS policies
@@ -40,4 +41,5 @@ DROP POLICY IF EXISTS plant_requests_insert_owner ON plant_requests;
 DROP POLICY IF EXISTS plant_requests_update_owner ON plant_requests;
 DROP POLICY IF EXISTS plant_requests_delete_owner ON plant_requests;
 DROP INDEX IF EXISTS idx_plant_requests_user_id;
+-- migration-review: acknowledged - plant_requests replaced by direct pending plants flow
 DROP TABLE IF EXISTS plant_requests;

@@ -1,0 +1,4 @@
+-- Seed data lives in migrations, not here:
+-- - Regions: supabase/migrations/20260525000000_initial_schema.sql (16 voivodeships)
+-- - Plants: supabase/migrations/20260609000000_plants_scope_drop_requests.sql (10 global catalog)
+-- This file exists to satisfy [db.seed] sql_paths in config.toml during `supabase db reset`.

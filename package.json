@@ -13,7 +13,11 @@
     "test": "vitest",
     "test:run": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "db:review": "node scripts/migration-review.mjs",
+    "db:reset": "npx supabase db reset",
+    "db:smoke": "node scripts/db-smoke.mjs",
+    "db:verify": "npm run db:reset && npm run db:smoke"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.2",
@@ -59,6 +63,7 @@
     "happy-dom": "^17.5.6",
     "husky": "9.1.7",
     "lint-staged": "^16.3.3",
+    "pg": "^8.11.3",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",

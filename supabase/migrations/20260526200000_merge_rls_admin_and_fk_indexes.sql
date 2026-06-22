@@ -9,6 +9,7 @@
 -- Admins use service-role client (bypasses RLS). PostgreSQL requires DROP + CREATE.
 
 -- plant_requests: prevent user from changing status (admin uses service-role)
+-- migration-review: acknowledged - policy replaced immediately in same migration with stricter WITH CHECK
 DROP POLICY IF EXISTS "plant_requests_update_owner" ON plant_requests;
 CREATE POLICY "plant_requests_update_owner"
   ON plant_requests FOR UPDATE
@@ -20,6 +21,7 @@ CREATE POLICY "plant_requests_update_owner"
   );
 
 -- fields
+-- migration-review: acknowledged - policy replaced immediately in same migration with stricter WITH CHECK
 DROP POLICY IF EXISTS "fields_update_owner" ON fields;
 CREATE POLICY "fields_update_owner"
   ON fields FOR UPDATE
@@ -28,6 +30,7 @@ CREATE POLICY "fields_update_owner"
   WITH CHECK (user_id = auth.uid());
 
 -- plantings
+-- migration-review: acknowledged - policy replaced immediately in same migration with stricter WITH CHECK
 DROP POLICY IF EXISTS "plantings_update_owner" ON plantings;
 CREATE POLICY "plantings_update_owner"
   ON plantings FOR UPDATE
@@ -40,18 +43,21 @@ CREATE POLICY "plantings_update_owner"
 -- with idiomatic (auth.jwt() -> 'app_metadata' ->> 'role').
 -- The -> operator extracts a jsonb field; ->> then extracts the string value.
 
+-- migration-review: acknowledged - legacy admin policy renamed to jwt-safe expression
 DROP POLICY IF EXISTS "plants_insert_admin" ON plants;
 CREATE POLICY "plants_insert_admin"
   ON plants FOR INSERT
   TO authenticated
   WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
+-- migration-review: acknowledged - legacy admin policy renamed to jwt-safe expression
 DROP POLICY IF EXISTS "plants_update_admin" ON plants;
 CREATE POLICY "plants_update_admin"
   ON plants FOR UPDATE
   TO authenticated
   USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
+-- migration-review: acknowledged - legacy admin policy renamed to jwt-safe expression
 DROP POLICY IF EXISTS "plants_delete_admin" ON plants;
 CREATE POLICY "plants_delete_admin"
   ON plants FOR DELETE

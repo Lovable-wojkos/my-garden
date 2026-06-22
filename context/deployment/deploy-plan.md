@@ -20,6 +20,17 @@ status: pending
    - Obtain project URL and service role key from Supabase dashboard
    - Run migrations: `supabase db push` (if not already done)
 
+### Pre-prod DB smoke gate
+
+For releases that include schema changes, use this order:
+
+1. On the release branch, run `npm run db:review`.
+2. Before production migration push, run `npm run db:verify` locally (or run `npm run db:smoke` on staging after migration push).
+3. Run `supabase db push` for production.
+4. Deploy to Vercel production only after DB verification passes.
+
+Phase 3 intentionally keeps this as a manual gate (no CI enforcement yet).
+
 3. **GitHub Repository**
    - Repository must be public or private with Vercel GitHub integration
    - Ensure repository has proper access permissions

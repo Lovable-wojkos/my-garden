@@ -303,32 +303,32 @@ Codify contributor patterns, link Phase 3 in test-plan, and define pre-prod smok
 
 #### Automated
 
-- [ ] 1.1 `npm run db:review` exits 0 on current migration set
-- [ ] 1.2 Review script exits 1 on unacknowledged `DROP TABLE` in scratch migration
+- [x] 1.1 `npm run db:review` exits 0 on current migration set
+- [x] 1.2 Review script exits 1 on unacknowledged `DROP TABLE` in scratch migration
 
 #### Manual
 
-- [ ] 1.3 `npx supabase db reset` completes without seed-file error
+- [ ] 1.3 `npx supabase db reset` completes without seed-file error (requires Docker)
 
 ### Phase 2: Fixtures & Post-Reset Smoke
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes on fixture files
-- [ ] 2.2 `npm run db:review` still exits 0
+- [x] 2.1 `npm run lint` passes on fixture files
+- [x] 2.2 `npm run db:review` still exits 0
 
 #### Manual
 
-- [ ] 2.3 `npm run db:verify` exits 0 with local Supabase running
-- [ ] 2.4 `db:smoke` fails on deliberate plant attribute corruption in Studio
+- [ ] 2.3 `npm run db:verify` exits 0 with local Supabase running (requires Docker)
+- [ ] 2.4 `db:smoke` fails on deliberate plant attribute corruption in Studio (requires Docker)
 
 ### Phase 3: Documentation & Test-Plan Sync
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes after doc edits
+- [x] 3.1 `npm run lint` passes after doc edits
 
 #### Manual
 
-- [ ] 3.2 §6.5 cookbook is actionable for a new migration PR
-- [ ] 3.3 Deploy-plan pre-prod gate documents `db:review` → `db push` → `db:smoke` → Vercel order
+- [x] 3.2 §6.5 cookbook is actionable for a new migration PR
+- [x] 3.3 Deploy-plan pre-prod gate documents `db:review` → `db push` → `db:smoke` → Vercel order

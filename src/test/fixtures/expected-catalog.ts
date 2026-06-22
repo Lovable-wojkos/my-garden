@@ -1,6 +1,10 @@
 /**
  * Expected global plant catalog — mirrors seed data in
  * supabase/migrations/20260609000000_plants_scope_drop_requests.sql
+ *
+ * Consumed by:
+ * - Vitest mocks in src/test/ (e.g., plants.test.ts)
+ * - Post-reset smoke test in scripts/db-smoke.mjs (live DB validation)
  */
 export interface ExpectedCatalogEntry {
   id: string;
