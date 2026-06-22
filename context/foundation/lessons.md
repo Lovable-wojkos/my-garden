@@ -8,3 +8,10 @@
 - **Problem**: Hook rejects messages over 80 chars, causing failed commits
 - **Rule**: Keep commit subjects under 80 characters
 - **Applies to**: implement, impl-review
+
+## Prefer plain git commands over housekeeping scripts
+
+- **Context**: Repo housekeeping, grouped commits, archiving finished changes (`/10x-archive`, end-of-session cleanup)
+- **Problem**: Helper scripts (`housekeep.mjs`, one-off `.ps1`) hide what runs, fail silently when the terminal misbehaves, and add maintenance. The user still needs to understand and run the underlying git steps.
+- **Rule**: For grouped commits and archive, give plain `git add` + `git commit` commands (one logical group per commit). Do not generate scripts unless the workflow is genuinely repetitive, non-trivial, or the user explicitly asks for automation.
+- **Applies to**: implement, plan-review, all

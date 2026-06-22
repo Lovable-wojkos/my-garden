@@ -67,7 +67,7 @@ orchestrator updates Status as artifacts appear on disk.
 | --- | ---------------------------- | ---------------------------------------------------------------------------------- | ------------- | ---------------------------- | ----------- | ----------------------------------------------- |
 | 1   | Critical-path coverage       | Bootstrap Vitest; defend auth gating, catalog completeness, and harvest date logic | #1, #2, #6    | unit + integration           | implemented | context/changes/testing-critical-path-coverage/ |
 | 2   | Integration around hot-spots | Catch regressions in weather sync and auth/RLS data-boundary checks                | #3, #4        | integration (Supabase local) | not started | —                                               |
-| 3   | Data integrity               | Migration dry-run review + smoke tests against seed data                           | #5            | manual smoke + review script | implemented | context/changes/testing-data-integrity/         |
+| 3   | Data integrity               | Migration dry-run review + smoke tests against seed data                           | #5            | manual smoke + review script | done        | context/archive/2026-06-17-testing-data-integrity/ |
 | 4   | Quality-gates wiring         | Wire unit + integration tests into CI; enforce on PR                               | cross-cutting | CI gates                     | not started | —                                               |
 
 ## 4. Stack
