@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { pl } from "@/lib/copy/pl";
+import { displayRainfall7dMm } from "@/lib/weather-display";
 import { cn } from "@/lib/utils";
 
 interface GeocodingResult {
@@ -208,7 +209,7 @@ export default function WeatherWidget({
       })
     : null;
 
-  const displayRainfall7dMm = rainfall7dMmFromDb ?? weatherState.data?.rainfall7dMm;
+  const displayRainfall7d = displayRainfall7dMm(rainfall7dMmFromDb, weatherState.data?.rainfall7dMm);
 
   const showStaleBadge = weatherState.stale || rainfallStale;
 
@@ -307,7 +308,7 @@ export default function WeatherWidget({
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground text-sm">{pl.weather.rainfall} (7 dni)</span>
               <span className="font-semibold">
-                {displayRainfall7dMm != null ? `${displayRainfall7dMm} mm` : pl.weather.lastRainNoData}
+                {displayRainfall7d != null ? `${displayRainfall7d} mm` : pl.weather.lastRainNoData}
               </span>
             </div>
             <div className="flex items-center justify-between">

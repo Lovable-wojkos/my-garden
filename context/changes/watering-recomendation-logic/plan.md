@@ -407,9 +407,9 @@ No schema migration. Existing cron job populates `weather_records`; watering bad
 
 #### Manual
 
-- [x] 4.3 Field list badges on planted fields only
-- [x] 4.4 Grid per-cell badges; manual planting omitted
-- [x] 4.5 Polish copy complete
+- [x] 4.3 Field list badges on planted fields only — 11eacc4
+- [x] 4.4 Grid per-cell badges; manual planting omitted — 11eacc4
+- [x] 4.5 Polish copy complete — 11eacc4
 
 ### Phase 5: WeatherWidget 7d mm Alignment
 
