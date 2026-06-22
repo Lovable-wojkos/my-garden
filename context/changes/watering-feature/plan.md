@@ -327,9 +327,9 @@ Local Supabase: `npx supabase migration up` or `npx supabase db reset` to apply 
 
 #### Automated
 
-- [ ] 1.1 Migration applies cleanly (`npx supabase migration up` or `db reset`)
-- [ ] 1.2 TypeScript build passes: `npm run build`
-- [ ] 1.3 Lint passes: `npm run lint`
+- [x] 1.1 Migration applies cleanly (`npx supabase migration up` or `db reset`) — d0163a0
+- [x] 1.2 TypeScript build passes: `npm run build` — d0163a0
+- [x] 1.3 Lint passes: `npm run lint` — d0163a0
 
 #### Manual
 
@@ -340,9 +340,9 @@ Local Supabase: `npx supabase migration up` or `npx supabase db reset` to apply 
 
 #### Automated
 
-- [ ] 2.1 TypeScript build passes: `npm run build`
-- [ ] 2.2 Lint passes: `npm run lint`
-- [ ] 2.3 Existing weather tests still pass: `npx vitest run src/test/lib/weather-rainfall-calendar.test.ts`
+- [x] 2.1 TypeScript build passes: `npm run build` — 583189d
+- [x] 2.2 Lint passes: `npm run lint` — 583189d
+- [x] 2.3 Existing weather tests still pass: `npx vitest run src/test/lib/weather-rainfall-calendar.test.ts` — 583189d
 
 #### Manual
 
@@ -352,8 +352,8 @@ Local Supabase: `npx supabase migration up` or `npx supabase db reset` to apply 
 
 #### Automated
 
-- [ ] 3.1 TypeScript build passes: `npm run build`
-- [ ] 3.2 Lint passes: `npm run lint`
+- [x] 3.1 TypeScript build passes: `npm run build` — df5885c
+- [x] 3.2 Lint passes: `npm run lint` — df5885c
 
 #### Manual
 
@@ -365,8 +365,8 @@ Local Supabase: `npx supabase migration up` or `npx supabase db reset` to apply 
 
 #### Automated
 
-- [ ] 4.1 TypeScript build passes: `npm run build`
-- [ ] 4.2 Lint passes: `npm run lint`
+- [x] 4.1 TypeScript build passes: `npm run build` — b95621c
+- [x] 4.2 Lint passes: `npm run lint` — b95621c
 
 #### Manual
 
