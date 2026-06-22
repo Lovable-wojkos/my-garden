@@ -91,6 +91,7 @@ const scriptsConfig = tseslint.config({
     },
   },
   rules: {
+    "no-console": "off",
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-unsafe-call": "off",

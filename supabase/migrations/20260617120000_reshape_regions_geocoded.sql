@@ -7,7 +7,9 @@ TRUNCATE fields CASCADE;
 DELETE FROM regions;
 
 ALTER TABLE regions DROP CONSTRAINT IF EXISTS regions_code_key;
+-- migration-review: acknowledged — dropping legacy voivodeship columns replaced by geocoded latitude/longitude/display_name
 ALTER TABLE regions DROP COLUMN code;
+-- migration-review: acknowledged — dropping legacy voivodeship columns replaced by geocoded latitude/longitude/display_name
 ALTER TABLE regions DROP COLUMN name;
 
 ALTER TABLE regions

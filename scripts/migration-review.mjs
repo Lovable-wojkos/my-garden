@@ -37,7 +37,7 @@ function findColumnDropIssues(lines, fileName) {
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
 
-    if (/^\s*ALTER\s+COLUMN\s+\w+\s+DROP\s+NOT\s+NULL\b/i.test(line) && !hasAcknowledgment(lines, i)) {
+    if (/\bALTER\s+COLUMN\s+\w+\s+DROP\s+NOT\s+NULL\b/i.test(line) && !hasAcknowledgment(lines, i)) {
       issues.push({
         file: fileName,
         line: i + 1,
@@ -47,7 +47,7 @@ function findColumnDropIssues(lines, fileName) {
       });
     }
 
-    if (/^\s*DROP\s+COLUMN\b/i.test(line) && !hasAcknowledgment(lines, i)) {
+    if (/\bDROP\s+COLUMN\b/i.test(line) && !hasAcknowledgment(lines, i)) {
       issues.push({
         file: fileName,
         line: i + 1,

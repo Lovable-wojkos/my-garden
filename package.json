@@ -16,7 +16,7 @@
     "test:e2e:ui": "playwright test --ui",
     "db:review": "node scripts/migration-review.mjs",
     "db:reset": "npx supabase db reset",
-    "db:smoke": "node scripts/db-smoke.mjs",
+    "db:smoke": "tsx scripts/db-smoke.mjs",
     "db:verify": "npm run db:reset && npm run db:smoke"
   },
   "dependencies": {

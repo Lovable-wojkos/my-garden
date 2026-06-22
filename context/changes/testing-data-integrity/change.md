@@ -1,9 +1,9 @@
 ---
 change_id: testing-data-integrity
 title: Phase 3 data integrity — migration review and seed smoke tests
-status: implemented
+status: impl_reviewed
 created: 2026-06-17
-updated: 2026-06-21
+updated: 2026-06-22
 archived_at: null
 ---
 
