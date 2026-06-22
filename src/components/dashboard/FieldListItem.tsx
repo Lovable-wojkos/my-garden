@@ -16,7 +16,10 @@ export default function FieldListItem({ fieldId, name, sizeLabel, wateringStatus
       role="none"
       className="border-border bg-card hover:bg-muted flex items-center justify-between gap-3 rounded-xl border p-4 shadow-sm transition-colors"
     >
-      <a href={`/dashboard/fields/${fieldId}`} className="min-w-0 flex-1 rounded-lg outline-offset-2 focus-visible:outline-2">
+      <a
+        href={`/dashboard/fields/${fieldId}`}
+        className="min-w-0 flex-1 rounded-lg outline-offset-2 focus-visible:outline-2"
+      >
         <p className="text-foreground font-semibold">{name}</p>
         <p className="text-muted-foreground text-sm">{sizeLabel}</p>
       </a>

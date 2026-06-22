@@ -28,9 +28,5 @@ export interface RegionSnapshot {
  * row whose coordinates match the stored latitude/longitude.
  */
 export function prefsMatchLinkedRegion(prefs: PrefsRegionSnapshot, region: RegionSnapshot): boolean {
-  return (
-    prefs.region_id === region.id &&
-    prefs.latitude === region.latitude &&
-    prefs.longitude === region.longitude
-  );
+  return prefs.region_id === region.id && prefs.latitude === region.latitude && prefs.longitude === region.longitude;
 }

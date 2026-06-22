@@ -10,7 +10,11 @@ import { getFieldsByUser } from "@/lib/services/fields";
 import { getPlantingsByUser } from "@/lib/services/plantings";
 import { getPlants } from "@/lib/services/plants";
 import { getRainfall7dCalendarMm } from "@/lib/services/weather";
-import { getWateringEventsInWindow, aggregateWateringEventsMm, sumAllWateringEventsMm } from "@/lib/services/watering-events";
+import {
+  getWateringEventsInWindow,
+  aggregateWateringEventsMm,
+  sumAllWateringEventsMm,
+} from "@/lib/services/watering-events";
 import { aggregateFieldWatering, evaluatePlantingWatering, type WateringStatus } from "@/lib/watering";
 import WaterButton from "@/components/dashboard/WaterButton";
 
@@ -32,15 +36,12 @@ let rainfallStale = false;
 const fieldWateringStatuses: Record<string, WateringStatus> = {};
 
 if (user && supabase && prefs?.region_id) {
-  const [
-    { data: rainfall7d, rainfallStale: stale, windowDates, todayInTz },
-    { data: allPlantings },
-    { data: plants },
-  ] = await Promise.all([
-    getRainfall7dCalendarMm(supabase, prefs.region_id),
-    getPlantingsByUser(supabase, user.id),
-    getPlants(supabase),
-  ]);
+  const [{ data: rainfall7d, rainfallStale: stale, windowDates, todayInTz }, { data: allPlantings }, { data: plants }] =
+    await Promise.all([
+      getRainfall7dCalendarMm(supabase, prefs.region_id),
+      getPlantingsByUser(supabase, user.id),
+      getPlants(supabase),
+    ]);
 
   const wateringWindowDates = todayInTz ? [...windowDates, todayInTz] : windowDates;
   const { data: wateringEvents, error: wateringEventsError } =

@@ -49,8 +49,7 @@ export default function WaterButton({ fieldId, label, className }: WaterButtonPr
       >
         {isPending ? (
           <span className="flex items-center gap-2">
-            <span className="border-foreground/30 border-t-foreground size-3.5 animate-spin rounded-full border-2" />
-            …
+            <span className="border-foreground/30 border-t-foreground size-3.5 animate-spin rounded-full border-2" />…
           </span>
         ) : (
           label

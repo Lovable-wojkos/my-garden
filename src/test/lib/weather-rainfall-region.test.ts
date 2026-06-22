@@ -39,9 +39,7 @@ function makeRainfallClient(options: {
     if (col === "recorded_at") weatherGte(val);
     return weatherBuilder;
   });
-  weatherBuilder.overrideTypes = vi.fn(() =>
-    Promise.resolve({ data: options.weatherRows, error: null }),
-  );
+  weatherBuilder.overrideTypes = vi.fn(() => Promise.resolve({ data: options.weatherRows, error: null }));
 
   const regionBuilder: Record<string, unknown> = {};
   const regionChain = () => regionBuilder;
