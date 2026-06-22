@@ -116,13 +116,17 @@ export function sumCalendarRainfall(
 
   for (const row of rows) {
     const datePrefix = row.recorded_at.slice(0, 10);
+
+    // Track freshness across all rows (including today's) so the stale check
+    // reflects the last actual cron run, not the last window date at midnight.
+    if (!latestRecordedAt || row.recorded_at > latestRecordedAt) {
+      latestRecordedAt = row.recorded_at;
+    }
+
     if (!windowDates.has(datePrefix)) continue;
 
     sum += row.rainfall_mm ?? 0;
     seenDates.add(datePrefix);
-    if (!latestRecordedAt || row.recorded_at > latestRecordedAt) {
-      latestRecordedAt = row.recorded_at;
-    }
   }
 
   return {
