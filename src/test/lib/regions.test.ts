@@ -2,6 +2,22 @@ import { describe, expect, it, vi } from "vitest";
 import type { RegionRow } from "@/types";
 import { findOrCreateRegion } from "@/lib/services/regions";
 
+const WARSAW_REGION: RegionRow = {
+  id: "region-warszawa",
+  latitude: 52.229676,
+  longitude: 21.012229,
+  display_name: "Warszawa, powiat warszawski, Mazowieckie, Polska",
+  created_at: "2026-06-17T00:00:00Z",
+};
+
+const OGONY_REGION: RegionRow = {
+  id: "region-ogony",
+  latitude: 52.154789,
+  longitude: 21.045123,
+  display_name: "Ogony, powiat warszawski, Mazowieckie, Polska",
+  created_at: "2026-06-17T00:00:00Z",
+};
+
 const EXISTING_REGION: RegionRow = {
   id: "region-1",
   latitude: 52.229676,
@@ -110,5 +126,25 @@ describe("findOrCreateRegion", () => {
 
     expect(first.data?.id).toBe("region-1");
     expect(second.data?.id).toBe("region-1");
+  });
+
+  it("assigns different region ids for Warszawa and Ogony coordinates", async () => {
+    const warsawClient = makeFindOrCreateClient({ existing: WARSAW_REGION });
+    const ogonyClient = makeFindOrCreateClient({ existing: OGONY_REGION });
+
+    const warsaw = await findOrCreateRegion(warsawClient as any, {
+      latitude: WARSAW_REGION.latitude,
+      longitude: WARSAW_REGION.longitude,
+      displayName: WARSAW_REGION.display_name,
+    });
+    const ogony = await findOrCreateRegion(ogonyClient as any, {
+      latitude: OGONY_REGION.latitude,
+      longitude: OGONY_REGION.longitude,
+      displayName: OGONY_REGION.display_name,
+    });
+
+    expect(warsaw.data?.id).toBe("region-warszawa");
+    expect(ogony.data?.id).toBe("region-ogony");
+    expect(warsaw.data?.id).not.toBe(ogony.data?.id);
   });
 });
