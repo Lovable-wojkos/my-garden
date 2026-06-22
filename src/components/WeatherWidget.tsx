@@ -27,6 +27,8 @@ interface WeatherWidgetProps {
   editable?: boolean;
   rainfall7dMmFromDb?: number | null;
   rainfallStale?: boolean;
+  /** Etykieta wiersza „7 dni”; domyślnie same opady, na panelu — nawodnienie łącznie. */
+  rainfall7dLabel?: string;
 }
 
 interface WeatherState {
@@ -74,6 +76,7 @@ export default function WeatherWidget({
   editable = false,
   rainfall7dMmFromDb,
   rainfallStale = false,
+  rainfall7dLabel,
 }: WeatherWidgetProps) {
   const [cityInput, setCityInput] = useState(initialCity?.cityName ?? "");
   const [suggestions, setSuggestions] = useState<GeocodingResult[]>([]);
@@ -306,7 +309,7 @@ export default function WeatherWidget({
               <span className={cn("text-3xl font-bold")}>{weatherState.data.temperatureC}&#176;C</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-muted-foreground text-sm">{pl.weather.rainfall} (7 dni)</span>
+              <span className="text-muted-foreground text-sm">{rainfall7dLabel ?? pl.weather.rainfall7d}</span>
               <span className="font-semibold">
                 {displayRainfall7d != null ? `${displayRainfall7d} mm` : pl.weather.lastRainNoData}
               </span>

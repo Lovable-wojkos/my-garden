@@ -152,6 +152,9 @@ export const pl = {
     stale: "Dane mogą być nieaktualne",
     fetchError: "Nie udało się pobrać danych pogodowych.",
     rainfall: "Opady",
+    rainfall7d: "Opady (7 dni)",
+    /** Opady z pogody + ręczne podlewanie — używane na panelu głównym. */
+    moisture7d: "Nawodnienie (7 dni)",
     lastRain: "Ostatni deszcz",
     lastRainNoData: "Brak danych",
     relativeToday: "dzisiaj",
@@ -178,6 +181,10 @@ export const pl = {
     waterSoonShort: "Wkrótce",
     waterNow: "Podlej dziś",
     waterNowShort: "Dziś",
+    waterAllButton: "Podlej wszystkie",
+    waterFieldButton: "Podlej",
+    waterSuccess: "Podlano (+2 mm)",
+    waterError: "Nie udało się zapisać podlewania.",
   },
 
   admin: {
