@@ -150,3 +150,24 @@ export interface UserPreferencesInsert {
 }
 
 export type UserPreferencesUpdate = Partial<UserPreferencesInsert>;
+
+// ── watering_events ──────────────────────────────────────────
+export interface WateringEventRow {
+  id: string;
+  user_id: string;
+  field_id: string | null;
+  watered_at: string;
+  amount_mm: number;
+  created_at: string;
+}
+
+export interface WateringEventInsert {
+  id?: string;
+  user_id: string;
+  field_id?: string | null;
+  watered_at?: string;
+  amount_mm?: number;
+  created_at?: string;
+}
+
+export type WateringEventUpdate = Partial<WateringEventInsert>;
