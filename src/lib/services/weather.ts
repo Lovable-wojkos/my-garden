@@ -148,6 +148,8 @@ export function getTodayInTimezone(timezone: string, now: Date = new Date()): st
 /**
  * Calendar-based 7-day rainfall sum from weather_records for a region.
  * Returns null data when the window is incomplete (<7 distinct dates) so callers hide watering UI.
+ * `windowDates` is an intentional extension point for consumers needing the 7-day window boundary dates.
+ * `todayInTz` is the region's current calendar date for same-day queries (e.g. manual watering events).
  */
 export async function getRainfall7dCalendarMm(
   client: SupabaseClient,
@@ -157,6 +159,8 @@ export async function getRainfall7dCalendarMm(
   error: unknown;
   latestRecordedAt: string | null;
   rainfallStale: boolean;
+  windowDates: string[];
+  todayInTz: string;
 }> {
   const { data: region, error: regionError } = await client
     .from("regions")
@@ -170,6 +174,8 @@ export async function getRainfall7dCalendarMm(
       error: regionError,
       latestRecordedAt: null,
       rainfallStale: true,
+      windowDates: [],
+      todayInTz: "",
     };
   }
 
@@ -177,7 +183,14 @@ export async function getRainfall7dCalendarMm(
   try {
     timezone = await getAutoTimezone(region.latitude, region.longitude);
   } catch (error) {
-    return { data: null, error, latestRecordedAt: null, rainfallStale: true };
+    return {
+      data: null,
+      error,
+      latestRecordedAt: null,
+      rainfallStale: true,
+      windowDates: [],
+      todayInTz: "",
+    };
   }
 
   const todayInTz = getTodayInTimezone(timezone);
@@ -193,12 +206,19 @@ export async function getRainfall7dCalendarMm(
     .overrideTypes<Pick<WeatherRecordRow, "recorded_at" | "rainfall_mm">[], { merge: false }>();
 
   if (rowsError) {
-    return { data: null, error: rowsError, latestRecordedAt: null, rainfallStale: true };
+    return {
+      data: null,
+      error: rowsError,
+      latestRecordedAt: null,
+      rainfallStale: true,
+      windowDates: [],
+      todayInTz: "",
+    };
   }
 
   const { sum, distinctDates, latestRecordedAt } = sumCalendarRainfall(rows, todayInTz, timezone);
   const rainfallStale = isRainfallStale(latestRecordedAt);
   const data = distinctDates >= CALENDAR_WINDOW_DAYS ? sum : null;
 
-  return { data, error: null, latestRecordedAt, rainfallStale };
+  return { data, error: null, latestRecordedAt, rainfallStale, windowDates, todayInTz };
 }
