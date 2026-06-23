@@ -131,4 +131,46 @@ describe("GET /api/cron/weather", () => {
     const json = await response.json();
     expect(json.locations).toBe(1);
   });
+
+  it("increments failed and skips upsert when getDailyWeather throws", async () => {
+    const client = makeCronClient(REGIONS);
+    vi.mocked(createServiceRoleClient).mockReturnValue(client as any);
+    vi.mocked(getDailyWeather).mockRejectedValue(new Error("Open-Meteo down"));
+
+    const response = await GET(makeContext(`Bearer ${CRON_SECRET}`) as any);
+
+    expect(response.status).toBe(200);
+    expect(client._upsertCalls).toHaveLength(0);
+    expect(client._weatherRecordsBuilder.upsert).not.toHaveBeenCalled();
+
+    const json = await response.json();
+    expect(json).toEqual({ fetched: 0, failed: 2, locations: 2, backfilled: true });
+  });
+
+  it("skips upsert silently when getDailyWeather returns empty array", async () => {
+    const client = makeCronClient(REGIONS);
+    vi.mocked(createServiceRoleClient).mockReturnValue(client as any);
+    vi.mocked(getDailyWeather).mockResolvedValue([]);
+
+    const response = await GET(makeContext(`Bearer ${CRON_SECRET}`) as any);
+
+    expect(response.status).toBe(200);
+    expect(client._upsertCalls).toHaveLength(0);
+
+    const json = await response.json();
+    expect(json).toEqual({ fetched: 0, failed: 0, locations: 2, backfilled: true });
+  });
+
+  it("returns HTTP 200 with failed equal to locations when all regions fail", async () => {
+    const client = makeCronClient(REGIONS);
+    vi.mocked(createServiceRoleClient).mockReturnValue(client as any);
+    vi.mocked(getDailyWeather).mockRejectedValue(new Error("network error"));
+
+    const response = await GET(makeContext(`Bearer ${CRON_SECRET}`) as any);
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json.failed).toBe(json.locations);
+    expect(json.fetched).toBe(0);
+  });
 });

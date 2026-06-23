@@ -52,12 +52,26 @@ const authProjects = hasE2EAuthEnv
         testMatch: /auth\.setup\.ts/,
       },
       {
+        name: "two-users-setup",
+        testDir: "./playwright/auth",
+        testMatch: /two-users\.setup\.ts/,
+      },
+      {
         name: "chromium",
         use: {
           ...devices["Desktop Chrome"],
           storageState: "playwright/.auth/user.json",
         },
         dependencies: ["setup"],
+      },
+      {
+        name: "field-idor",
+        testMatch: /field-idor\.spec\.ts/,
+        use: {
+          ...devices["Desktop Chrome"],
+          storageState: "playwright/.auth/two-users-a.json",
+        },
+        dependencies: ["two-users-setup"],
       },
     ]
   : [];
