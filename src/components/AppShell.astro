@@ -47,7 +47,7 @@ function navLinkClass(id: NavId, layout: "header" | "bottom") {
           navItems.map((item) => (
             <a
               href={item.href}
-              class={navLinkClass(item.id, "header")}
+              class:list={navLinkClass(item.id, "header")}
               aria-current={activeNav === item.id ? "page" : undefined}
             >
               {item.label}
@@ -76,7 +76,7 @@ function navLinkClass(id: NavId, layout: "header" | "bottom") {
         navItems.map((item) => (
           <a
             href={item.href}
-            class={navLinkClass(item.id, "bottom")}
+            class:list={navLinkClass(item.id, "bottom")}
             aria-current={activeNav === item.id ? "page" : undefined}
           >
             {item.id === "dashboard" && (

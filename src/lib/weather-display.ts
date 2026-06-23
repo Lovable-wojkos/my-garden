@@ -2,6 +2,7 @@
  * Rainfall display rules for WeatherWidget.
  * Kept pure so region-assignment / data-source regressions are testable.
  */
+// hook-test: celowa edycja do weryfikacji postToolUse
 
 /** 7-day total: cron-backed DB sum wins over live Open-Meteo when present. */
 export function displayRainfall7dMm(

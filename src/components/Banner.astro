@@ -17,7 +17,7 @@ const variantClass: Record<Variant, string> = {
 ---
 
 <div
-  class={cn("border-b px-4 py-3 text-center text-sm", variantClass[variant])}
+  class:list={cn("border-b px-4 py-3 text-center text-sm", variantClass[variant])}
   role={variant === "error" ? "alert" : "status"}
 >
   <slot />
