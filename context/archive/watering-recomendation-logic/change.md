@@ -1,12 +1,12 @@
 ---
 change_id: watering-recomendation-logic
 title: Watering recomendation logic
-status: implementing
+status: archived
 created: 2026-06-17
-updated: 2026-06-21
+updated: 2026-06-23
 framed: 2026-06-17
 planned: 2026-06-17
-archived_at: null
+archived_at: 2026-06-23
 ---
 
 ## Notes

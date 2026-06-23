@@ -381,10 +381,10 @@ Local Supabase: `npx supabase migration up` or `npx supabase db reset` to apply 
 
 #### Automated
 
-- [ ] 5.1 New watering-events tests pass: `npx vitest run src/test/lib/watering-events.test.ts`
-- [ ] 5.2 Full test suite passes: `npx vitest run`
-- [ ] 5.3 Lint passes: `npm run lint`
+- [x] 5.1 New watering-events tests pass: `npx vitest run src/test/lib/watering-events.test.ts` — dbd6e7e
+- [x] 5.2 Full test suite passes: `npx vitest run` — dbd6e7e
+- [x] 5.3 Lint passes: `npm run lint` — dbd6e7e
 
 #### Manual
 
-- [ ] 5.4 Test file reviewed for null-field edge case coverage
+- [x] 5.4 Test file reviewed for null-field edge case coverage — dbd6e7e

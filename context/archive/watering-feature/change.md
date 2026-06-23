@@ -1,10 +1,10 @@
 ---
 change_id: watering-feature
 title: Watering feature
-status: implemented
+status: archived
 created: 2026-06-20
-updated: 2026-06-22
-archived_at: null
+updated: 2026-06-23
+archived_at: 2026-06-23
 ---
 
 ## Notes
