@@ -13,12 +13,6 @@ const gitignorePath = path.resolve(import.meta.dirname, ".gitignore");
 
 const baseConfig = tseslint.config({
   extends: [eslint.configs.recommended, tseslint.configs.strictTypeChecked, tseslint.configs.stylisticTypeChecked],
-  languageOptions: {
-    parserOptions: {
-      projectService: true,
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
   rules: {
     "no-console": "warn",
     "no-unused-vars": "off",
@@ -34,6 +28,16 @@ const baseConfig = tseslint.config({
     ],
     "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
     "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: { attributes: false } }],
+  },
+});
+
+const typedParserConfig = tseslint.config({
+  files: ["**/*.{js,jsx,ts,tsx,mjs}"],
+  languageOptions: {
+    parserOptions: {
+      projectService: true,
+      tsconfigRootDir: import.meta.dirname,
+    },
   },
 });
 
@@ -61,6 +65,14 @@ const reactConfig = tseslint.config({
 
 const astroConfig = tseslint.config({
   files: ["**/*.astro"],
+  languageOptions: {
+    parserOptions: {
+      // astro-eslint-parser does not support projectService (see eslint-plugin-astro#447)
+      projectService: false,
+      project: true,
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
   rules: {
     "astro/no-set-html-directive": "error",
     "astro/no-unused-css-selector": "warn",
@@ -102,9 +114,10 @@ const scriptsConfig = tseslint.config({
 });
 
 export default tseslint.config(
-  { ignores: [".opencode/**"] },
+  { ignores: [".opencode/**", ".cursor/hooks/**"] },
   includeIgnoreFile(gitignorePath),
   baseConfig,
+  typedParserConfig,
   reactConfig,
   eslintPluginAstro.configs["flat/recommended"],
   ...eslintPluginAstro.configs["flat/jsx-a11y-recommended"],

@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-06-17
+> Last updated: 2026-06-23
 
 ## 1. Strategy
 
@@ -65,9 +65,9 @@ orchestrator updates Status as artifacts appear on disk.
 
 | #   | Phase name                   | Goal (one line)                                                                    | Risks covered | Test types                   | Status      | Change folder                                   |
 | --- | ---------------------------- | ---------------------------------------------------------------------------------- | ------------- | ---------------------------- | ----------- | ----------------------------------------------- |
-| 1   | Critical-path coverage       | Bootstrap Vitest; defend auth gating, catalog completeness, and harvest date logic | #1, #2, #6    | unit + integration           | implemented | context/changes/testing-critical-path-coverage/ |
-| 2   | Integration around hot-spots | Catch regressions in weather sync and auth/RLS data-boundary checks                | #3, #4        | integration (Supabase local) | not started | —                                               |
-| 3   | Data integrity               | Migration dry-run review + smoke tests against seed data                           | #5            | manual smoke + review script | done        | context/archive/2026-06-17-testing-data-integrity/ |
+| 1   | Critical-path coverage       | Bootstrap Vitest; defend auth gating, catalog completeness, and harvest date logic | #1, #2, #6    | unit + integration           | complete    | context/archive/2026-06-15-testing-critical-path-coverage/ |
+| 2   | Integration around hot-spots | Catch regressions in weather sync and auth/RLS data-boundary checks                | #3, #4        | integration (Supabase local) | complete    | context/changes/testing-integration-hotspots/ |
+| 3   | Data integrity               | Migration dry-run review + smoke tests against seed data                           | #5            | manual smoke + review script | complete    | context/archive/2026-06-17-testing-data-integrity/ |
 | 4   | Quality-gates wiring         | Wire unit + integration tests into CI; enforce on PR                               | cross-cutting | CI gates                     | not started | —                                               |
 
 ## 4. Stack
@@ -129,9 +129,11 @@ Run scoped: `npm run test:run -- src/test/lib/<name>.test.ts`
 
 ### 6.2 Adding an integration test
 
-Phase 1 integration tests import API route handlers directly — no live Supabase, no HTTP server. Place files under `src/test/api/` (e.g. `src/pages/api/plantings/index.ts` → `src/test/api/plantings-index.test.ts`).
+Two layers: **mocked handler tests** (fast, no Supabase) and **live Supabase integration** (Risks #3–#4).
 
-**Handler import pattern.**
+#### Mocked handler tests (Phase 1)
+
+Place files under `src/test/api/` (e.g. `src/pages/api/plantings/index.ts` → `src/test/api/plantings-index.test.ts`).
 
 1. `vi.mock("@/lib/supabase")` and `vi.mock("@/lib/services/<domain>")` at the top.
 2. Import the named export (`GET`, `POST`, …) from the route file.
@@ -139,22 +141,42 @@ Phase 1 integration tests import API route handlers directly — no live Supabas
 4. Mock `createClient` to return a client object (or `null` for 503 cases); mock service functions to return controlled data.
 5. Call the handler, assert `response.status` and parse `response.json()` for body shape.
 
-**Middleware tests** live at `src/test/middleware.test.ts`: mock `createClient`, stub `context` with `url`, `cookies`, `locals`, and assert `redirect` vs `next()` plus `locals.user` population.
+Run scoped: `npm run test:run -- src/test/api/<name>.test.ts`
 
-Phase 2 will add live Supabase / RLS integration tests for Risks #3 and #4; until then, keep mocking at the service boundary.
+#### Live Supabase integration (Phase 2)
 
-Run scoped: `npm run test:run -- src/test/api/<name>.test.ts src/test/middleware.test.ts`
+Place files under `src/test/integration/`. Requires local stack: `npx supabase start` and `.env` with `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, and `CRON_SECRET`.
+
+**Run:** `npm run test:integration` (skips gracefully when Supabase is down).
+
+**Config:** `vitest.integration.config.ts` — separate from unit config; loads real keys via `src/test/integration/astro-env-server.ts` (not `astro-virtual.ts` mocks).
+
+**Skip guard:** At file top, `const available = await requireLocalSupabase()` then `describe.skipIf(!available)(...)`. Import from `@/test/integration/setup`.
+
+**Two-user RLS pattern:** Import helpers from `@/test/integration/helpers/supabase.ts`:
+
+1. `createTestUsers()` — provisions User A and User B via service role.
+2. `signInTestUser(user)` — returns authenticated client + cookie jar for API handler tests.
+3. `seedTestRegion` / `seedFieldForUser` / `seedPlantingForUser` — service-role seeding.
+4. `teardownTestUsers(users, regionIds)` — `afterAll` cleanup.
+
+See `src/test/integration/rls-fields-plantings.test.ts` (service-layer RLS matrix) and `src/test/integration/api-plantings-rls.test.ts` (handler + real cookies).
+
+**Open-Meteo fixtures:** Recorded JSON under `src/test/fixtures/open-meteo/`. Unit parse tests use `vi.stubGlobal("fetch")`; live cron integration stubs fetch the same fixture while writing real `weather_records` rows.
+
+**When to use which:** Mocked handlers for auth/status/body contracts; live integration for RLS boundaries, DB upsert idempotency, and stale-rainfall flags on real rows.
 
 ### 6.3 Adding an e2e test
 
-E2E coverage is Phase 2+ scope (unauth redirect, critical user flows). Playwright is already bootstrapped:
+Playwright covers browser-level gaps integration cannot reach (e.g. SSR field-detail IDOR boundary).
 
 - Config: `playwright.config.ts`
-- Auth setup: `playwright/auth/auth.setup.ts`
-- Specs: `playwright/tests/` (e.g. `dashboard.spec.ts`, `seed.spec.ts`)
+- Admin auth setup: `playwright/auth/auth.setup.ts`
+- Two-user IDOR setup: `playwright/auth/two-users.setup.ts`
+- Specs: `playwright/tests/` (e.g. `field-idor.spec.ts`, `dashboard.spec.ts`)
 - Quality rules: `playwright/tests/e2e-quality-rules.md`
 
-Do not add e2e tests for risks already covered by unit/integration mocks unless the test-plan phase explicitly calls for browser-level verification. Prefer `/10x-e2e` when driving approved e2e phases.
+Use `/10x-e2e` when driving approved e2e phases. Do not add e2e for risks already fully covered by unit/integration unless the test-plan phase explicitly calls for browser verification.
 
 ### 6.4 Adding a test for a new API endpoint
 
@@ -199,6 +221,8 @@ here capturing anything surprising the rollout phase taught.)
 **Phase 1 (critical-path coverage, 2026-06-17).** Auth has dual semantics: middleware-protected routes (`/api/plantings`, etc.) redirect unauthenticated requests, while `/api/fields` returns 401 JSON at the handler — both are intentional. Catalog completeness tests use a shared `EXPECTED_CATALOG` fixture instead of live DB queries; update it whenever migration seed plants change.
 
 **Phase 3 (data integrity, 2026-06-21).** Migrations now have a static reviewer (`npm run db:review`) and live seed integrity smoke (`npm run db:smoke`). The one-command pre-prod local gate is `npm run db:verify`.
+
+**Phase 2 (integration hot-spots, 2026-06-23).** Live integration uses `vitest.integration.config.ts` + two-user helpers; Open-Meteo fixtures feed unit parse tests and stubbed cron integration. `plantings` INSERT RLS now requires field ownership. E2E `field-idor.spec.ts` documents SSR 500 on cross-user field URLs without leaking B's data.
 
 ## 7. What We Deliberately Don't Test
 
