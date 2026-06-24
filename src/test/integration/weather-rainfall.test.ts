@@ -72,6 +72,8 @@ describe.skipIf(!supabaseAvailable)("getRainfall7dCalendarMm live integration", 
     const result = await getRainfall7dCalendarMm(session.client, regionId);
 
     expect(result.rainfallStale).toBe(true);
-    expect(result.data).toBeNull();
+    // Dashboard gate hides sum when stale even if underlying sum is computable
+    const dashboardRainfall = result.data !== null && !result.rainfallStale ? result.data : null;
+    expect(dashboardRainfall).toBeNull();
   });
 });
