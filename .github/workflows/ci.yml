@@ -6,8 +6,13 @@ on:
   pull_request:
     branches: [master]
 
+env:
+  CRON_SECRET: ci-cron-secret
+  SITE_URL: http://localhost:4321
+  E2E_EMAIL: e2e-ci@example.test
+
 jobs:
-  ci:
+  lint-and-unit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +24,56 @@ jobs:
       - run: npx astro sync
       - run: npm run lint
       - run: npm run test:run
+
+  build:
+    runs-on: ubuntu-latest
+    needs: lint-and-unit
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx astro sync
       - run: npm run build
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Supabase
+        run: supabase start -x imgproxy,studio,edge-runtime,logflare,vector,supavisor
+      - name: Export Supabase env
+        run: supabase status -o env >> $GITHUB_ENV
+      - run: npm ci
+      - run: npm run test:integration
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Supabase
+        run: supabase start -x imgproxy,studio,edge-runtime,logflare,vector,supavisor
+      - name: Export Supabase env
+        run: supabase status -o env >> $GITHUB_ENV
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - run: npm run test:e2e -- playwright/tests/field-idor.spec.ts
