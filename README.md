@@ -210,10 +210,21 @@ curl -H "Authorization: Bearer <CRON_SECRET>" https://<your-app>.vercel.app/api/
 
 ## CI
 
-GitHub Actions (`.github/workflows/ci.yml`) runs lint + build on every push and PR to `master`. Configure these as repository secrets:
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push and PR to `master`:
+
+| Job | What it runs |
+| --- | --- |
+| `lint-and-unit` | `npm run lint`, `npm run test:run` |
+| `build` | `npm run build` (requires repository secrets below) |
+| `integration` | Local Supabase (`supabase start`) + `npm run test:integration` |
+| `e2e` | Local Supabase + Playwright `field-idor.spec.ts` |
+
+Configure these as repository secrets for the **build** job:
 
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
+
+Integration and e2e jobs start their own Supabase stack in CI — no extra secrets required.
 
 ## License
 

@@ -56,4 +56,4 @@ Pre-commit: husky + lint-staged runs `eslint --fix` on `*.{ts,tsx,astro}` and `p
 
 ## CI
 
-`@.github/workflows/ci.yml` runs `npm run lint` then `npm run build` on every push and PR to `master`. Both `SUPABASE_URL` and `SUPABASE_ANON_KEY` must be configured as GitHub repository secrets for the build step to pass.
+`@.github/workflows/ci.yml` runs `npm run lint`, `npm run test:run`, and `npm run build` on every push and PR to `master`; separate jobs run `npm run test:integration` (local Supabase) and Playwright `field-idor.spec.ts`. The **build** job requires `SUPABASE_URL` and `SUPABASE_ANON_KEY` as GitHub repository secrets.

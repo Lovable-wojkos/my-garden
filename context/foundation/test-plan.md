@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-06-23
+> Last updated: 2026-06-24
 
 ## 1. Strategy
 
@@ -66,9 +66,9 @@ orchestrator updates Status as artifacts appear on disk.
 | #   | Phase name                   | Goal (one line)                                                                    | Risks covered | Test types                   | Status      | Change folder                                   |
 | --- | ---------------------------- | ---------------------------------------------------------------------------------- | ------------- | ---------------------------- | ----------- | ----------------------------------------------- |
 | 1   | Critical-path coverage       | Bootstrap Vitest; defend auth gating, catalog completeness, and harvest date logic | #1, #2, #6    | unit + integration           | complete    | context/archive/2026-06-15-testing-critical-path-coverage/ |
-| 2   | Integration around hot-spots | Catch regressions in weather sync and auth/RLS data-boundary checks                | #3, #4        | integration (Supabase local) | complete    | context/changes/testing-integration-hotspots/ |
+| 2   | Integration around hot-spots | Catch regressions in weather sync and auth/RLS data-boundary checks                | #3, #4        | integration (Supabase local) | complete    | context/archive/2026-06-23-testing-integration-hotspots/ |
 | 3   | Data integrity               | Migration dry-run review + smoke tests against seed data                           | #5            | manual smoke + review script | complete    | context/archive/2026-06-17-testing-data-integrity/ |
-| 4   | Quality-gates wiring         | Wire unit + integration tests into CI; enforce on PR                               | cross-cutting | CI gates                     | not started | —                                               |
+| 4   | Quality-gates wiring         | Wire unit + integration tests into CI; enforce on PR                               | cross-cutting | CI gates                     | complete    | —                                               |
 
 ## 4. Stack
 
@@ -104,10 +104,11 @@ phase lands; before that, the gate is `planned`.
 | Gate                  | Where                | Required?                 | Catches                       |
 | --------------------- | -------------------- | ------------------------- | ----------------------------- |
 | lint + typecheck      | local + CI           | required                  | syntactic / type drift        |
-| unit + integration    | local + CI           | required after §3 Phase 1 | logic regressions             |
-| e2e on critical flows | CI on PR             | planned after §3 Phase 2  | broken critical user paths    |
+| unit + integration    | local + CI           | required                  | logic regressions             |
+| e2e on critical flows | CI on PR             | required (field-idor)     | broken critical user paths    |
 | pre-prod smoke        | between merge + prod | planned after §3 Phase 3  | environment-specific failures |
-| post-edit hook        | local (agent loop)   | planned after §3 Phase 4  | regressions at edit time      |
+| post-edit hook        | local (agent loop)   | required (`.cursor/hooks`) | regressions at edit time      |
+| pre-push unit tests   | local (git hook)     | required                  | regressions before remote     |
 
 ## 6. Cookbook Patterns
 
@@ -223,6 +224,8 @@ here capturing anything surprising the rollout phase taught.)
 **Phase 3 (data integrity, 2026-06-21).** Migrations now have a static reviewer (`npm run db:review`) and live seed integrity smoke (`npm run db:smoke`). The one-command pre-prod local gate is `npm run db:verify`.
 
 **Phase 2 (integration hot-spots, 2026-06-23).** Live integration uses `vitest.integration.config.ts` + two-user helpers; Open-Meteo fixtures feed unit parse tests and stubbed cron integration. `plantings` INSERT RLS now requires field ownership. E2E `field-idor.spec.ts` documents SSR 500 on cross-user field URLs without leaking B's data.
+
+**Phase 4 (quality-gates wiring, 2026-06-24).** CI runs four jobs: `lint-and-unit`, `build` (cloud Supabase secrets), `integration` (local Supabase via `supabase start`), `e2e` (Playwright `field-idor.spec.ts` only). Pre-push hook runs `npm run test:run`. Per-edit hooks live in `.cursor/hooks.json`.
 
 ## 7. What We Deliberately Don't Test
 
