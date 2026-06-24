@@ -1,0 +1,44 @@
+{
+  // Project-level Cursor permissions for my-garden.
+  // Docs: https://cursor.com/docs/reference/permissions
+  // Merges with ~/.cursor/permissions.json. Keys defined here replace the IDE allowlist for that type.
+
+  "terminalAllowlist": [
+    "git status",
+    "git diff",
+    "git log",
+    "git branch",
+    "git show",
+    "git rev-parse",
+    "npm run lint",
+    "npm run lint:fix",
+    "npm run format",
+    "npm run test",
+    "npm run test:run",
+    "npm run test:e2e",
+    "npm run build",
+    "npm run db:review",
+    "npm run db:smoke",
+    "npx vitest",
+    "npx eslint",
+    "npx prettier",
+    "gh"
+  ],
+
+  "autoRun": {
+    "allow_instructions": [
+      "Read-only shell inspection: ls, cat, head, tail, wc, grep, rg, find.",
+      "npm run dev and npm run preview are fine when starting the local Astro server.",
+      "Scoped Vitest runs (npm run test:run -- <path>) are safe for this repo.",
+      "gh read-only queries: gh pr view, gh pr checks, gh issue view, gh run list.",
+      "git add and git commit when the user explicitly asked to commit."
+    ],
+    "block_instructions": [
+      "Anything writing to .env, .env.local, or credential files requires approval.",
+      "npm run db:reset, npm run db:verify, and npx supabase db reset mutate local Postgres — require approval.",
+      "Any git push, git reset --hard, git clean -fd, or branch deletion requires approval.",
+      "Playwright --ui and other long-running interactive processes should ask unless the user requested them.",
+      "Global installs (npm install -g, brew install) require approval."
+    ]
+  }
+}

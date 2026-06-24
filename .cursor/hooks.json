@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": "node .cursor/hooks/eslint-fix.mjs",
+        "matcher": "Write|Edit",
+        "timeout": 120
+      },
+      {
+        "type": "command",
+        "command": "set AI_AGENTS=1 && node .cursor/hooks/vitest-related.mjs",
+   
+        "matcher": "Write|Edit",
+        "timeout": 30000
+      }
+    ]
+  }
+}
