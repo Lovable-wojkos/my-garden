@@ -389,11 +389,11 @@ Document live integration patterns in test-plan §6.2, add §6.6 phase note, syn
 
 #### 2. Change status
 
-**File**: `context/changes/testing-integration-hotspots/change.md`
+**File**: `context/archive/2026-06-23-testing-integration-hotspots/change.md`
 
-**Intent**: Mark change implemented after all required phases complete.
+**Intent**: Mark change archived after all required phases complete.
 
-**Contract**: `status: implemented`, `updated` set to completion date.
+**Contract**: `status: archived`, `archived_at` set to archive date.
 
 ### Success Criteria:
 
@@ -446,7 +446,7 @@ Phase 4 adds one RLS policy migration hardening `plantings` INSERT — field mus
 
 ## References
 
-- Research: `context/changes/testing-integration-hotspots/research.md`
+- Research: `context/archive/2026-06-23-testing-integration-hotspots/research.md`
 - Test plan: `context/foundation/test-plan.md` §3 Phase 2, §2 Risks #3–#4
 - Phase 1 plan: `context/archive/2026-06-15-testing-critical-path-coverage/plan.md`
 - E2E rules: `playwright/tests/e2e-quality-rules.md`
@@ -460,9 +460,9 @@ Phase 4 adds one RLS policy migration hardening `plantings` INSERT — field mus
 
 #### Automated
 
-- [ ] 1.1 `npm run lint` passes on new integration files
-- [ ] 1.2 `npm run test:run` still passes (unit suite unaffected)
-- [ ] 1.3 `npm run test:integration` runs without hard fail when Supabase down
+- [x] 1.1 `npm run lint` passes on new integration files
+- [x] 1.2 `npm run test:run` still passes (unit suite unaffected)
+- [x] 1.3 `npm run test:integration` runs without hard fail when Supabase down
 
 #### Manual
 
@@ -472,8 +472,8 @@ Phase 4 adds one RLS policy migration hardening `plantings` INSERT — field mus
 
 #### Automated
 
-- [ ] 2.1 `npm run test:run -- src/test/lib/open-meteo.test.ts src/test/api/cron-weather.test.ts` passes
-- [ ] 2.2 `npm run lint` passes
+- [x] 2.1 `npm run test:run -- src/test/lib/open-meteo.test.ts src/test/api/cron-weather.test.ts` passes
+- [x] 2.2 `npm run lint` passes
 
 #### Manual
 
@@ -483,9 +483,9 @@ Phase 4 adds one RLS policy migration hardening `plantings` INSERT — field mus
 
 #### Automated
 
-- [ ] 3.1 `npm run test:integration -- src/test/integration/weather-cron.test.ts src/test/integration/weather-rainfall.test.ts` passes with local Supabase
-- [ ] 3.2 `npm run test:run` passes
-- [ ] 3.3 `npm run lint` passes
+- [x] 3.1 `npm run test:integration -- src/test/integration/weather-cron.test.ts src/test/integration/weather-rainfall.test.ts` passes with local Supabase
+- [x] 3.2 `npm run test:run` passes
+- [x] 3.3 `npm run lint` passes
 
 #### Manual
 
@@ -495,10 +495,10 @@ Phase 4 adds one RLS policy migration hardening `plantings` INSERT — field mus
 
 #### Automated
 
-- [ ] 4.1 `npm run db:review` passes on plantings INSERT migration
-- [ ] 4.2 `npm run test:integration -- src/test/integration/rls-fields-plantings.test.ts src/test/integration/api-plantings-rls.test.ts` passes with local Supabase
-- [ ] 4.3 `npm run test:run` passes
-- [ ] 4.4 `npm run lint` passes
+- [x] 4.1 `npm run db:review` passes on plantings INSERT migration
+- [x] 4.2 `npm run test:integration -- src/test/integration/rls-fields-plantings.test.ts src/test/integration/api-plantings-rls.test.ts` passes with local Supabase
+- [x] 4.3 `npm run test:run` passes
+- [x] 4.4 `npm run lint` passes
 
 #### Manual
 
@@ -509,8 +509,8 @@ Phase 4 adds one RLS policy migration hardening `plantings` INSERT — field mus
 
 #### Automated
 
-- [ ] 5.1 `npm run test:e2e -- playwright/tests/field-idor.spec.ts` passes
-- [ ] 5.2 `npm run lint` passes on Playwright files
+- [x] 5.1 `npm run test:e2e -- playwright/tests/field-idor.spec.ts` passes
+- [x] 5.2 `npm run lint` passes on Playwright files
 
 #### Manual
 
@@ -520,11 +520,11 @@ Phase 4 adds one RLS policy migration hardening `plantings` INSERT — field mus
 
 #### Automated
 
-- [ ] 6.1 `npm run test:run` passes
-- [ ] 6.2 `npm run test:integration` passes or skip documented
-- [ ] 6.3 `npm run lint` passes
+- [x] 6.1 `npm run test:run` passes
+- [x] 6.2 `npm run test:integration` passes or skip documented
+- [x] 6.3 `npm run lint` passes
 
 #### Manual
 
-- [ ] 6.4 test-plan §6.2 readable for new integration tests
-- [ ] 6.5 Phase 5 E2E complete in §6.6
+- [x] 6.4 test-plan §6.2 readable for new integration tests
+- [x] 6.5 Phase 5 E2E complete in §6.6

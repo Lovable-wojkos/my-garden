@@ -1,11 +1,11 @@
 ---
 change_id: testing-integration-hotspots
 title: Integration tests for weather sync and RLS data boundaries
-status: implemented
+status: archived
 created: 2026-06-23
-updated: 2026-06-23
+updated: 2026-06-24
 planned: 2026-06-23
-archived_at: null
+archived_at: 2026-06-24T00:00:00Z
 ---
 
 ## Notes

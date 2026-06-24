@@ -23,7 +23,7 @@ last_updated_by: Auto
 
 What must Phase 2 integration tests cover for Risks #3 (weather sync breaks silently) and #4 (IDOR on field/planting data), and where in the codebase do those failures actually live?
 
-Grounding requirements from `context/foundation/test-plan.md` and `context/changes/testing-integration-hotspots/change.md`:
+Grounding requirements from `context/foundation/test-plan.md` and `context/archive/2026-06-23-testing-integration-hotspots/change.md`:
 
 - **Risk #3**: prove weather fetch returns expected fields, stale data is flagged, failed fetch does not corrupt existing records; challenge that HTTP 200 means correct data was stored; avoid over-mocking the external API.
 - **Risk #4**: prove User A cannot read or modify User B's `fields`/`plantings`; use real cookie/session shape; test with Supabase local, not handler mocks alone.

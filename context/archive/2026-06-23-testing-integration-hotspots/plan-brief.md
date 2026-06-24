@@ -1,7 +1,7 @@
 # Integration Hot-Spots — Plan Brief
 
-> Full plan: `context/changes/testing-integration-hotspots/plan.md`
-> Research: `context/changes/testing-integration-hotspots/research.md`
+> Full plan: `context/archive/2026-06-23-testing-integration-hotspots/plan.md`
+> Research: `context/archive/2026-06-23-testing-integration-hotspots/research.md`
 
 ## What & Why
 
